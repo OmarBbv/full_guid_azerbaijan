@@ -77,89 +77,93 @@ function ArticleCard({ article, index, large = false }: {
   }, []);
 
   return (
-    <article
+    <div
       ref={ref}
-      className={`blog-card group relative rounded-3xl overflow-hidden cursor-pointer ${large ? "blog-card-large" : ""}`}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(32px)",
         transition: `opacity 0.65s ease ${index * 0.09}s, transform 0.65s cubic-bezier(0.22,1,0.36,1) ${index * 0.09}s`,
       }}
+      className={large ? "h-full" : ""}
     >
-      {/* Image */}
-      <div className="relative overflow-hidden" style={{ height: large ? 320 : 200 }}>
-        <img
-          src={article.img}
-          alt={article.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-        />
-        <div
-          className="absolute inset-0"
-          style={{ background: "linear-gradient(180deg, transparent 35%, rgba(0,0,0,0.65) 100%)" }}
-        />
-
-        {/* Category */}
-        <div className="absolute top-4 left-4">
-          <span
-            className="inline-block px-3 py-1 rounded-full text-[11px] font-bold text-white uppercase tracking-wider"
-            style={{ background: `${article.categoryColor}dd`, backdropFilter: "blur(8px)" }}
-          >
-            {article.category}
-          </span>
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="blog-card-body p-5">
-        <h3
-          className={`font-bold leading-tight mb-2 transition-colors duration-200 group-hover:text-primary ${large ? "text-xl" : "text-base"}`}
-          style={{ color: "var(--foreground)" }}
-        >
-          {article.title}
-        </h3>
-        <p
-          className="text-sm leading-relaxed mb-4 line-clamp-2"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          {article.excerpt}
-        </p>
-
-        <div
-          className="flex items-center gap-3 pt-3"
-          style={{ borderTop: "1px solid var(--border)" }}
-        >
+      <article
+        className={`bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] hover:-translate-y-1 group relative rounded-3xl overflow-hidden cursor-pointer ${large ? "h-full flex flex-col" : ""}`}
+      >
+        {/* Image */}
+        <div className="relative overflow-hidden" style={{ height: large ? 320 : 200 }}>
           <img
-            src={article.authorImg}
-            alt={article.author}
-            className="w-7 h-7 rounded-full object-cover"
+            src={article.img}
+            alt={article.title}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
-          <span className="text-xs font-medium" style={{ color: "var(--foreground)" }}>
-            {article.author}
-          </span>
-          <div className="flex items-center gap-3 ml-auto">
-            <div className="flex items-center gap-1">
-              <Calendar size={11} style={{ color: "var(--muted-foreground)" }} />
-              <span className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                {article.date}
-              </span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Clock size={11} style={{ color: "var(--muted-foreground)" }} />
-              <span className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
-                {article.readTime}
-              </span>
+          <div
+            className="absolute inset-0"
+            style={{ background: "linear-gradient(180deg, transparent 35%, rgba(0,0,0,0.65) 100%)" }}
+          />
+
+          {/* Category */}
+          <div className="absolute top-4 left-4">
+            <span
+              className="inline-block px-3 py-1 rounded-full text-[11px] font-bold text-white uppercase tracking-wider"
+              style={{ background: `${article.categoryColor}dd`, backdropFilter: "blur(8px)" }}
+            >
+              {article.category}
+            </span>
+          </div>
+        </div>
+
+        {/* Content */}
+        <div className={`p-5 bg-card ${large ? "flex-1" : ""}`}>
+          <h3
+            className={`font-bold leading-tight mb-2 transition-colors duration-200 group-hover:text-primary ${large ? "text-xl" : "text-base"}`}
+            style={{ color: "var(--foreground)" }}
+          >
+            {article.title}
+          </h3>
+          <p
+            className="text-sm leading-relaxed mb-4 line-clamp-2"
+            style={{ color: "var(--muted-foreground)" }}
+          >
+            {article.excerpt}
+          </p>
+
+          <div
+            className="flex items-center gap-3 pt-3"
+            style={{ borderTop: "1px solid var(--border)" }}
+          >
+            <img
+              src={article.authorImg}
+              alt={article.author}
+              className="w-7 h-7 rounded-full object-cover"
+            />
+            <span className="text-xs font-medium" style={{ color: "var(--foreground)" }}>
+              {article.author}
+            </span>
+            <div className="flex items-center gap-3 ml-auto">
+              <div className="flex items-center gap-1">
+                <Calendar size={11} style={{ color: "var(--muted-foreground)" }} />
+                <span className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+                  {article.date}
+                </span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Clock size={11} style={{ color: "var(--muted-foreground)" }} />
+                <span className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+                  {article.readTime}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </div>
   );
 }
 
 export default function BlogSection() {
   return (
     <section className="py-24 relative overflow-hidden">
-      <div className="blob blob-4" />
+      <div className="absolute w-[500px] h-[500px] rounded-full blur-[100px] opacity-5 bg-[#f5a623] -top-[100px] -left-[100px] pointer-events-none" />
 
       <div className="relative max-w-7xl mx-auto px-6">
         {/* Header */}
@@ -188,63 +192,15 @@ export default function BlogSection() {
           </a>
         </div>
 
-        {/* Blog grid – featured + 3 small */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-          {/* Featured large card */}
-          <div className="lg:col-span-2">
-            <ArticleCard article={articles[1]} index={0} large />
-          </div>
-
-          {/* 3 small cards */}
-          <div className="lg:col-span-3 flex flex-col gap-6">
-            {[articles[0], articles[2], articles[3]].map((a, i) => (
-              <ArticleCard key={a.id} article={a} index={i + 1} />
-            ))}
-          </div>
+        {/* Blog columns */}
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
+          {articles.map((a, i) => (
+            <div key={a.id} className="break-inside-avoid mb-6">
+              <ArticleCard article={a} index={i} large={a.featured} />
+            </div>
+          ))}
         </div>
       </div>
-
-      <style jsx global>{`
-        .blog-card {
-          background: var(--card);
-          border: 1px solid var(--border);
-          box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-          transition: box-shadow 0.3s ease, transform 0.3s ease;
-        }
-        .blog-card:hover {
-          box-shadow: 0 16px 40px rgba(0,0,0,0.12);
-          transform: translateY(-4px);
-        }
-        .blog-card-large {
-          height: 100%;
-          display: flex;
-          flex-direction: column;
-        }
-        .blog-card-large .blog-card-body {
-          flex: 1;
-        }
-        .blog-card-body {
-          background: var(--card);
-        }
-        .line-clamp-2 {
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        .blob-4 {
-          position: absolute;
-          width: 500px;
-          height: 500px;
-          border-radius: 50%;
-          filter: blur(100px);
-          opacity: 0.05;
-          background: #f5a623;
-          top: -100px;
-          left: -100px;
-          pointer-events: none;
-        }
-      `}</style>
     </section>
   );
 }

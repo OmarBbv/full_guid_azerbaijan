@@ -23,8 +23,7 @@ export default function InteractiveMap() {
           {/* Map box */}
           <div className="w-full max-w-4xl h-full flex items-center justify-center relative">
             <div
-              className="drop-shadow-xl w-full flex justify-center"
-              style={{ filter: "drop-shadow(0 20px 30px rgba(0,0,0,0.1))" }}
+              className="w-full flex justify-center [&_.map]:drop-shadow-[0_20px_30px_rgba(0,0,0,0.1)]"
             >
               <Azerbaijan
                 type="select-single"
