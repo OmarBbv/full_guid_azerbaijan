@@ -30,31 +30,42 @@ function useCountUp(target: number, duration = 2000, decimal = false, active = f
   return count;
 }
 
-function StatCard({ stat, active }: { stat: typeof stats[0]; active: boolean }) {
-  const count = useCountUp(stat.value, 1800, stat.decimal, active);
+function StatCard({ stat, active, index }: { stat: typeof stats[0]; active: boolean; index: number }) {
+  const count = useCountUp(stat.value, 2000, stat.decimal, active);
   const Icon = stat.icon;
 
   return (
-    <div className="stat-card group flex flex-col items-center text-center p-8 rounded-3xl relative overflow-hidden">
-      {/* BG glow */}
-      <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"
-        style={{ background: `radial-gradient(circle at 50% 50%, ${stat.color}18, transparent 70%)` }}
-      />
+    <div
+      className="relative flex flex-col items-center p-8 transition-all duration-500 group"
+      style={{
+        opacity: active ? 1 : 0,
+        transform: active ? 'translateY(0)' : 'translateY(20px)',
+        transitionDelay: `${index * 100}ms`
+      }}
+    >
+      {/* Decorative center line */}
+      {index < stats.length - 1 && (
+        <div className="hidden lg:block absolute right-0 top-1/4 bottom-1/4 w-px bg-linear-to-b from-transparent via-border to-transparent" />
+      )}
 
       <div
-        className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110"
-        style={{ background: `${stat.color}18`, border: `1px solid ${stat.color}28` }}
+        className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-lg shadow-black/5"
+        style={{
+          background: `linear-gradient(135deg, ${stat.color}15, ${stat.color}05)`,
+          border: `1px solid ${stat.color}20`
+        }}
       >
-        <Icon size={28} style={{ color: stat.color }} />
+        <Icon size={24} style={{ color: stat.color }} />
       </div>
 
-      <div className="text-5xl font-black mb-2 tracking-tight" style={{ color: stat.color }}>
-        {stat.decimal ? count.toFixed(1) : count.toLocaleString()}
-        {stat.suffix}
-      </div>
-      <div className="text-sm font-medium" style={{ color: "var(--muted-foreground)" }}>
-        {stat.label}
+      <div className="flex flex-col items-center">
+        <div className="text-4xl lg:text-5xl font-black mb-2 tracking-tighter text-foreground tabular-nums">
+          {stat.decimal ? count.toFixed(1) : count.toLocaleString()}
+          <span className="text-primary ml-0.5">{stat.suffix}</span>
+        </div>
+        <div className="text-sm font-bold uppercase tracking-widest text-muted-foreground/60">
+          {stat.label}
+        </div>
       </div>
     </div>
   );
@@ -67,39 +78,28 @@ export default function StatsSection() {
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) setActive(true); },
-      { threshold: 0.3 }
+      { threshold: 0.2 }
     );
     if (ref.current) observer.observe(ref.current);
     return () => observer.disconnect();
   }, []);
 
   return (
-    <section ref={ref} className="relative py-20 overflow-hidden">
-      {/* Subtle background */}
-      <div className="absolute inset-0 stats-bg" />
-
-      <div className="relative max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          {stats.map((stat, i) => (
-            <StatCard key={i} stat={stat} active={active} />
-          ))}
-        </div>
+    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden bg-background">
+      {/* Abstract Background Shapes */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl bg-primary/5 blur-[120px] rounded-full opacity-50" />
       </div>
 
-      <style jsx global>{`
-        .stats-bg {
-          background: linear-gradient(180deg, var(--background) 0%, color-mix(in srgb, var(--background) 85%, #1e293b) 100%);
-        }
-        .stat-card {
-          background: color-mix(in srgb, var(--card) 80%, transparent);
-          border: 1px solid var(--border);
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .stat-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.12);
-        }
-      `}</style>
+      <div className="relative max-w-7xl mx-auto px-6">
+        <div className="bg-card/50 backdrop-blur-xl rounded-[3rem] border border-border shadow-2xl shadow-black/5 overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-border/50">
+            {stats.map((stat, i) => (
+              <StatCard key={i} stat={stat} active={active} index={i} />
+            ))}
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

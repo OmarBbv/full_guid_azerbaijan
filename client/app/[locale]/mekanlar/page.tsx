@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { Search, MapPin, Star, Heart, ArrowRight, SlidersHorizontal, Map } from "lucide-react";
+import { useState } from "react";
+import { Search, Star, Map, SlidersHorizontal } from "lucide-react";
+import { PlaceCard } from "@/components/home/PlaceCard";
+import { PLACES } from "@/constants/places";
 
-// Mock Data
+// Categories
 const categories = [
   { id: "hamısı", label: "Bütün Məkanlar", icon: "✨" },
   { id: "dağlar", label: "Dağlar", icon: "🏔️" },
@@ -11,136 +13,13 @@ const categories = [
   { id: "tarix", label: "Tarixi Yerlər", icon: "🏛️" },
   { id: "təbiət", label: "Təbiət", icon: "🌿" },
   { id: "sahil", label: "Sahil", icon: "🏖️" },
-  { id: "əyləncə", label: "Əyləncə", icon: "🎢" },
 ];
-
-const places = [
-  { id: 1, name: "Yanar Dağ", region: "Abşeron", category: "təbiət", rating: 4.8, reviews: "9.2k", img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop", tag: "Nadir fenomen", accent: "#f5a623", badge: "Ən populyar" },
-  { id: 2, name: "İçərişəhər", region: "Bakı", category: "tarix", rating: 4.9, reviews: "18.6k", img: "https://images.unsplash.com/photo-1548625361-58a9a9d27293?q=80&w=800&auto=format&fit=crop", tag: "UNESCO mirası", accent: "#3b9cf5", badge: "Tövsiyə edilir" },
-  { id: 3, name: "Qax Meşəsi", region: "Şəki-Zaqatala", category: "dağlar", rating: 4.7, reviews: "4.3k", img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800&auto=format&fit=crop", tag: "Trekkinq cənnəti", accent: "#4dd9ac", badge: "Yeni" },
-  { id: 4, name: "Xəzər Sahili", region: "Bakı", category: "sahil", rating: 4.6, reviews: "11.4k", img: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop", tag: "Gün batımı nöqtəsi", accent: "#e06cfe", badge: "" },
-  { id: 5, name: "Şəki Xanları Sarayı", region: "Şəki", category: "tarix", rating: 4.9, reviews: "7.8k", img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800&auto=format&fit=crop", tag: "Arxitektura möcüzəsi", accent: "#f5a623", badge: "Tövsiyə edilir" },
-  { id: 6, name: "Tufandağ", region: "Qəbələ", category: "dağlar", rating: 4.8, reviews: "5.1k", img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800&auto=format&fit=crop", tag: "Ski & Trekkinq", accent: "#3b9cf5", badge: "" },
-  { id: 7, name: "Göygöl", region: "Göygöl", category: "təbiət", rating: 4.9, reviews: "12.4k", img: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?q=80&w=800&auto=format&fit=crop", tag: "Füsunkar mənzərə", accent: "#10b981", badge: "Təbiət incisi" },
-  { id: 8, name: "Heydər Əliyev Mərkəzi", region: "Bakı", category: "şəhərlər", rating: 4.8, reviews: "15.2k", img: "https://images.unsplash.com/photo-1580216262276-2e86dcda067d?q=80&w=800&auto=format&fit=crop", tag: "Modern memarlıq", accent: "#6366f1", badge: "İkonik" },
-  { id: 9, name: "Qobustan", region: "Qaradağ", category: "tarix", rating: 4.7, reviews: "8.9k", img: "https://images.unsplash.com/photo-1682687219573-3fd75f982217?q=80&w=800&auto=format&fit=crop", tag: "Qaya rəsmləri", accent: "#d97706", badge: "" },
-];
-
-function PlaceCard({ place, index }: { place: typeof places[0]; index: number }) {
-  const [liked, setLiked] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold: 0.1 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className="place-card group relative rounded-3xl overflow-hidden cursor-pointer"
-      style={{
-        opacity: visible ? 1 : 0,
-        transform: visible ? "translateY(0)" : "translateY(32px)",
-        transition: `opacity 0.6s ease ${Math.min(index, 8) * 0.08}s, transform 0.6s cubic-bezier(0.22,1,0.36,1) ${Math.min(index, 8) * 0.08}s`,
-      }}
-    >
-      {/* Image Container */}
-      <div className="relative overflow-hidden" style={{ height: 260 }}>
-        <img
-          src={place.img}
-          alt={place.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-108"
-        />
-        <div
-          className="absolute inset-0 transition-opacity duration-300 group-hover:opacity-80"
-          style={{
-            background: "linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.8) 100%)",
-          }}
-        />
-
-        {/* Badge */}
-        {place.badge && (
-          <div
-            className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider shadow-lg"
-            style={{ background: `${place.accent}dd`, backdropFilter: "blur(8px)" }}
-          >
-            {place.badge}
-          </div>
-        )}
-
-        {/* Favorite Button */}
-        <button
-          onClick={(e) => { e.stopPropagation(); setLiked(!liked); }}
-          className="absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95"
-          style={{
-            background: liked ? "#ef4444" : "rgba(255,255,255,0.15)",
-            backdropFilter: "blur(12px)",
-            border: liked ? "none" : "1px solid rgba(255,255,255,0.25)",
-            boxShadow: liked ? "0 4px 12px rgba(239, 68, 68, 0.4)" : "none"
-          }}
-        >
-          <Heart size={18} className={liked ? "fill-white text-white" : "text-white"} />
-        </button>
-
-        {/* Tag */}
-        <div
-          className="absolute bottom-4 left-4 px-3 py-1.5 rounded-full text-[12px] font-medium text-white/90"
-          style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(8px)" }}
-        >
-          {place.tag}
-        </div>
-      </div>
-
-      {/* Card Body */}
-      <div className="place-card-body p-5 md:p-6">
-        <div className="flex items-start justify-between mb-3">
-          <div className="pr-3">
-            <h3 className="font-bold text-xl leading-tight mb-1.5 group-hover:text-primary transition-colors" style={{ color: "var(--foreground)" }}>
-              {place.name}
-            </h3>
-            <div className="flex items-center gap-1.5">
-              <MapPin size={14} style={{ color: "var(--muted-foreground)" }} />
-              <span className="text-sm font-medium" style={{ color: "var(--muted-foreground)" }}>
-                {place.region}
-              </span>
-            </div>
-          </div>
-          <div
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-sm font-bold shrink-0 shadow-sm"
-            style={{ background: `${place.accent}18`, color: place.accent }}
-          >
-            <Star size={14} className="fill-current" />
-            {place.rating}
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border/50">
-          <span className="text-sm font-medium" style={{ color: "var(--muted-foreground)" }}>
-            {place.reviews} rəy
-          </span>
-          <button
-            className="flex items-center gap-1.5 text-sm font-bold transition-all duration-300 group-hover:translate-x-1"
-            style={{ color: place.accent }}
-          >
-            Ətraflı <ArrowRight size={16} />
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export default function PlacesPage() {
   const [activeCategory, setActiveCategory] = useState("hamısı");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredPlaces = places.filter(place => {
+  const filteredPlaces = PLACES.filter(place => {
     const matchesCategory = activeCategory === "hamısı" || place.category === activeCategory;
     const matchesSearch = place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       place.region.toLowerCase().includes(searchQuery.toLowerCase());
@@ -191,15 +70,27 @@ export default function PlacesPage() {
               </div>
             </div>
 
-            {/* Quick Stats / Visual Element */}
-            <div className="hidden lg:grid grid-cols-2 gap-4">
-              <div className="bg-card/80 backdrop-blur-xl p-6 rounded-3xl border border-border/50 shadow-xl shadow-black/5 hover:-translate-y-2 transition-transform duration-300">
-                <div className="text-3xl font-black text-primary mb-1">340+</div>
-                <div className="text-sm font-medium text-muted-foreground">kəşf edilmiş unikal məkan</div>
+            {/* Visual Element - Hero Image Profile */}
+            <div className="hidden lg:block relative w-full max-w-[450px]">
+              <div className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl shadow-primary/20 border-4 border-white rotate-3 hover:rotate-0 transition-transform duration-700">
+                <img
+                  src="https://images.unsplash.com/photo-1527067829737-40299c5895bb?q=80&w=1000&auto=format&fit=crop"
+                  alt="Azerbaijan Nature"
+                  className="w-full h-[500px] object-cover scale-110 hover:scale-100 transition-transform duration-700"
+                />
               </div>
-              <div className="bg-card/80 backdrop-blur-xl p-6 rounded-3xl border border-border/50 shadow-xl shadow-black/5 hover:-translate-y-2 transition-transform duration-300 translate-y-6">
-                <div className="text-3xl font-black text-accent mb-1">12K+</div>
-                <div className="text-sm font-medium text-muted-foreground">gündəlik aktiv istifadəçi</div>
+              {/* Decorative behind image */}
+              <div className="absolute -inset-4 bg-primary/10 rounded-[48px] -rotate-3 blur-sm" />
+              <div className="absolute top-1/2 -right-8 -translate-y-1/2 bg-card/80 backdrop-blur-xl p-5 rounded-3xl border border-border shadow-xl z-20 animate-bounce-slow">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                    <Star className="fill-current" size={20} />
+                  </div>
+                  <div>
+                    <div className="text-xl font-black text-foreground">4.9/5</div>
+                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Reytinq</div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -307,6 +198,13 @@ export default function PlacesPage() {
         .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
+        }
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(-50%); }
+          50% { transform: translateY(-60%); }
+        }
+        .animate-bounce-slow {
+          animation: bounce-slow 3s ease-in-out infinite;
         }
       `}</style>
     </div>

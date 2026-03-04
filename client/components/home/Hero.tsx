@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { Star, Bookmark, ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 
 // ─── Slides ──────────────────────────────────────────────────────────────────
@@ -228,11 +229,13 @@ export default function Hero() {
             zIndex: 0,
           }}
         >
-          <img
+          <Image
             src={s.bg}
             alt={s.country}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
             style={{ filter: "brightness(0.45) saturate(1.1)" }}
+            priority={i === 0}
           />
         </div>
       ))}
@@ -244,11 +247,13 @@ export default function Hero() {
           className="absolute inset-0 card-bg-reveal"
           style={{ zIndex: 0 }}
         >
-          <img
+          <Image
             src={activeCardData.img}
             alt={activeCardData.name}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
             style={{ filter: "brightness(0.35) saturate(1.2)" }}
+            priority
           />
         </div>
       )}

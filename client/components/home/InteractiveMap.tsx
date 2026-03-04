@@ -1,59 +1,132 @@
 "use client";
 
 import { useState } from "react";
+import { MapPin, Navigation, ArrowRight, Camera } from "lucide-react";
 import Azerbaijan from "@react-map/azerbaijan";
+
+const regionDetails: Record<string, { desc: string, img: string, famous: string }> = {
+  "Bakı": {
+    desc: "Azərbaycanın paytaxtı, Xəzər dənizinin sahilində yerləşən ən böyük sənaye, elmi və mədəni mərkəzidir.",
+    img: "https://images.unsplash.com/photo-1548625361-58a9a9d27293?q=80&w=800",
+    famous: "İçərişəhər, Alov Qüllələri"
+  },
+  "Şəki": {
+    desc: "Azərbaycanın ən qədim şəhərlərindən biri, Böyük Qafqaz dağlarının ətəyində yerləşən memarlıq incisidir.",
+    img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800",
+    famous: "Şəki Xan Sarayı, Karvansaray"
+  },
+  "Qəbələ": {
+    desc: "Müasir turizm mərkəzi, hər fəsildə səyahətçiləri öz təbiəti və əyləncə mərkəzləri ilə cəlb edir.",
+    img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800",
+    famous: "Tufandağ, Nohur gölü"
+  },
+  "Lənkəran": {
+    desc: "Subtropik iqlimi, çay plantasiyaları və Xəzər dənizinin qızılı qumları ilə məşhur olan cənub incisi.",
+    img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800",
+    famous: "Xan sarayı, Hirkan meşələri"
+  },
+  "Şuşa": {
+    desc: "Azərbaycanın mədəniyyət paytaxtı, Qarabağın tacı sayılan, özünəməxsus havası və tarixi ilə seçilən şəhər.",
+    img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800",
+    famous: "Cıdır düzü, Vaqif məqbərəsi"
+  }
+};
+
+const defaultData = {
+  desc: "Xəritədə hər hansı bir bölgəni seçərək həmin yer haqqında qısa məlumat və maraqlı faktlarla tanış ola bilərsiniz.",
+  img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800",
+  famous: "Bütün bölgələr unikal mənzərəyə malikdir."
+};
 
 export default function InteractiveMap() {
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
+  const currentData = activeRegion ? (regionDetails[activeRegion] || defaultData) : defaultData;
 
   return (
     <section className="py-24 relative overflow-hidden bg-background">
-      <div className="relative max-w-6xl mx-auto px-6">
+      {/* Decorative BG */}
+      <div className="absolute top-0 left-0 w-full h-full bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
           <span className="section-pill mb-4 inline-block">🗺️ Xəritə</span>
           <h2 className="section-title">
             Azərbaycanın <span className="section-title-accent">Bölgələri</span>
           </h2>
-          <p className="section-desc mx-auto mt-4 text-center">
-            İnteraktiv xəritə üzərindən istədiyiniz bölgəni seçib kəşf edə bilərsiniz.
-          </p>
         </div>
 
-        <div className="relative w-full aspect-video flex items-center justify-center p-4">
-          {/* Map box */}
-          <div className="w-full max-w-4xl h-full flex items-center justify-center relative">
-            <div
-              className="w-full flex justify-center [&_.map]:drop-shadow-[0_20px_30px_rgba(0,0,0,0.1)]"
-            >
-              <Azerbaijan
-                type="select-single"
-                size={800}
-                mapColor="#e2e8f0"
-                strokeColor="#ffffff"
-                strokeWidth={1.5}
-                hoverColor="#ef4444"
-                selectColor="#dc2626"
-                hints={true}
-                hintTextColor="#0f172a"
-                hintBackgroundColor="#ffffff"
-                hintPadding="10px 16px"
-                hintBorderRadius={12}
-                onSelect={(state) => setActiveRegion(state)}
-              />
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-            {/* Displaying selected region clearly at bottom if selected */}
-            {activeRegion && (
-              <div
-                className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-border flex items-center gap-3 animate-in slide-in-from-bottom flex-wrap text-center"
-              >
-                <div className="w-3 h-3 rounded-full bg-red-600 animate-pulse" />
-                <span className="text-foreground font-bold text-sm tracking-wide">
-                  Seçilmiş Bölgə: <span className="text-red-600">{activeRegion}</span>
-                </span>
+          {/* Left Side: Info Panel */}
+          <div className="lg:col-span-5 order-2 lg:order-1">
+            <div className="relative h-full min-h-[450px] flex flex-col justify-center py-6">
+
+              <div key={activeRegion || "default"} className="animate-in fade-in slide-in-from-left duration-700">
+                <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
+                  <MapPin size={14} /> {activeRegion || "Bölgə Seçin"}
+                </div>
+
+                <div className="relative w-full h-64 rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl shadow-black/10">
+                  <img src={currentData.img} alt={activeRegion || "Azerbaijan"} className="w-full h-full object-cover" />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent flex items-end p-6">
+                    <p className="text-white text-xs font-medium flex items-center gap-2 opacity-90">
+                      <Camera size={16} /> Məşhur: {currentData.famous}
+                    </p>
+                  </div>
+                </div>
+
+                <h3 className="text-3xl font-black text-foreground mb-4">
+                  {activeRegion ? `${activeRegion} Bölgəsi` : "Kəşfə Hazırsınız?"}
+                </h3>
+
+                <p className="text-muted-foreground text-lg leading-relaxed mb-10">
+                  {currentData.desc}
+                </p>
+
+                <div className="flex flex-wrap gap-4">
+                  <button className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary/90 active:scale-95 transition-all">
+                    Kəşf Et <ArrowRight size={18} />
+                  </button>
+                  <button className="px-8 py-4 bg-secondary text-secondary-foreground rounded-2xl font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all border border-border/50">
+                    <Navigation size={18} /> Yol çək
+                  </button>
+                </div>
               </div>
-            )}
+            </div>
           </div>
+
+          {/* Right Side: Map */}
+          <div className="lg:col-span-7 order-1 lg:order-2 flex justify-center items-center">
+            <div className="relative w-full flex items-center justify-center p-4 lg:h-[600px]">
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="[&_.map]:drop-shadow-[0_20px_60px_rgba(0,0,0,0.08)] [&_.map]:transition-transform [&_.map]:duration-700 [&_.map]:scale-90 md:[&_.map]:scale-100 lg:[&_.map]:scale-110 cursor-pointer">
+                  <Azerbaijan
+                    type="select-single"
+                    size={700}
+                    mapColor="#f8fafc"
+                    strokeColor="#cbd5e1"
+                    strokeWidth={1}
+                    hoverColor="#3b9cf5"
+                    selectColor="#1e3a8a"
+                    hints={true}
+                    hintTextColor="#ffffff"
+                    hintBackgroundColor="#1e3a8a"
+                    hintPadding="10px 20px"
+                    hintBorderRadius={14}
+                    onSelect={(state) => setActiveRegion(state)}
+                  />
+                </div>
+              </div>
+
+              {!activeRegion && (
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white/80 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-border animate-bounce pointer-events-none">
+                  <div className="w-2 h-2 rounded-full bg-primary" />
+                  <span className="text-foreground text-xs font-bold uppercase tracking-wider">Bölgə seçin</span>
+                </div>
+              )}
+            </div>
+          </div>
+
         </div>
       </div>
     </section>

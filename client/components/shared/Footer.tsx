@@ -1,7 +1,15 @@
+"use client";
+
 import { Separator } from "@/components/ui/separator";
-import { Link } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 
 export default function Footer() {
+  const pathname = usePathname();
+  const authRoutes = ['/login', '/register'];
+  const isAuthPage = authRoutes.some(route => pathname?.includes(route));
+
+  if (isAuthPage) return null;
+
   return (
     <footer className="w-full bg-background text-foreground py-12 pb-6 border-t border-border mt-auto">
       <div className="container mx-auto px-4 sm:px-8 max-w-7xl">
