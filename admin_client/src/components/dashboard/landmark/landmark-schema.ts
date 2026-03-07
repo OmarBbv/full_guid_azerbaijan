@@ -11,7 +11,7 @@ export const createLandmarkSchema = z.object({
   whatsapp_number: z
     .string()
     .min(1, 'WhatsApp nömrəsi tələb olunur')
-    .regex(/^[0-9+ ]{7,20}$/, 'WhatsApp nömrəsi düzgün qeyd olunmalıdır'),
+    .regex(/^\+?[0-9\s-]{10,20}$/, 'WhatsApp düzgün formatda deyil'),
   phone_number: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().min(1, 'Ünvan tələb olunur'),
@@ -19,6 +19,7 @@ export const createLandmarkSchema = z.object({
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   show_in_hero: z.boolean().default(false),
+  language: z.enum(['az', 'en', 'ru']).default('az'),
 });
 
 export type CreateLandmarkFormValues = z.infer<typeof createLandmarkSchema>;

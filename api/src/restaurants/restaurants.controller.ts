@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../config/multer.config';
@@ -37,8 +38,8 @@ export class RestaurantsController {
    * Returns all restaurants with their base place info and images.
    */
   @Get()
-  findAll() {
-    return this.restaurantsService.findAll();
+  findAll(@Query('language') language?: string) {
+    return this.restaurantsService.findAll(language);
   }
 
   /**

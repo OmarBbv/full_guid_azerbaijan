@@ -24,13 +24,15 @@ export class HostelsService {
   ) { }
 
   async create(dto: CreateHostelDto): Promise<Hostel> {
-    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug } });
-    if (existing) throw new ConflictException(`Slug "${dto.slug}" is already in use.`);
+    const language = dto.language ?? 'az';
+    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug, language } });
+    if (existing) throw new ConflictException(`Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`);
 
     return this.dataSource.transaction(async (manager) => {
       const placeData: Partial<Place> = {
         title: dto.title,
         slug: dto.slug,
+        language: dto.language ?? 'az',
         short_description: dto.short_description,
         detailed_description: dto.detailed_description ?? null,
         type: PlaceType.HOSTEL,
@@ -82,8 +84,9 @@ export class HostelsService {
     });
   }
 
-  async findAll(): Promise<Hostel[]> {
+  async findAll(language?: string): Promise<Hostel[]> {
     return this.hostelRepo.find({
+      where: language ? { place: { language } } : undefined,
       relations: ['place', 'place.images', 'place.reviews'],
       order: { created_at: 'DESC' },
     });

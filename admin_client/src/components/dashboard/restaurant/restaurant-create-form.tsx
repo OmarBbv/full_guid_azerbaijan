@@ -98,6 +98,7 @@ export function RestaurantCreateForm(): React.JSX.Element {
         has_private_rooms: false,
         accepts_cards: false,
         is_featured: false,
+        language: 'az',
       },
     });
 
@@ -182,7 +183,23 @@ export function RestaurantCreateForm(): React.JSX.Element {
                 <TextField {...register('title')} label="Restoranın adı" fullWidth required error={Boolean(errors.title)} helperText={errors.title?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: Boolean(watch('slug')) || undefined }} error={Boolean(errors.slug)} helperText={errors.slug?.message ?? 'Avtomatik yaradılır'} />
+                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: Boolean(watch('slug')) || undefined }} error={Boolean(errors.slug)} helperText={errors.slug?.message ?? 'Avtomatik yaranılır'} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel>Məzmun dili</InputLabel>
+                      <Select {...field} label="Məzmun dili">
+                        <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
+                        <MenuItem value="en">🇬🇧 English</MenuItem>
+                        <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('short_description')} label="Qısa təsvir" fullWidth required multiline rows={3} error={Boolean(errors.short_description)} helperText={errors.short_description?.message} />

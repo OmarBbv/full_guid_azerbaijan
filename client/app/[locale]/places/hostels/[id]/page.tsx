@@ -1,16 +1,26 @@
 "use client";
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Backpack, MapPin, Phone, MessageCircle, ChevronLeft, Wifi, Users, Shield, Coffee, Zap, Info, Star, Loader2, Camera } from 'lucide-react';
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
+import ImageLightbox from '@/components/shared/ImageLightbox';
 
 export default function HostelDetailPage() {
   const params = useParams();
+  const locale = useLocale();
   const id = params.id as string;
-  const { data: hostel, isLoading } = usePlaceById(id);
+  const { data: hostel, isLoading } = usePlaceById(id, locale);
+
+  const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
+
+  const openLightbox = (index: number) => {
+    setLightbox({ isOpen: true, index });
+  };
 
   if (isLoading) {
     return (
@@ -112,7 +122,11 @@ export default function HostelDetailPage() {
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {hostel.images.map((img: any, i: number) => (
-                  <div key={img.id || i} className="relative aspect-square rounded-3xl overflow-hidden group border border-border/10 shadow-sm cursor-pointer ring-offset-2 hover:ring-2 ring-emerald-500 transition-all">
+                  <div
+                    key={img.id || i}
+                    onClick={() => openLightbox(i)}
+                    className="relative aspect-square rounded-3xl overflow-hidden group border border-border/10 shadow-sm cursor-pointer ring-offset-2 hover:ring-2 ring-emerald-500 transition-all"
+                  >
                     <Image
                       src={img.url ? img.url.replace('localhost', '127.0.0.1') : ''}
                       alt={`Qalereya şəkli ${i + 1}`}
@@ -124,6 +138,15 @@ export default function HostelDetailPage() {
                 ))}
               </div>
             </section>
+          )}
+
+          {hostel.images && (
+            <ImageLightbox
+              isOpen={lightbox.isOpen}
+              initialIndex={lightbox.index}
+              images={hostel.images.map((img: any) => img.url ? img.url.replace('localhost', '127.0.0.1') : '')}
+              onClose={() => setLightbox({ ...lightbox, isOpen: false })}
+            />
           )}
 
           <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/10">

@@ -121,4 +121,8 @@ export class CreatePlaceDto {
   @IsBoolean()
   @IsOptional()
   show_in_hero?: boolean;
+
+  @IsString()
+  @IsOptional()
+  language?: string; // 'az' | 'en' | 'ru'  (default: 'az')
 }

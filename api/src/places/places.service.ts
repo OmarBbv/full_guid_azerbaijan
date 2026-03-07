@@ -21,7 +21,7 @@ export class PlacesService {
     return await this.placeRepository.save(place);
   }
 
-  async findAll(excludeTypes?: string[], showInHero?: boolean, type?: string): Promise<Place[]> {
+  async findAll(excludeTypes?: string[], showInHero?: boolean, type?: string, language?: string): Promise<Place[]> {
     const where: any = {};
     if (excludeTypes && excludeTypes.length > 0) {
       where.type = Not(In(excludeTypes));
@@ -32,20 +32,36 @@ export class PlacesService {
     if (type) {
       where.type = type;
     }
+    if (language) {
+      where.language = language;
+    }
     return await this.placeRepository.find({
       where,
       relations: ['images', 'reviews'],
     });
   }
 
-  async findOne(id: string): Promise<Place> {
+  async findOne(id: string, language?: string): Promise<Place> {
     const place = await this.placeRepository.findOne({
       where: { id },
       relations: ['images', 'reviews'],
     });
+
     if (!place) {
       throw new NotFoundException(`Place with ID ${id} not found`);
     }
+
+    // Try to find the translation if a specific language is requested
+    if (language && place.language !== language) {
+      const translation = await this.placeRepository.findOne({
+        where: { slug: place.slug, language },
+        relations: ['images', 'reviews'],
+      });
+      if (translation) {
+        return translation;
+      }
+    }
+
     return place;
   }
 

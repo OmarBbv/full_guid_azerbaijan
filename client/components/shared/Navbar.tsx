@@ -1,59 +1,82 @@
 "use client";
 
-import { Link, usePathname } from '@/i18n/routing';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
+import { useLocale, useTranslations } from 'next-intl';
 import { Map, User, Menu, MapPin, Search, Globe, ChevronRight, Heart, X, ChevronDown } from 'lucide-react';
-import { useState, useEffect } from 'react';
-
-const navLinks = [
-  { id: 'home', label: 'Ana Səhifə', href: '/' },
-  {
-    id: 'getting-started',
-    label: 'Başlanğıc',
-    subLinks: [
-      { label: 'Azərbaycan / Bakı haqqında ümumi məlumat', href: '/info/baku' },
-      { label: 'Hava limanı ilə bağlı məlumat və istiqamətləndirmə', href: '/info/airport' },
-    ]
-  },
-  {
-    id: 'getting-around',
-    label: 'Hərəkət',
-    subLinks: [
-      { label: 'Taksi xidmətləri', href: '/transport/taxi' },
-      { label: 'İctimai nəqliyyat', href: '/transport/public' },
-    ]
-  },
-  {
-    id: 'destinations',
-    label: 'Məkanlar',
-    subLinks: [
-      { label: 'Tarixi və turistik məkanlar (Landmarks)', href: '/places/landmarks' },
-      { label: 'Restoranlar', href: '/places/restaurants' },
-      { label: 'Otellər', href: '/places/hotels' },
-      { label: 'Hostellər', href: '/places/hostels' },
-    ]
-  },
-  {
-    id: 'about',
-    label: 'Haqqımızda',
-    subLinks: [
-      { label: 'FGA haqqında', href: '/about/fga' },
-      { label: 'Platformanın prinsipləri', href: '/about/principles' },
-      { label: 'Şəffaflıq və fəaliyyət çərçivəsi', href: '/about/transparency' },
-    ]
-  },
-  { id: 'contact', label: 'Əlaqə', href: '/contact' },
-];
+import { useState, useEffect, useRef } from 'react';
 
 export default function Navbar() {
+  const t = useTranslations('Navbar');
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navLinks = [
+    { id: 'home', label: t('home'), href: '/' },
+    {
+      id: 'getting-started',
+      label: t('getting_started'),
+      subLinks: [
+        { label: t('about_baku'), href: '/info/baku' },
+        { label: t('airport_info'), href: '/info/airport' },
+      ]
+    },
+    {
+      id: 'getting-around',
+      label: t('getting_around'),
+      subLinks: [
+        { label: t('taxi_services'), href: '/transport/taxi' },
+        { label: t('public_transport'), href: '/transport/public' },
+      ]
+    },
+    {
+      id: 'destinations',
+      label: t('destinations'),
+      subLinks: [
+        { label: t('landmarks'), href: '/places/landmarks' },
+        { label: t('restaurants'), href: '/places/restaurants' },
+        { label: t('hotels'), href: '/places/hotels' },
+        { label: t('hostels'), href: '/places/hostels' },
+      ]
+    },
+    {
+      id: 'about',
+      label: t('about'),
+      subLinks: [
+        { label: t('about_fga'), href: '/about/fga' },
+        { label: t('platform_principles'), href: '/about/principles' },
+        { label: t('transparency'), href: '/about/transparency' },
+      ]
+    },
+    { id: 'contact', label: t('contact'), href: '/contact' },
+  ];
   const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
+  const [langOpen, setLangOpen] = useState(false);
+  const langRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const router = useRouter();
+  const locale = useLocale();
+
+  const LANGUAGES = [
+    { code: 'az', label: 'Azərbaycan', flag: '🇦🇿' },
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  ];
+
+  const currentLang = LANGUAGES.find(l => l.code === locale) ?? LANGUAGES[0];
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (langRef.current && !langRef.current.contains(e.target as Node)) {
+        setLangOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
 
   const authRoutes = ['/login', '/register'];
   const isAuthPage = authRoutes.some(route => pathname?.includes(route));
-  const lightRoutes = ['/mekanlar', '/blog', '/contact', '/secilmisler', '/login', '/register'];
-  const isLightPage = false; // Always dark text to contrast with dark glass effect
+  const isLightPage = false;
 
   useEffect(() => {
     if (isAuthPage) return;
@@ -159,14 +182,14 @@ export default function Navbar() {
             <div className="hidden lg:flex items-center gap-5">
               <button
                 className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors duration-200`}
-                aria-label="Axtar"
+                aria-label={t('search')}
               >
                 <Search className="w-[18px] h-[18px]" />
               </button>
 
               <button
                 className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors duration-200`}
-                aria-label="Xəritə"
+                aria-label={t('map')}
               >
                 <Map className="w-[18px] h-[18px]" />
               </button>
@@ -174,16 +197,51 @@ export default function Navbar() {
               <Link
                 href="/secilmisler"
                 className={`relative ${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors duration-200`}
-                aria-label="Bəyənilənlər"
+                aria-label={t('favorites')}
               >
                 <Heart className="w-[18px] h-[18px]" />
               </Link>
 
-              {/* Language */}
-              <div className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} flex items-center gap-1 cursor-pointer transition-colors duration-200 text-[13px] font-semibold`}>
-                <Globe className="w-4 h-4" />
-                AZ
-                <ChevronRight className="w-3.5 h-3.5" />
+              {/* Language Switcher */}
+              <div ref={langRef} className="relative">
+                <button
+                  onClick={() => setLangOpen(!langOpen)}
+                  className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors duration-200 text-[13px] font-semibold cursor-pointer"
+                  aria-label={t('select_language')}
+                >
+                  <Globe className="w-4 h-4" />
+                  <span>{currentLang.flag} {currentLang.code.toUpperCase()}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${langOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {langOpen && (
+                  <div
+                    className="absolute top-full right-0 mt-2 w-44 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] overflow-hidden py-1.5 z-50"
+                    style={{
+                      background: 'rgba(10, 12, 22, 0.98)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      backdropFilter: 'blur(20px)',
+                    }}
+                  >
+                    {LANGUAGES.map(lang => (
+                      <button
+                        key={lang.code}
+                        onClick={() => {
+                          router.replace(pathname, { locale: lang.code as 'az' | 'en' | 'ru' });
+                          setLangOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors ${locale === lang.code
+                          ? 'text-white bg-white/10'
+                          : 'text-white/70 hover:text-white hover:bg-white/5'
+                          }`}
+                      >
+                        <span className="text-base">{lang.flag}</span>
+                        <span>{lang.label}</span>
+                        {locale === lang.code && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* User Avatar */}
@@ -203,7 +261,7 @@ export default function Navbar() {
             <button
               className={`lg:hidden ${isLightPage ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}
               onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label="Menyu"
+              aria-label={t('menu')}
             >
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -293,6 +351,25 @@ export default function Navbar() {
                 <Heart className="w-5 h-5" />
               </Link>
             </div>
+
+            {/* Mobile Language Switcher */}
+            <div className="flex gap-2">
+              {LANGUAGES.map(lang => (
+                <button
+                  key={lang.code}
+                  onClick={() => {
+                    router.replace(pathname, { locale: lang.code as 'az' | 'en' | 'ru' });
+                    setMobileOpen(false);
+                  }}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold transition-all ${locale === lang.code
+                    ? 'bg-blue-500/20 text-blue-400 ring-1 ring-blue-400/40'
+                    : 'text-white/50 hover:text-white hover:bg-white/5'
+                    }`}
+                >
+                  {lang.flag} {lang.code.toUpperCase()}
+                </button>
+              ))}
+            </div>
           </div>
 
           <div className="mt-6 pt-6 border-t border-border/10">
@@ -301,7 +378,7 @@ export default function Navbar() {
               onClick={() => setMobileOpen(false)}
               className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-black text-center block shadow-lg shadow-primary/20"
             >
-              Daxil Ol
+              {t('login')}
             </Link>
           </div>
         </div>

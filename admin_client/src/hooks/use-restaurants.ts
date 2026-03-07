@@ -2,17 +2,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { restaurantService } from '@/services/restaurant.service';
 import type { CreateRestaurantDto, UpdateRestaurantDto } from '@/types/restaurant';
 
+export const RESTAURANT_BASE_KEY = ['restaurants'];
+
 export const RESTAURANT_KEYS = {
-  all: ['restaurants'] as const,
-  detail: (id: string) => ['restaurants', id] as const,
+  all: (language?: string) => ['restaurants', language ?? 'all'] as const,
+  detail: (id: string) => ['restaurants', 'detail', id] as const,
 };
 
 // ─── Get All ──────────────────────────────────────────────────────────────────
 
-export function useRestaurants() {
+export function useRestaurants(language?: string) {
   return useQuery({
-    queryKey: RESTAURANT_KEYS.all,
-    queryFn: () => restaurantService.getAll(),
+    queryKey: RESTAURANT_KEYS.all(language),
+    queryFn: () => restaurantService.getAll(language),
   });
 }
 
@@ -33,7 +35,7 @@ export function useCreateRestaurant() {
   return useMutation({
     mutationFn: (dto: CreateRestaurantDto) => restaurantService.create(dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: RESTAURANT_KEYS.all });
+      qc.invalidateQueries({ queryKey: RESTAURANT_BASE_KEY });
     },
   });
 }
@@ -45,7 +47,7 @@ export function useUpdateRestaurant(id: string) {
   return useMutation({
     mutationFn: (dto: UpdateRestaurantDto) => restaurantService.update(id, dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: RESTAURANT_KEYS.all });
+      qc.invalidateQueries({ queryKey: RESTAURANT_BASE_KEY });
       qc.invalidateQueries({ queryKey: RESTAURANT_KEYS.detail(id) });
     },
   });
@@ -58,7 +60,7 @@ export function useDeleteRestaurant() {
   return useMutation({
     mutationFn: (id: string) => restaurantService.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: RESTAURANT_KEYS.all });
+      qc.invalidateQueries({ queryKey: RESTAURANT_BASE_KEY });
     },
   });
 }
@@ -71,7 +73,7 @@ export function useUploadRestaurantImages() {
     mutationFn: ({ id, formData }: { id: string; formData: FormData }) =>
       restaurantService.uploadImages(id, formData),
     onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: RESTAURANT_KEYS.all });
+      qc.invalidateQueries({ queryKey: RESTAURANT_BASE_KEY });
       qc.invalidateQueries({ queryKey: RESTAURANT_KEYS.detail(variables.id) });
     },
   });

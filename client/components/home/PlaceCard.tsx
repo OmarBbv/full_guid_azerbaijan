@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Star, MapPin, Heart, ArrowRight } from "lucide-react";
+import { MapPin, Heart, ArrowRight, Star } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Place } from "@/types/place";
+import { useTranslations } from "next-intl";
 
 interface PlaceCardProps {
   place: Place;
@@ -11,6 +12,7 @@ interface PlaceCardProps {
 }
 
 export function PlaceCard({ place, index }: PlaceCardProps) {
+  const t = useTranslations('Home');
   const [liked, setLiked] = useState<boolean>(false);
   const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
@@ -137,13 +139,13 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
 
         <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
           <span className="text-xs text-muted-foreground">
-            {place.reviews} rəy
+            {place.reviews} {t('reviews')}
           </span>
           <button
             className="flex items-center gap-1.5 text-xs font-bold transition-transform duration-200 group-hover:translate-x-1"
             style={{ color: place.accent }}
           >
-            Kəşf Et
+            {t('explore')}
             <ArrowRight size={13} />
           </button>
         </div>

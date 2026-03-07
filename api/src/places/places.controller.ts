@@ -30,15 +30,16 @@ export class PlacesController {
     @Query('exclude_types') excludeTypes?: string,
     @Query('show_in_hero') showInHero?: string,
     @Query('type') type?: string,
+    @Query('language') language?: string,
   ) {
     const exclude = excludeTypes ? excludeTypes.split(',') : undefined;
     const isHero = showInHero === 'true' ? true : showInHero === 'false' ? false : undefined;
-    return this.placesService.findAll(exclude, isHero, type);
+    return this.placesService.findAll(exclude, isHero, type, language);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.placesService.findOne(id);
+  findOne(@Param('id') id: string, @Query('language') language?: string) {
+    return this.placesService.findOne(id, language);
   }
 
   @Patch(':id')

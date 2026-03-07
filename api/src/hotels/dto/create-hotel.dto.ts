@@ -185,4 +185,8 @@ export class CreateHotelDto {
   @IsString({ each: true })
   @IsOptional()
   views?: string[];
+
+  @IsString()
+  @IsOptional()
+  language?: string; // 'az' | 'en' | 'ru'
 }

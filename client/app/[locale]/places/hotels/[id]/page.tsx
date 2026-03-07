@@ -1,17 +1,27 @@
 "use client";
 
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Bed, Star, MapPin, Phone, MessageCircle, ChevronLeft, Wifi, Coffee, Utensils, Waves, Globe, ShieldCheck, Loader2, Camera } from 'lucide-react';
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { Place } from '@/types/place';
 import { getImageUrl } from '@/lib/utils';
+import ImageLightbox from '@/components/shared/ImageLightbox';
 
 export default function HotelDetailPage() {
   const params = useParams();
+  const locale = useLocale();
   const id = params.id as string;
-  const { data: hotel, isLoading } = usePlaceById(id);
+  const { data: hotel, isLoading } = usePlaceById(id, locale);
+
+  const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
+
+  const openLightbox = (index: number) => {
+    setLightbox({ isOpen: true, index });
+  };
 
   if (isLoading) {
     return (
@@ -117,7 +127,11 @@ export default function HotelDetailPage() {
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {hotel.images.map((img: any, i: number) => (
-                  <div key={img.id || i} className="relative aspect-square rounded-3xl overflow-hidden group border border-border/10 shadow-sm cursor-pointer ring-offset-2 hover:ring-2 ring-primary transition-all">
+                  <div
+                    key={img.id || i}
+                    onClick={() => openLightbox(i)}
+                    className="relative aspect-square rounded-3xl overflow-hidden group border border-border/10 shadow-sm cursor-pointer ring-offset-2 hover:ring-2 ring-primary transition-all"
+                  >
                     <Image
                       src={img.url ? img.url.replace('localhost', '127.0.0.1') : ''}
                       alt={`Qalereya şəkli ${i + 1}`}
@@ -129,6 +143,15 @@ export default function HotelDetailPage() {
                 ))}
               </div>
             </section>
+          )}
+
+          {hotel.images && (
+            <ImageLightbox
+              isOpen={lightbox.isOpen}
+              initialIndex={lightbox.index}
+              images={hotel.images.map((img: any) => img.url ? img.url.replace('localhost', '127.0.0.1') : '')}
+              onClose={() => setLightbox({ ...lightbox, isOpen: false })}
+            />
           )}
 
           <section className="bg-primary/5 p-10 rounded-[3rem] border border-primary/10 relative overflow-hidden">

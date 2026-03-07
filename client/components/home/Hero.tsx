@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { Star, Bookmark, ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 
+import { useLocale, useTranslations } from "next-intl";
 import { useHeroPlaces } from "@/hooks/use-places";
 import { Place } from "@/types/place";
 import { getImageUrl } from "@/lib/utils";
@@ -160,7 +161,9 @@ const defaultSlides = [
 ];
 
 export default function Hero() {
-  const { data: heroPlaces, isLoading } = useHeroPlaces();
+  const locale = useLocale();
+  const t = useTranslations('Navbar');
+  const { data: heroPlaces, isLoading } = useHeroPlaces(locale);
 
   const slides = useMemo(() => {
     if (!heroPlaces || heroPlaces.length === 0) return defaultSlides;
@@ -361,7 +364,7 @@ export default function Hero() {
                 className="text-xs font-bold uppercase tracking-[0.2em]"
                 style={{ color: slide.accent }}
               >
-                Ən yaxşı məqsəd
+                {t('top_destination')}
               </span>
             )}
           </div>
@@ -440,7 +443,7 @@ export default function Hero() {
                 (e.currentTarget as HTMLButtonElement).style.transform = "translateY(0)";
               }}
             >
-              {isCardView ? "Planla" : "Kəşf Et"}
+              {isCardView ? t('plan') : t('explore')}
               <ArrowRight
                 size={16}
                 className="transition-transform duration-300 group-hover:translate-x-1"
@@ -455,12 +458,12 @@ export default function Hero() {
                 }}
                 className="text-white/50 text-sm font-medium hover:text-white transition-colors flex items-center gap-1.5"
               >
-                ← Geri
+                ← {t('back')}
               </button>
             )}
             {!isCardView && (
               <button className="text-white/50 text-sm font-medium hover:text-white transition-colors flex items-center gap-1.5">
-                Daha çox öyrən
+                {t('learn_more')}
                 <span className="text-lg leading-none">›</span>
               </button>
             )}
@@ -604,7 +607,7 @@ export default function Hero() {
                           className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: `${slide.accent}33`, color: slide.accent }}
                         >
-                          TOP
+                          {t('top')}
                         </span>
                       </div>
                     )}
@@ -639,7 +642,7 @@ export default function Hero() {
       >
         <div className="flex items-center gap-4">
           <p className="text-white/30 text-[11px] font-bold uppercase tracking-[0.25em] mr-2 shrink-0">
-            Kəşf Et
+            {t('explore')}
           </p>
           {slides.map((s, i) => (
             <button

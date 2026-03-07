@@ -26,15 +26,17 @@ export class RestaurantsService {
   // ─── Create ───────────────────────────────────────────────────────────────
 
   async create(dto: CreateRestaurantDto): Promise<Restaurant> {
-    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug } });
+    const language = dto.language ?? 'az';
+    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug, language } });
     if (existing) {
-      throw new ConflictException(`Slug "${dto.slug}" is already in use.`);
+      throw new ConflictException(`Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`);
     }
 
     return this.dataSource.transaction(async (manager) => {
       const placeData: Partial<Place> = {
         title: dto.title,
         slug: dto.slug,
+        language: dto.language ?? 'az',
         short_description: dto.short_description,
         detailed_description: dto.detailed_description ?? null,
         type: PlaceType.RESTAURANT,
@@ -82,8 +84,9 @@ export class RestaurantsService {
 
   // ─── Read ─────────────────────────────────────────────────────────────────
 
-  async findAll(): Promise<Restaurant[]> {
+  async findAll(language?: string): Promise<Restaurant[]> {
     return this.restaurantRepo.find({
+      where: language ? { place: { language } } : undefined,
       relations: ['place', 'place.images', 'place.reviews'],
       order: { created_at: 'DESC' },
     });

@@ -3,31 +3,31 @@ import { placeService } from '@/services/api/place.service';
 
 export const PLACE_KEYS = {
   all: ['places'] as const,
-  hero: ['places', 'hero'] as const,
-  type: (type: string) => ['places', 'type', type] as const,
-  detail: (id: string) => ['places', 'detail', id] as const,
+  hero: (locale?: string) => ['places', 'hero', locale] as const,
+  type: (type: string, locale?: string) => ['places', 'type', type, locale] as const,
+  detail: (id: string, locale?: string) => ['places', 'detail', id, locale] as const,
 };
 
-export function useHeroPlaces() {
+export function useHeroPlaces(locale?: string) {
   return useQuery({
-    queryKey: PLACE_KEYS.hero,
-    queryFn: () => placeService.getHeroPlaces(),
+    queryKey: PLACE_KEYS.hero(locale),
+    queryFn: () => placeService.getHeroPlaces(locale),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 }
 
-export function usePlacesByType(type: string) {
+export function usePlacesByType(type: string, locale?: string) {
   return useQuery({
-    queryKey: PLACE_KEYS.type(type),
-    queryFn: () => placeService.getPlacesByType(type),
+    queryKey: PLACE_KEYS.type(type, locale),
+    queryFn: () => placeService.getPlacesByType(type, locale),
     staleTime: 5 * 60 * 1000,
   });
 }
 
-export function usePlaceById(id: string) {
+export function usePlaceById(id: string, locale?: string) {
   return useQuery({
-    queryKey: PLACE_KEYS.detail(id),
-    queryFn: () => placeService.getPlaceById(id),
+    queryKey: PLACE_KEYS.detail(id, locale),
+    queryFn: () => placeService.getPlaceById(id, locale),
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });

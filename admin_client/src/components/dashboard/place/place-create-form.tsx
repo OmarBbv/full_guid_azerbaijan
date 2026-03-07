@@ -75,6 +75,7 @@ export function PlaceCreateForm(): React.JSX.Element {
         type: PlaceType.LANDMARK,
         is_featured: false,
         show_in_hero: false,
+        language: 'az',
       },
     });
 
@@ -252,6 +253,22 @@ export function PlaceCreateForm(): React.JSX.Element {
                       label="Hero-da göstər"
                       sx={{ mt: 1 }}
                     />
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel>Məzmun dili</InputLabel>
+                      <Select {...field} label="Məzmun dili">
+                        <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
+                        <MenuItem value="en">🇬🇧 English</MenuItem>
+                        <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                      </Select>
+                    </FormControl>
                   )}
                 />
               </Grid>

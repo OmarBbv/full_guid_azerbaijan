@@ -3,6 +3,10 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import Button from '@mui/material/Button';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { PlusIcon } from '@phosphor-icons/react/dist/ssr/Plus';
@@ -18,8 +22,9 @@ export function HostelsView(): React.JSX.Element {
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
+  const [language, setLanguage] = React.useState<string>('all');
 
-  const { data: hostels = [], isLoading, error } = useHostels();
+  const { data: hostels = [], isLoading, error } = useHostels(language === 'all' ? undefined : language);
   const { mutate: deleteHostel, isPending: isDeleting } = useDeleteHostel();
 
   const paginatedRows = hostels.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -53,6 +58,22 @@ export function HostelsView(): React.JSX.Element {
             {isLoading ? 'Yüklənir...' : `${hostels.length} hostel`}
           </Typography>
         </Stack>
+
+        {/* Language Filter Dropdown */}
+        <FormControl size="small" sx={{ minWidth: 160 }}>
+          <InputLabel>Dil filtri</InputLabel>
+          <Select
+            value={language}
+            label="Dil filtri"
+            onChange={(e) => { setLanguage(e.target.value); setPage(0); }}
+          >
+            <MenuItem value="all">🌐 Hamısı</MenuItem>
+            <MenuItem value="az">🇦🇿 Azərbaycan</MenuItem>
+            <MenuItem value="en">🇬🇧 English</MenuItem>
+            <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+          </Select>
+        </FormControl>
+
         <Button
           startIcon={<PlusIcon fontSize="var(--icon-fontSize-md)" />}
           variant="contained"

@@ -4,7 +4,7 @@ import { apiClient } from '@/lib/api-client';
 // ─── Interface ────────────────────────────────────────────────────────────────
 
 export interface IRestaurantService {
-  getAll(): Promise<Restaurant[]>;
+  getAll(language?: string): Promise<Restaurant[]>;
   getById(id: string): Promise<Restaurant>;
   create(dto: CreateRestaurantDto): Promise<Restaurant>;
   update(id: string, dto: UpdateRestaurantDto): Promise<Restaurant>;
@@ -17,9 +17,11 @@ export interface IRestaurantService {
 class RestaurantService implements IRestaurantService {
   private readonly endpoint = '/restaurants';
 
-  async getAll(): Promise<Restaurant[]> {
+  async getAll(language?: string): Promise<Restaurant[]> {
     try {
-      const { data } = await apiClient.get<Restaurant[]>(this.endpoint);
+      const { data } = await apiClient.get<Restaurant[]>(this.endpoint, {
+        params: language ? { language } : undefined,
+      });
       return data;
     } catch (error) {
       console.error('[RestaurantService.getAll]', error);

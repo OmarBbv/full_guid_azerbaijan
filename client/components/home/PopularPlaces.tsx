@@ -4,52 +4,26 @@ import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { PlaceCard } from "./PlaceCard";
 import { Place } from "@/types/place";
+import { useTranslations } from "next-intl";
 
-const categories = [
-  {
-    id: "dağlar",
-    label: "Dağlar",
-    icon: "🏔️",
-    count: 48,
-  },
-  {
-    id: "şəhərlər",
-    label: "Şəhərlər",
-    icon: "🏙️",
-    count: 32,
-  },
-  {
-    id: "tarix",
-    label: "Tarixi Yerlər",
-    icon: "🏛️",
-    count: 67,
-  },
-  {
-    id: "təbiət",
-    label: "Təbiət",
-    icon: "🌿",
-    count: 54,
-  },
-  {
-    id: "sahil",
-    label: "Sahil",
-    icon: "🏖️",
-    count: 23,
-  },
-  {
-    id: "hamısı",
-    label: "Hamısı",
-    icon: "✨",
-    count: 340,
-  },
-];
+
 
 import { PLACES } from "@/constants/places";
 
 export default function PopularPlaces() {
-  const [activeCategory, setActiveCategory] = useState("hamısı");
+  const t = useTranslations('Home');
+  const [activeCategory, setActiveCategory] = useState("all");
 
-  const filtered = activeCategory === "hamısı"
+  const categories = [
+    { id: "all", label: t('all'), icon: "✨", count: 340 },
+    { id: "dağlar", label: t('mountains'), icon: "🏔️", count: 48 },
+    { id: "şəhərlər", label: t('cities'), icon: "🏙️", count: 32 },
+    { id: "tarix", label: t('historical_places'), icon: "🏛️", count: 67 },
+    { id: "təbiət", label: t('nature'), icon: "🌿", count: 54 },
+    { id: "sahil", label: t('coast'), icon: "🏖️", count: 23 },
+  ];
+
+  const filtered = activeCategory === "all"
     ? PLACES
     : PLACES.filter((p) => p.category === activeCategory);
 
@@ -64,14 +38,14 @@ export default function PopularPlaces() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
             <div className="inline-flex items-center gap-2 mb-4">
-              <span className="text-[12px] font-bold tracking-widest uppercase px-3.5 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20">🌟 Populyar</span>
+              <span className="text-[12px] font-bold tracking-widest uppercase px-3.5 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20">🌟 {t('popular')}</span>
             </div>
             <h2 className="text-[clamp(28px,4vw,48px)] font-black leading-[1.1] tracking-[-0.03em] text-foreground">
-              Azərbaycanın ən gözəl<br />
-              <span className="bg-linear-to-br from-primary to-[#3b9cf5] bg-clip-text text-transparent">məkanları</span>
+              {t('azerbaijan_most_beautiful')} <br />
+              <span className="bg-linear-to-br from-primary to-[#3b9cf5] bg-clip-text text-transparent">{t('places')}</span>
             </h2>
             <p className="text-[15px] text-muted-foreground max-w-[420px] leading-relaxed mt-3">
-              Minlərlə səyahətçi tərəfindən sevilən, tövsiyə edilən hədəflər.
+              {t('popular_description')}
             </p>
           </div>
 
@@ -84,7 +58,7 @@ export default function PopularPlaces() {
               boxShadow: "0 8px 24px rgba(30,58,138,0.25)",
             }}
           >
-            Hamısını gör
+            {t('see_all')}
             <ArrowRight size={15} />
           </a>
         </div>

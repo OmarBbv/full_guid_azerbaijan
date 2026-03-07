@@ -2,19 +2,20 @@ import { apiClient } from '@/lib/api-client';
 import { Place } from '@/types/place';
 
 export interface IPlaceService {
-  getHeroPlaces(): Promise<Place[]>;
-  getPlaceById(id: string): Promise<Place>;
-  getPlacesByType(type: string): Promise<Place[]>;
+  getHeroPlaces(locale?: string): Promise<Place[]>;
+  getPlaceById(id: string, locale?: string): Promise<Place>;
+  getPlacesByType(type: string, locale?: string): Promise<Place[]>;
 }
 
 class PlaceService implements IPlaceService {
   private readonly endpoint = '/places';
 
-  async getHeroPlaces(): Promise<Place[]> {
+  async getHeroPlaces(locale?: string): Promise<Place[]> {
     try {
       const response = await apiClient.get<Place[]>(this.endpoint, {
         params: {
           show_in_hero: true,
+          ...(locale ? { language: locale } : {}),
         },
       });
       return response.data;
@@ -24,9 +25,11 @@ class PlaceService implements IPlaceService {
     }
   }
 
-  async getPlaceById(id: string): Promise<Place> {
+  async getPlaceById(id: string, locale?: string): Promise<Place> {
     try {
-      const response = await apiClient.get<Place>(`${this.endpoint}/${id}`);
+      const response = await apiClient.get<Place>(`${this.endpoint}/${id}`, {
+        params: locale ? { language: locale } : {},
+      });
       return response.data;
     } catch (error) {
       console.error('[PlaceService.getPlaceById]', error);
@@ -34,11 +37,12 @@ class PlaceService implements IPlaceService {
     }
   }
 
-  async getPlacesByType(type: string): Promise<Place[]> {
+  async getPlacesByType(type: string, locale?: string): Promise<Place[]> {
     try {
       const response = await apiClient.get<Place[]>(this.endpoint, {
         params: {
           type: type.toUpperCase(),
+          ...(locale ? { language: locale } : {}),
         },
       });
       return response.data;

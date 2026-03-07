@@ -17,6 +17,7 @@ export const createPlaceSchema = z.object({
   thumbnail: z.string().url('Düzgün URL deyil').optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   show_in_hero: z.boolean().default(false),
+  language: z.enum(['az', 'en', 'ru']).default('az'),
 });
 
 export type CreatePlaceFormValues = z.infer<typeof createPlaceSchema>;

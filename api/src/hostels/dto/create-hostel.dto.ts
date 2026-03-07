@@ -182,4 +182,8 @@ export class CreateHostelDto {
   @IsString()
   @IsOptional()
   hostel_vibe?: string;
+
+  @IsString()
+  @IsOptional()
+  language?: string; // 'az' | 'en' | 'ru'
 }

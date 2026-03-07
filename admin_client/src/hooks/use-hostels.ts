@@ -2,17 +2,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { hostelService } from '@/services/hostel.service';
 import type { CreateHostelDto, UpdateHostelDto } from '@/types/hostel';
 
+export const HOSTEL_BASE_KEY = ['hostels'];
+
 export const HOSTEL_KEYS = {
-  all: ['hostels'] as const,
-  detail: (id: string) => ['hostels', id] as const,
+  all: (language?: string) => ['hostels', language ?? 'all'] as const,
+  detail: (id: string) => ['hostels', 'detail', id] as const,
 };
 
 // ─── Get All ──────────────────────────────────────────────────────────────────
 
-export function useHostels() {
+export function useHostels(language?: string) {
   return useQuery({
-    queryKey: HOSTEL_KEYS.all,
-    queryFn: () => hostelService.getAll(),
+    queryKey: HOSTEL_KEYS.all(language),
+    queryFn: () => hostelService.getAll(language),
   });
 }
 
@@ -33,7 +35,7 @@ export function useCreateHostel() {
   return useMutation({
     mutationFn: (dto: CreateHostelDto) => hostelService.create(dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: HOSTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOSTEL_BASE_KEY });
     },
   });
 }
@@ -45,7 +47,7 @@ export function useUpdateHostel(id: string) {
   return useMutation({
     mutationFn: (dto: UpdateHostelDto) => hostelService.update(id, dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: HOSTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOSTEL_BASE_KEY });
       qc.invalidateQueries({ queryKey: HOSTEL_KEYS.detail(id) });
     },
   });
@@ -58,7 +60,7 @@ export function useDeleteHostel() {
   return useMutation({
     mutationFn: (id: string) => hostelService.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: HOSTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOSTEL_BASE_KEY });
     },
   });
 }
@@ -71,9 +73,8 @@ export function useUploadHostelImages() {
     mutationFn: ({ id, formData }: { id: string; formData: FormData }) =>
       hostelService.uploadImages(id, formData),
     onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: HOSTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOSTEL_BASE_KEY });
       qc.invalidateQueries({ queryKey: HOSTEL_KEYS.detail(variables.id) });
     },
   });
 }
-

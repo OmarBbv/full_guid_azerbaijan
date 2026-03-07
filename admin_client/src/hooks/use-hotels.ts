@@ -2,17 +2,20 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { hotelService } from '@/services/hotel.service';
 import type { CreateHotelDto, UpdateHotelDto } from '@/types/hotel';
 
+// Use ['hotels'] as the base prefix for all invalidations
+export const HOTEL_BASE_KEY = ['hotels'];
+
 export const HOTEL_KEYS = {
-  all: ['hotels'] as const,
-  detail: (id: string) => ['hotels', id] as const,
+  all: (language?: string) => ['hotels', language ?? 'all'] as const,
+  detail: (id: string) => ['hotels', 'detail', id] as const,
 };
 
 // ─── Get All ──────────────────────────────────────────────────────────────────
 
-export function useHotels() {
+export function useHotels(language?: string) {
   return useQuery({
-    queryKey: HOTEL_KEYS.all,
-    queryFn: () => hotelService.getAll(),
+    queryKey: HOTEL_KEYS.all(language),
+    queryFn: () => hotelService.getAll(language),
   });
 }
 
@@ -33,7 +36,7 @@ export function useCreateHotel() {
   return useMutation({
     mutationFn: (dto: CreateHotelDto) => hotelService.create(dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: HOTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOTEL_BASE_KEY });
     },
   });
 }
@@ -45,7 +48,7 @@ export function useUpdateHotel(id: string) {
   return useMutation({
     mutationFn: (dto: UpdateHotelDto) => hotelService.update(id, dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: HOTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOTEL_BASE_KEY });
       qc.invalidateQueries({ queryKey: HOTEL_KEYS.detail(id) });
     },
   });
@@ -58,7 +61,7 @@ export function useDeleteHotel() {
   return useMutation({
     mutationFn: (id: string) => hotelService.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: HOTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOTEL_BASE_KEY });
     },
   });
 }
@@ -71,9 +74,8 @@ export function useUploadHotelImages() {
     mutationFn: ({ id, formData }: { id: string; formData: FormData }) =>
       hotelService.uploadImages(id, formData),
     onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: HOTEL_KEYS.all });
+      qc.invalidateQueries({ queryKey: HOTEL_BASE_KEY });
       qc.invalidateQueries({ queryKey: HOTEL_KEYS.detail(variables.id) });
     },
   });
 }
-

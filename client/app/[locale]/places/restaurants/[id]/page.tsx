@@ -3,6 +3,7 @@
 import { useParams } from 'next/navigation';
 import { UtensilsCrossed, Clock, MapPin, Phone, MessageCircle, ChevronLeft, Star, Wifi, ParkingCircle, CreditCard, Music, Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { Place } from '@/types/place';
@@ -10,8 +11,9 @@ import { getImageUrl } from '@/lib/utils';
 
 export default function RestaurantDetailPage() {
   const params = useParams();
+  const locale = useLocale();
   const id = params.id as string;
-  const { data: restaurant, isLoading } = usePlaceById(id);
+  const { data: restaurant, isLoading } = usePlaceById(id, locale);
 
   if (isLoading) {
     return (

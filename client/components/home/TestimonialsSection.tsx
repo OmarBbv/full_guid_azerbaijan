@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { Quote } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const testimonials = [
   {
@@ -51,6 +52,7 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection() {
+  const t = useTranslations('Home');
   const [active, setActive] = useState(1);
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
@@ -92,12 +94,12 @@ export default function TestimonialsSection() {
 
       <div className="relative max-w-5xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="section-pill">💬 Rəylər</span>
+          <span className="section-pill">💬 {t('reviews', { fallback: 'Rəylər' })}</span>
           <h2 className="section-title mt-4">
-            Səyahətçilər nə deyir?
+            {t('what_travelers_say')}
           </h2>
           <p className="section-desc mx-auto mt-3 text-center">
-            Dünyanın hər yerindən gəlmiş ziyarətçilərin Azərbaycan təcrübəsi.
+            {t('travelers_experience_desc')}
           </p>
         </div>
 

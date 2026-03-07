@@ -17,10 +17,10 @@ export interface ILandmarkService {
 class LandmarkService implements ILandmarkService {
   private readonly endpoint = '/places';
 
-  async getAll(): Promise<any[]> {
+  async getAll(language?: string): Promise<any[]> {
     try {
       const { data } = await apiClient.get<any[]>(this.endpoint, {
-        params: { type: 'LANDMARK' }
+        params: { type: 'LANDMARK', ...(language ? { language } : {}) }
       });
       return data;
     } catch (error) {

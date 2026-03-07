@@ -4,9 +4,11 @@ import { UtensilsCrossed, Star, MapPin, ChefHat, ArrowRight, Loader2 } from 'luc
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { usePlacesByType } from '@/hooks/use-places';
+import { useParams } from 'next/navigation';
 
 export default function RestaurantsPage() {
-  const { data: restaurantsData, isLoading } = usePlacesByType('restaurant');
+  const { locale } = useParams<{ locale: string }>();
+  const { data: restaurantsData, isLoading } = usePlacesByType('restaurant', locale);
   const restaurants = restaurantsData || [];
 
   if (isLoading) {

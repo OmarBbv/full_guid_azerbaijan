@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useState } from "react";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 const articles = [
   {
@@ -161,6 +162,7 @@ function ArticleCard({ article, index, large = false }: {
 }
 
 export default function BlogSection() {
+  const t = useTranslations('Home');
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute w-[500px] h-[500px] rounded-full blur-[100px] opacity-5 bg-[#f5a623] -top-[100px] -left-[100px] pointer-events-none" />
@@ -169,13 +171,13 @@ export default function BlogSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
           <div>
-            <span className="section-pill">📝 Bloq & Məqalələr</span>
+            <span className="section-pill">📝 {t('blog_and_articles')}</span>
             <h2 className="section-title mt-4">
-              Azərbaycan haqqında<br />
-              <span className="section-title-accent">oxumağa dəyər</span>
+              {t('about_azerbaijan')}<br />
+              <span className="section-title-accent">{t('worth_reading')}</span>
             </h2>
             <p className="section-desc mt-3">
-              Yerli mütəxəssislərin yazdığı səyahət bələdçiləri, ipuçları və ilham hekayələri.
+              {t('blog_desc')}
             </p>
           </div>
           <a
@@ -187,7 +189,7 @@ export default function BlogSection() {
               boxShadow: "0 8px 24px rgba(30,58,138,0.25)",
             }}
           >
-            Bütün məqalələr
+            {t('all_articles')}
             <ArrowRight size={15} />
           </a>
         </div>

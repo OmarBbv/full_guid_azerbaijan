@@ -11,6 +11,7 @@ import {
   HttpStatus,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../config/multer.config';
@@ -29,8 +30,8 @@ export class HotelsController {
   }
 
   @Get()
-  findAll() {
-    return this.hotelsService.findAll();
+  findAll(@Query('language') language?: string) {
+    return this.hotelsService.findAll(language);
   }
 
   @Get('slug/:slug')

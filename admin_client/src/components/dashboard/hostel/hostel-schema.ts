@@ -12,13 +12,14 @@ export const createHostelSchema = z.object({
   whatsapp_number: z
     .string()
     .min(1, 'WhatsApp nömrəsi tələb olunur')
-    .regex(/^[0-9]{10,15}$/, 'WhatsApp nömrəsi 10-15 rəqəmdən ibarət olmalıdır'),
+    .regex(/^\+?[0-9\s-]{10,20}$/, 'WhatsApp düzgün formatda deyil'),
   phone_number: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().optional(),
   city: z.string().optional(),
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
+  language: z.enum(['az', 'en', 'ru']).default('az'),
 
   hostel_type: z.nativeEnum(HostelType).default(HostelType.BACKPACKER),
   dorm_beds_count: z.coerce.number().min(1).optional(),

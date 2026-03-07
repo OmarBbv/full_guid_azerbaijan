@@ -6,9 +6,11 @@ import { Link } from '@/i18n/routing';
 
 import { usePlacesByType } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
+import { useParams } from 'next/navigation';
 
 export default function HostelsPage() {
-  const { data: hostelsData, isLoading } = usePlacesByType('hostel');
+  const { locale } = useParams<{ locale: string }>();
+  const { data: hostelsData, isLoading } = usePlacesByType('hostel', locale);
   const hostels = hostelsData || [];
 
   if (isLoading) {

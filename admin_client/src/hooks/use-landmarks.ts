@@ -2,17 +2,19 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { landmarkService } from '@/services/landmark.service';
 import type { CreateLandmarkDto, UpdateLandmarkDto } from '@/types/landmark';
 
+export const LANDMARK_BASE_KEY = ['landmarks'];
+
 export const LANDMARK_KEYS = {
-  all: ['landmarks'] as const,
-  detail: (id: string) => ['landmarks', id] as const,
+  all: (language?: string) => ['landmarks', language ?? 'all'] as const,
+  detail: (id: string) => ['landmarks', 'detail', id] as const,
 };
 
 // ─── Get All ──────────────────────────────────────────────────────────────────
 
-export function useLandmarks() {
+export function useLandmarks(language?: string) {
   return useQuery({
-    queryKey: LANDMARK_KEYS.all,
-    queryFn: () => landmarkService.getAll(),
+    queryKey: LANDMARK_KEYS.all(language),
+    queryFn: () => landmarkService.getAll(language),
   });
 }
 
@@ -33,7 +35,7 @@ export function useCreateLandmark() {
   return useMutation({
     mutationFn: (dto: CreateLandmarkDto) => landmarkService.create(dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: LANDMARK_KEYS.all });
+      qc.invalidateQueries({ queryKey: LANDMARK_BASE_KEY });
     },
   });
 }
@@ -45,7 +47,7 @@ export function useUpdateLandmark(id: string) {
   return useMutation({
     mutationFn: (dto: UpdateLandmarkDto) => landmarkService.update(id, dto),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: LANDMARK_KEYS.all });
+      qc.invalidateQueries({ queryKey: LANDMARK_BASE_KEY });
       qc.invalidateQueries({ queryKey: LANDMARK_KEYS.detail(id) });
     },
   });
@@ -58,7 +60,7 @@ export function useDeleteLandmark() {
   return useMutation({
     mutationFn: (id: string) => landmarkService.remove(id),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: LANDMARK_KEYS.all });
+      qc.invalidateQueries({ queryKey: LANDMARK_BASE_KEY });
     },
   });
 }
@@ -71,9 +73,8 @@ export function useUploadLandmarkImages() {
     mutationFn: ({ id, formData }: { id: string; formData: FormData }) =>
       landmarkService.uploadImages(id, formData),
     onSuccess: (_, variables) => {
-      qc.invalidateQueries({ queryKey: LANDMARK_KEYS.all });
+      qc.invalidateQueries({ queryKey: LANDMARK_BASE_KEY });
       qc.invalidateQueries({ queryKey: LANDMARK_KEYS.detail(variables.id) });
     },
   });
 }
-

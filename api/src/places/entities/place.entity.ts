@@ -59,10 +59,11 @@ export interface SocialMedia {
 // ─── Entity ───────────────────────────────────────────────────────────────────
 
 @Entity('places')
-@Index(['slug'], { unique: true })
+@Index(['slug', 'language'], { unique: true })
 @Index(['status'])
 @Index(['type'])
 @Index(['is_featured'])
+@Index(['language'])
 export class Place {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -72,8 +73,11 @@ export class Place {
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
+  @Column({ type: 'varchar', length: 255 })
   slug: string;
+
+  @Column({ type: 'varchar', length: 10, default: 'az' })
+  language: string;
 
   @Column({ type: 'text' })
   short_description: string;

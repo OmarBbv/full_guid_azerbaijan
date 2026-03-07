@@ -7,9 +7,11 @@ import { Link } from '@/i18n/routing';
 import { usePlacesByType } from '@/hooks/use-places';
 import { Place } from '@/types/place';
 import { getImageUrl } from '@/lib/utils';
+import { useParams } from 'next/navigation';
 
 export default function HotelsPage() {
-  const { data: hotelsData, isLoading } = usePlacesByType('hotel');
+  const { locale } = useParams<{ locale: string }>();
+  const { data: hotelsData, isLoading } = usePlacesByType('hotel', locale);
   const hotels = hotelsData || [];
 
   if (isLoading) {

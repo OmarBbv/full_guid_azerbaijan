@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import { Send, CheckCircle } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function NewsletterSection() {
+  const t = useTranslations('Home');
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -45,7 +47,7 @@ export default function NewsletterSection() {
             className="inline-block px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-white/70"
             style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.12)" }}
           >
-            📩 Xəbərdar ol
+            📩 {t('stay_informed')}
           </span>
         </div>
 
@@ -53,7 +55,7 @@ export default function NewsletterSection() {
           className="font-black leading-tight mb-4 text-white"
           style={{ fontSize: "clamp(32px, 5vw, 56px)", letterSpacing: "-0.03em" }}
         >
-          Azərbaycanın ən gözəl<br />
+          {t('azerbaijan_most_beautiful')} <br />
           <span
             style={{
               background: "linear-gradient(135deg, #3b9cf5, #4dd9ac)",
@@ -62,13 +64,12 @@ export default function NewsletterSection() {
               backgroundClip: "text",
             }}
           >
-            xəbərləri sizi gözləyir
+            {t('news_await_you')}
           </span>
         </h2>
 
         <p className="text-white/55 text-base leading-relaxed mb-10 max-w-lg mx-auto">
-          Yeni məkanlar, xüsusi endirimlər, yerli tədbirlər və ilham dolu səyahət hekayələri —
-          aylıq bülletenimizə abunə olun.
+          {t('newsletter_desc')}
         </p>
 
         {sent ? (
@@ -77,7 +78,7 @@ export default function NewsletterSection() {
             style={{ background: "rgba(77,217,172,0.2)", border: "1.5px solid rgba(77,217,172,0.4)" }}
           >
             <CheckCircle size={22} className="text-[#4dd9ac]" />
-            <span>Uğurla abunə oldunuz! Təşəkkür edirik 🎉</span>
+            <span>{t('subscribed_success')}</span>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
@@ -86,7 +87,7 @@ export default function NewsletterSection() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="E-mail ünvanınız..."
+                placeholder={t('email_placeholder')}
                 className="w-full px-5 py-4 rounded-2xl text-white placeholder-white/35 text-sm font-medium outline-none transition-all duration-300"
                 style={{
                   background: "rgba(255,255,255,0.08)",
@@ -116,7 +117,7 @@ export default function NewsletterSection() {
                 <span className="w-5 h-5 rounded-full border-2 border-white border-t-transparent animate-spin" />
               ) : (
                 <>
-                  Abunə ol
+                  {t('subscribe')}
                   <Send size={15} />
                 </>
               )}
@@ -125,7 +126,7 @@ export default function NewsletterSection() {
         )}
 
         <p className="text-white/25 text-xs mt-5">
-          Spam yoxdur. İstədiyiniz zaman abunəliyi ləğv edə bilərsiniz.
+          {t('no_spam')}
         </p>
       </div>
 

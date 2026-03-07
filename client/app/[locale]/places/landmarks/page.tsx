@@ -5,9 +5,11 @@ import { Link } from '@/i18n/routing';
 import Image from 'next/image';
 import { usePlacesByType } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
+import { useParams } from 'next/navigation';
 
 export default function LandmarksPage() {
-  const { data: landmarks, isLoading } = usePlacesByType('landmark');
+  const { locale } = useParams<{ locale: string }>();
+  const { data: landmarks, isLoading } = usePlacesByType('landmark', locale);
 
   if (isLoading) {
     return (

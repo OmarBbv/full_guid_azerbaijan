@@ -1,46 +1,10 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { MapPin, Clock, Users, ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ArrowRight, MapPin, Clock, Users } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-const experiences = [
-  {
-    id: 1,
-    step: "01",
-    icon: "🗺️",
-    title: "Məkanı seçin",
-    description:
-      "400+ unikal məkan arasından arzularınıza uyğun hədəfi tapın. Dağlar, şəhərlər, tarixi yerlər — seçim sizdədir.",
-    color: "#3b9cf5",
-  },
-  {
-    id: 2,
-    step: "02",
-    icon: "📅",
-    title: "Planınızı qurun",
-    description:
-      "İnteraktiv xəritə ilə marşrutunuzu planlaşdırın, otell və turları ehtiyatlaşdırın. Hər şey bir yerdə.",
-    color: "#4dd9ac",
-  },
-  {
-    id: 3,
-    step: "03",
-    icon: "✈️",
-    title: "Səyahətə çıxın",
-    description:
-      "Hazırlanmış bələdçilər, yerli məsləhətlər və canlı dəstəklə Azərbaycanı özünüz kəşf edin.",
-    color: "#f5a623",
-  },
-  {
-    id: 4,
-    step: "04",
-    icon: "⭐",
-    title: "Təcrübənizi paylaşın",
-    description:
-      "Səyahətinizi qiymətləndirin, fotoşəkillərinizi əlavə edin və digər səyahətçilərə ilham verin.",
-    color: "#e06cfe",
-  },
-];
+
 
 const featuredTours = [
   {
@@ -85,6 +49,7 @@ const featuredTours = [
 ];
 
 function TourCard({ tour, index }: { tour: typeof featuredTours[0]; index: number }) {
+  const t = useTranslations('Home');
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
 
@@ -126,7 +91,7 @@ function TourCard({ tour, index }: { tour: typeof featuredTours[0]; index: numbe
             style={{ background: `${tour.accent}ee`, backdropFilter: "blur(8px)" }}
           >
             ${tour.price}
-            <span className="text-[11px] font-medium opacity-80">/nəfər</span>
+            <span className="text-[11px] font-medium opacity-80">/ {t('person', { fallback: 'nəfər' })}</span>
           </div>
         </div>
 
@@ -182,7 +147,7 @@ function TourCard({ tour, index }: { tour: typeof featuredTours[0]; index: numbe
             </span>
           </div>
           <span className="text-xs ml-auto" style={{ color: "var(--muted-foreground)" }}>
-            {tour.reviews} rəy
+            {tour.reviews} {t('reviews', { fallback: 'rəy' })}
           </span>
         </div>
 
@@ -202,7 +167,7 @@ function TourCard({ tour, index }: { tour: typeof featuredTours[0]; index: numbe
             (e.currentTarget as HTMLButtonElement).style.color = tour.accent;
           }}
         >
-          Turu Kəşf Et
+          {t('explore_tour', { fallback: 'Turu Kəşf Et' })}
           <ArrowRight size={14} />
         </button>
       </div>
@@ -211,8 +176,44 @@ function TourCard({ tour, index }: { tour: typeof featuredTours[0]; index: numbe
 }
 
 export default function ExperienceSection() {
+  const t = useTranslations('Home');
   const stepsRef = useRef<HTMLDivElement>(null);
   const [stepsVisible, setStepsVisible] = useState(false);
+
+  const experiences = [
+    {
+      id: 1,
+      step: "01",
+      icon: "🗺️",
+      title: t('choose_place_title'),
+      description: t('choose_place_desc'),
+      color: "#3b9cf5",
+    },
+    {
+      id: 2,
+      step: "02",
+      icon: "📅",
+      title: t('plan_title'),
+      description: t('plan_desc'),
+      color: "#4dd9ac",
+    },
+    {
+      id: 3,
+      step: "03",
+      icon: "✈️",
+      title: t('travel_title'),
+      description: t('travel_desc'),
+      color: "#f5a623",
+    },
+    {
+      id: 4,
+      step: "04",
+      icon: "⭐",
+      title: t('share_experience_title'),
+      description: t('share_experience_desc'),
+      color: "#e06cfe",
+    },
+  ];
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -234,13 +235,13 @@ export default function ExperienceSection() {
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center mb-16">
-            <span className="section-pill">🚀 Necə işləyir</span>
+            <span className="section-pill">🚀 {t('how_it_works')}</span>
             <h2 className="section-title mt-4">
-              4 addımda mükəmməl<br />
-              <span className="section-title-accent">səyahət</span>
+              {t('perfect_in_4_steps')}<br />
+              <span className="section-title-accent">{t('travel')}</span>
             </h2>
             <p className="section-desc mx-auto mt-3 text-center">
-              FullGuide ilə Azərbaycanı kəşf etmək heç vaxt bu qədər asan olmamışdı.
+              {t('easy_discover')}
             </p>
           </div>
 
@@ -310,13 +311,13 @@ export default function ExperienceSection() {
         <div className="relative max-w-7xl mx-auto px-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
             <div>
-              <span className="section-pill">🎯 Seçilmiş Turlar</span>
+              <span className="section-pill">🎯 {t('featured_tours')}</span>
               <h2 className="section-title mt-4">
-                Hazır paket<br />
-                <span className="section-title-accent">turlarımız</span>
+                {t('ready_package')}<br />
+                <span className="section-title-accent">{t('our_tours')}</span>
               </h2>
               <p className="section-desc mt-3">
-                Ekspert bələdçilərimizlə unudulmaz Azərbaycan təcrübəsi.
+                {t('expert_guide_desc')}
               </p>
             </div>
             <a
@@ -328,7 +329,7 @@ export default function ExperienceSection() {
                 boxShadow: "0 8px 24px rgba(30,58,138,0.25)",
               }}
             >
-              Bütün turlar
+              {t('all_tours')}
               <ArrowRight size={15} />
             </a>
           </div>

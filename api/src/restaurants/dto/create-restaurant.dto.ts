@@ -164,4 +164,8 @@ export class CreateRestaurantDto {
   @IsBoolean()
   @IsOptional()
   accepts_cards?: boolean;
+
+  @IsString()
+  @IsOptional()
+  language?: string; // 'az' | 'en' | 'ru'
 }

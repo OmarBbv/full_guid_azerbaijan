@@ -68,6 +68,7 @@ export function HotelCreateForm(): React.JSX.Element {
         pets_allowed: false,
         accepts_cards: true,
         is_featured: false,
+        language: 'az',
       },
     });
 
@@ -81,6 +82,40 @@ export function HotelCreateForm(): React.JSX.Element {
       .trim();
     setValue('slug', slug);
   }, [titleValue, setValue]);
+
+  function fillTestData() {
+    const langs = ['az', 'en', 'ru'] as const;
+    const lang = langs[Math.floor(Math.random() * langs.length)];
+    const names = [
+      'Baku Palace Hotel', 'Caspian Grand Resort', 'Old City Boutique Hotel',
+      'Abseron Hotel Baku', 'Four Seasons Baku', 'Hilton Baku', 'JW Marriott Baku'
+    ];
+    const name = names[Math.floor(Math.random() * names.length)];
+    setValue('title', name);
+    setValue('short_description', 'Hər zəvqə uyğun məkanlar, premium xidmət və unutulmaz təcrübə ilə Bakının mərkəzində yerləşən lüks oteli.');
+    setValue('whatsapp_number', '+994 50 123 45 67');
+    setValue('city', 'Bakı');
+    setValue('address', 'İstiqaliyyət küçəsi 1, Bakı, Azərbaycan');
+    setValue('hotel_type', HotelType.HOTEL);
+    setValue('star_rating', 5);
+    setValue('total_rooms', 120);
+    setValue('price_from_azn', 150);
+    setValue('price_to_azn', 450);
+    setValue('check_in_time', '14:00');
+    setValue('check_out_time', '12:00');
+    setValue('has_wifi', true);
+    setValue('has_parking', true);
+    setValue('has_pool', true);
+    setValue('has_spa', true);
+    setValue('has_gym', true);
+    setValue('has_restaurant', true);
+    setValue('has_room_service', true);
+    setValue('has_airport_transfer', true);
+    setValue('pets_allowed', false);
+    setValue('accepts_cards', true);
+    setValue('is_featured', true);
+    setValue('language', lang);
+  }
 
   function onSubmit(values: CreateHotelFormValues) {
     createHotel(values, {
@@ -107,6 +142,16 @@ export function HotelCreateForm(): React.JSX.Element {
             Geri
           </Button>
           <Typography variant="h4">Yeni Otel Əlavə Et</Typography>
+          <Box sx={{ flex: 1 }} />
+          <Button
+            variant="outlined"
+            color="secondary"
+            size="small"
+            onClick={fillTestData}
+            sx={{ fontWeight: 700, borderStyle: 'dashed' }}
+          >
+            🧪 Test Məlumatlarını Doldur
+          </Button>
         </Stack>
 
         {isError && (
@@ -125,9 +170,25 @@ export function HotelCreateForm(): React.JSX.Element {
                 <TextField {...register('title')} label="Otelin adı" fullWidth required error={Boolean(errors.title)} helperText={errors.title?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: Boolean(watch('slug')) || undefined }} error={Boolean(errors.slug)} helperText={errors.slug?.message ?? 'Avtomatik yaradılır'} />
+                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: Boolean(watch('slug')) || undefined }} error={Boolean(errors.slug)} helperText={errors.slug?.message ?? 'Avtomatik yaranılır'} />
               </Grid>
-              <Grid size={{ xs: 12 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel>Məzmun dili</InputLabel>
+                      <Select {...field} label="Məzmun dili">
+                        <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
+                        <MenuItem value="en">🇬🇧 English</MenuItem>
+                        <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField {...register('short_description')} label="Qısa təsvir" fullWidth required multiline rows={3} error={Boolean(errors.short_description)} helperText={errors.short_description?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>

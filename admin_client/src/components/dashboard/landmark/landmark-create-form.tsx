@@ -11,8 +11,12 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardHeader from '@mui/material/CardHeader';
 import Divider from '@mui/material/Divider';
+import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
@@ -48,6 +52,7 @@ export function LandmarkCreateForm(): React.JSX.Element {
         thumbnail: '',
         is_featured: false,
         show_in_hero: false,
+        language: 'az',
       },
     });
 
@@ -128,6 +133,22 @@ export function LandmarkCreateForm(): React.JSX.Element {
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField {...register('slug')} label="Slug (URL)" fullWidth required error={Boolean(errors.slug)} helperText={errors.slug?.message} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel>Məzmun dili</InputLabel>
+                      <Select {...field} label="Məzmun dili">
+                        <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
+                        <MenuItem value="en">🇬🇧 English</MenuItem>
+                        <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('short_description')} label="Qısa təsvir" fullWidth required multiline rows={2} error={Boolean(errors.short_description)} helperText={errors.short_description?.message} />
