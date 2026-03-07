@@ -1,43 +1,25 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { Bed, Star, MapPin, Phone, MessageCircle, ChevronLeft, Wifi, Coffee, Utensils, Waves, Globe, ShieldCheck } from 'lucide-react';
+import { Bed, Star, MapPin, Phone, MessageCircle, ChevronLeft, Wifi, Coffee, Utensils, Waves, Globe, ShieldCheck, Loader2, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
-
-const hotelData: Record<string, any> = {
-  "fairmont-baku": {
-    title: "Fairmont Baku, Flame Towers",
-    subtitle: "Bakının Modern Simvolu",
-    description: "Alov Qüllələri kompleksinin bir hissəsi olan Fairmont Baku, müasir Azərbaycanın simvolu hesab olunur. 5 ulduzlu bu otel, Xəzər dənizinə və bütün paytaxta açılan misilsiz panoramik mənzərəsi, həmçinin yüksək səviyyəli SPA xidmətləri ilə tanınır.",
-    image: "https://images.unsplash.com/photo-1542314831-c6a4d404b8df?auto=format&fit=crop&q=80&w=2000",
-    phone: "+994 12 565 48 48",
-    whatsapp: "994125654848",
-    address: "Mehdi Hüseyn küç. 1A, Alov Qüllələri, Bakı",
-    rating: 4.8,
-    reviews: 3450,
-    priceRange: "$250 - $1200",
-    features: ["Açıq/Qapalı hovuz", "Xəzər mənzərəsi", "Eleqant SPA", "Executive Lounge", "Modern Fitness Center"],
-  },
-  "four-seasons-baku": {
-    title: "Four Seasons Hotel Baku",
-    subtitle: "Xəzər Sahilində Neoklassik Dəbdəbə",
-    description: "Bakı Bulvarının və İçərişəhərin kəsişməsində yerləşən Four Seasons, Fransız Beaux-Arts memarlıq üslubunda inşa edilmişdir. Otel, klassik lüksü müasir innovasiyalarla birləşdirərək dünyanın ən elit qonaqlama təcrübələrindən birini təqdim edir.",
-    image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=2000",
-    phone: "+994 12 404 24 24",
-    whatsapp: "994124042424",
-    address: "Neftçilər Prospekti 1, Bakı",
-    rating: 4.9,
-    reviews: 1800,
-    priceRange: "$350 - $2500",
-    features: ["Bentley Transfer", "Zafferano Restoranı", "Roma stilində hovuz", "Butler xidməti", "İçərişəhər mənzərəsi"],
-  }
-};
+import { usePlaceById } from '@/hooks/use-places';
+import { Place } from '@/types/place';
+import { getImageUrl } from '@/lib/utils';
 
 export default function HotelDetailPage() {
   const params = useParams();
   const id = params.id as string;
-  const hotel = hotelData[id];
+  const { data: hotel, isLoading } = usePlaceById(id);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      </div>
+    );
+  }
 
   if (!hotel) {
     return (
@@ -60,11 +42,12 @@ export default function HotelDetailPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={hotel.image}
+            src={getImageUrl(hotel)}
             alt={hotel.title}
             fill
             className="object-cover"
             priority
+            unoptimized
           />
         </div>
 
@@ -76,14 +59,14 @@ export default function HotelDetailPage() {
 
           <div className="flex items-center gap-2 text-yellow-500 mb-4 bg-yellow-500/10 backdrop-blur-md px-4 py-1 rounded-full border border-yellow-500/20">
             <Star className="w-4 h-4 fill-yellow-500" />
-            <span className="font-bold">{hotel.rating}</span>
-            <span className="text-white/60 text-sm">({hotel.reviews} rəy)</span>
+            <span className="font-bold">{Number(hotel.average_rating || 5).toFixed(1)}</span>
+            <span className="text-white/60 text-sm">({hotel.review_count || 0} rəy)</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl uppercase italic">
             {hotel.title}
           </h1>
           <p className="text-lg md:text-2xl text-white/90 font-medium drop-shadow-md">
-            {hotel.subtitle}
+            {hotel.subtitle || ''}
           </p>
         </div>
       </section>
@@ -93,15 +76,15 @@ export default function HotelDetailPage() {
         <div className="lg:col-span-2 space-y-12">
           <section>
             <h2 className="text-3xl font-black mb-6">Haqqında</h2>
-            <p className="text-muted-foreground text-lg leading-relaxed italic">
-              {hotel.description}
+            <p className="text-muted-foreground text-lg leading-relaxed italic whitespace-pre-line">
+              {(hotel as any).detailed_description || hotel.short_description}
             </p>
           </section>
 
           <section>
             <h2 className="text-3xl font-black mb-8">İmkanlar</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {hotel.features.map((f: string, i: number) => (
+              {((hotel as any).features || []).map((f: string, i: number) => (
                 <div key={i} className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10 hover:border-primary/30 transition-colors">
                   <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                     <Bed className="w-5 h-5" />
@@ -109,16 +92,44 @@ export default function HotelDetailPage() {
                   <span className="font-bold text-sm leading-tight">{f}</span>
                 </div>
               ))}
-              <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
-                <Wifi className="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500" />
-                <span className="font-bold text-sm">High-Speed Wi-Fi</span>
-              </div>
-              <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
-                <Waves className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500" />
-                <span className="font-bold text-sm">Hovuz & SPA</span>
-              </div>
+
+              {(hotel as any).has_wifi && (
+                <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
+                  <Wifi className="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500" />
+                  <span className="font-bold text-sm">High-Speed Wi-Fi</span>
+                </div>
+              )}
+              {((hotel as any).has_pool || (hotel as any).has_outdoor_seating) && (
+                <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
+                  <Waves className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500" />
+                  <span className="font-bold text-sm">Hovuz & SPA</span>
+                </div>
+              )}
             </div>
           </section>
+
+          {/* Qalereya */}
+          {hotel.images && hotel.images.length > 0 && (
+            <section>
+              <h2 className="text-3xl font-black mb-8 flex items-center gap-3">
+                <Camera className="w-8 h-8 text-primary" />
+                Qalereya
+              </h2>
+              <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+                {hotel.images.map((img: any, i: number) => (
+                  <div key={img.id || i} className="relative aspect-square rounded-3xl overflow-hidden group border border-border/10 shadow-sm cursor-pointer ring-offset-2 hover:ring-2 ring-primary transition-all">
+                    <Image
+                      src={img.url ? img.url.replace('localhost', '127.0.0.1') : ''}
+                      alt={`Qalereya şəkli ${i + 1}`}
+                      fill
+                      className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                      unoptimized
+                    />
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
 
           <section className="bg-primary/5 p-10 rounded-[3rem] border border-primary/10 relative overflow-hidden">
             <Globe className="absolute -right-10 -bottom-10 w-64 h-64 text-primary/5" />
@@ -139,7 +150,7 @@ export default function HotelDetailPage() {
           <div className="bg-card border border-border/10 rounded-[2.5rem] p-8 shadow-2xl sticky top-28">
             <div className="mb-8">
               <p className="text-sm font-bold text-primary uppercase tracking-widest mb-2">Başlayan Qiymətlər</p>
-              <p className="text-4xl font-black">{hotel.priceRange.split(' - ')[0]} <span className="text-sm text-muted-foreground font-normal">/ gecə</span></p>
+              <p className="text-4xl font-black">{((hotel as any).price_range || (hotel as any).priceRange || 'Razılaşma yolu ilə').split(' - ')[0]} <span className="text-sm text-muted-foreground font-normal">{((hotel as any).price_range || (hotel as any).priceRange) ? '/ gecə' : ''}</span></p>
             </div>
 
             <div className="space-y-6 mb-8">
@@ -149,7 +160,7 @@ export default function HotelDetailPage() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Ünvan</p>
-                  <p className="font-bold">{hotel.address}</p>
+                  <p className="font-bold">{(hotel as any).address || hotel.city || 'Məlumat yoxdur'}</p>
                 </div>
               </div>
 
@@ -159,14 +170,14 @@ export default function HotelDetailPage() {
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Əlaqə</p>
-                  <p className="font-bold">{hotel.phone}</p>
+                  <p className="font-bold">{(hotel as any).phone_number || (hotel as any).whatsapp_number || 'Məlumat yoxdur'}</p>
                 </div>
               </div>
             </div>
 
             <div className="space-y-4">
               <a
-                href={`https://wa.me/${hotel.whatsapp}`}
+                href={`https://wa.me/${((hotel as any).whatsapp_number || (hotel as any).phone_number || '').replace(/\D/g, '')}?text=Salam, ${hotel.title} otelində rezervasiya etmək istəyirəm.`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-3 w-full py-5 bg-black text-white dark:bg-white dark:text-black rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl"

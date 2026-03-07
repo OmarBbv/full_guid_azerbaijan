@@ -8,7 +8,7 @@ import {
   IsObject,
   IsUUID,
 } from 'class-validator';
-import { PlaceStatus } from '../entities/place.entity';
+import { PlaceStatus, PlaceType } from '../entities/place.entity';
 
 export class CreatePlaceDto {
   @IsString()
@@ -24,9 +24,21 @@ export class CreatePlaceDto {
   @IsOptional()
   detailed_description?: string;
 
+  @IsString()
+  @IsOptional()
+  subtitle?: string;
+
+  @IsString()
+  @IsOptional()
+  accent_color?: string;
+
   @IsEnum(PlaceStatus)
   @IsOptional()
   status?: PlaceStatus;
+
+  @IsEnum(PlaceType)
+  @IsOptional()
+  type?: PlaceType;
 
   @IsString()
   whatsapp_number: string;
@@ -105,4 +117,8 @@ export class CreatePlaceDto {
   @IsBoolean()
   @IsOptional()
   is_featured?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  show_in_hero?: boolean;
 }

@@ -1,41 +1,26 @@
 "use client";
 
-import { UtensilsCrossed, Star, MapPin, ChefHat, ArrowRight } from 'lucide-react';
+import { UtensilsCrossed, Star, MapPin, ChefHat, ArrowRight, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import { usePlacesByType } from '@/hooks/use-places';
 
 export default function RestaurantsPage() {
-  const restaurants = [
-    {
-      id: "shirvanshah",
-      title: "Şirvanşah Muzey-Restoranı",
-      desc: "İçərişəhərdə yerləşən bu məkan qədim Azərbaycan memarlığını özündə yaşadan 19-cu əsrə aid unikal karvansara konseptli restorandır.",
-      icon: <ChefHat className="text-orange-500 w-6 h-6" />,
-      image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&q=80&w=800",
-      specialty: "Milli Mətbəx, Kabablar"
-    },
-    {
-      id: "nergiz",
-      title: "Nergiz Restoranı",
-      desc: "Fəvvarələr meydanında yerləşən klassik, gözəl musiqi və ailəvi abu-havası olan ən məşhur obyektlərdən biridir.",
-      icon: <Star className="text-orange-500 w-6 h-6" />,
-      image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&q=80&w=800",
-      specialty: "Karabakh Mətbəxi, Piti"
-    },
-    {
-      id: "derya-fish",
-      title: "Dərya Fish House",
-      desc: "Xəzərin sahilində, dəniz mənzərəsi qarşısında ən təzə balıq və dəniz məhsullarını dada biləcəyiniz restoran.",
-      icon: <MapPin className="text-orange-500 w-6 h-6" />,
-      image: "https://images.unsplash.com/photo-1525648199074-cee30ba79a4a?auto=format&fit=crop&q=80&w=800",
-      specialty: "Dəniz Məhsulları, Kütüm"
-    }
-  ];
+  const { data: restaurantsData, isLoading } = usePlacesByType('restaurant');
+  const restaurants = restaurantsData || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin text-orange-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background pb-20">
       {/* Hero Header */}
-      <section className="relative w-full overflow-hidden mb-16" style={{ height: "100dvh", minHeight: 680 }}>
+      <section className="relative w-full overflow-hidden mb-16" style={{ height: "60dvh", minHeight: 400 }}>
         {/* Background Overlay */}
         <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.8) 100%)" }} />
         <div className="absolute inset-0 z-10 bg-linear-to-r from-orange-600/30 to-red-900/50 mix-blend-multiply" />
@@ -43,7 +28,7 @@ export default function RestaurantsPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=2070&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=2074&auto=format&fit=crop"
             alt="Restoranlar"
             fill
             className="object-cover"
@@ -66,31 +51,62 @@ export default function RestaurantsPage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {restaurants.map((t, i) => (
-          <Link
-            key={i}
-            href={`/places/restaurants/${t.id}`}
-            className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 flex flex-col"
-          >
-            <div className="h-48 relative overflow-hidden">
-              <Image src={t.image} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-black/90 px-3 py-1 rounded-full text-xs font-bold text-orange-600 border border-border">
-                {t.specialty}
-              </div>
-            </div>
-            <div className="p-8 flex-1 flex flex-col">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-orange-50 dark:bg-orange-900/20 p-2 rounded-xl group-hover:bg-orange-100 transition-colors">{t.icon}</div>
-                <h3 className="text-2xl font-bold">{t.title}</h3>
-              </div>
-              <p className="text-muted-foreground flex-1 mb-6">{t.desc}</p>
-              <div className="flex items-center gap-2 text-orange-600 font-bold text-sm">
-                Ətraflı Bax <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </div>
-            </div>
-          </Link>
-        ))}
+      <div className="max-w-7xl mx-auto px-6">
+        {!restaurants || restaurants.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-muted-foreground text-xl">Hələ ki heç bir restoran əlavə edilməyib.</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {restaurants.map((t: any, i: number) => (
+              <Link
+                key={i}
+                href={`/places/restaurants/${t.id}`}
+                className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 flex flex-col"
+              >
+                <div className="h-56 relative overflow-hidden">
+                  <Image
+                    src={t.image || t.thumbnail || (t.images?.[0]?.url ?? '')}
+                    alt={t.title}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    unoptimized
+                  />
+                  {t.subtitle && (
+                    <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-black/90 px-3 py-1 rounded-full text-xs font-bold text-orange-600 border border-border">
+                      {t.subtitle}
+                    </div>
+                  )}
+                  <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 text-white text-xs font-bold">
+                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                    {Number(t.average_rating).toFixed(1)}
+                  </div>
+                </div>
+                <div className="p-8 flex-1 flex flex-col">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="bg-orange-50 dark:bg-orange-900/20 p-2 rounded-xl group-hover:bg-orange-100 transition-colors">
+                      <ChefHat className="text-orange-500 w-6 h-6" />
+                    </div>
+                    <div className="flex flex-col">
+                      <h3 className="text-2xl font-bold line-clamp-1">{t.title}</h3>
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
+                        <MapPin className="w-3 h-3" />
+                        {t.city}
+                      </div>
+                    </div>
+                  </div>
+                  <p className="text-muted-foreground flex-1 mb-6 line-clamp-3">{t.short_description}</p>
+                  <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                    <div className="flex items-center gap-1 text-orange-600 font-bold text-sm">
+                      Ətraflı Bax <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                    </div>
+                    <span className="text-xs text-muted-foreground">{t.review_count} rəy</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

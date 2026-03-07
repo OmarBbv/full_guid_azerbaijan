@@ -4,25 +4,21 @@ import { Bed, Star, MapPin, Wifi, Coffee, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 
+import { usePlacesByType } from '@/hooks/use-places';
+import { Place } from '@/types/place';
+import { getImageUrl } from '@/lib/utils';
+
 export default function HotelsPage() {
-  const hotels = [
-    {
-      id: "fairmont-baku",
-      title: "Fairmont Baku, Flame Towers",
-      desc: "Bakının simvolu olan Alov Qüllələrində yerləşən 5 ulduzlu otel. Bütün şəhərə və Xəzər dənizinə panoramik mənzərə təklif edir.",
-      image: "https://images.unsplash.com/photo-1542314831-c6a4d404b8df?auto=format&fit=crop&q=80&w=1000",
-      stars: 5,
-      price: "$$$$"
-    },
-    {
-      id: "four-seasons-baku",
-      title: "Four Seasons Hotel Baku",
-      desc: "İçərişəhərin kənarında, Bulvarın düz qarşısında yerləşən klassik və Avropa memarlığına malik olan dünyanın ən elit otel şəbəkələrindən biri.",
-      image: "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&q=80&w=1000",
-      stars: 5,
-      price: "$$$$"
-    }
-  ];
+  const { data: hotelsData, isLoading } = usePlacesByType('hotel');
+  const hotels = hotelsData || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background pb-20">
@@ -59,37 +55,44 @@ export default function HotelsPage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-        {hotels.map((t, i) => (
-          <Link
-            key={i}
-            href={`/places/hotels/${t.id}`}
-            className="flex flex-col lg:flex-row bg-card border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group"
-          >
-            <div className="lg:w-1/2 h-64 lg:h-auto relative overflow-hidden">
-              <Image src={t.image} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-            </div>
-            <div className="p-8 lg:w-1/2 flex flex-col justify-between">
-              <div>
-                <div className="flex items-center gap-1 mb-3">
-                  {Array.from({ length: t.stars }).map((_, idx) => (
-                    <Star key={idx} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-                  ))}
-                </div>
-                <h3 className="text-2xl font-bold mb-3">{t.title}</h3>
-                <p className="text-muted-foreground mb-6 line-clamp-3">{t.desc}</p>
+        {!hotels || hotels.length === 0 ? (
+          <div className="col-span-full text-center py-20">
+            <p className="text-muted-foreground text-xl">Hələ ki heç bir otel əlavə edilməyib.</p>
+          </div>
+        ) : (
+          hotels.map((t: any, i: number) => (
+            <Link
+              key={i}
+              href={`/places/hotels/${t.id}`}
+              className="flex flex-col lg:flex-row bg-card border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group"
+            >
+              <div className="lg:w-1/2 h-64 lg:h-auto relative overflow-hidden">
+                <Image src={getImageUrl(t, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop')} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
               </div>
-              <div className="flex items-center gap-4 text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <Wifi className="w-4 h-4" />
-                  <Coffee className="w-4 h-4" />
+              <div className="p-8 lg:w-1/2 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-1 mb-3">
+                    {/* Simplified static stars for now, or dynamic if data has stars / average_rating */}
+                    {Array.from({ length: Math.round(Number(t.average_rating || 5)) }).map((_, idx) => (
+                      <Star key={idx} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                    ))}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-3">{t.title}</h3>
+                  <p className="text-muted-foreground mb-6 line-clamp-3">{t.short_description || t.subtitle || ''}</p>
                 </div>
-                <div className="ml-auto font-black text-foreground flex items-center gap-2">
-                  {t.price} <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
+                <div className="flex items-center gap-4 text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                    {t.has_wifi && <Wifi className="w-4 h-4 text-blue-500" />}
+                    {t.has_outdoor_seating && <Coffee className="w-4 h-4 text-blue-500" />}
+                  </div>
+                  <div className="ml-auto font-black text-foreground flex items-center gap-2">
+                    Ətraflı <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
+                  </div>
                 </div>
               </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );

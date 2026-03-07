@@ -8,6 +8,7 @@ import {
   Delete,
   UseInterceptors,
   UploadedFiles,
+  Query,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { multerOptions } from '../config/multer.config';
@@ -25,8 +26,14 @@ export class PlacesController {
   }
 
   @Get()
-  findAll() {
-    return this.placesService.findAll();
+  findAll(
+    @Query('exclude_types') excludeTypes?: string,
+    @Query('show_in_hero') showInHero?: string,
+    @Query('type') type?: string,
+  ) {
+    const exclude = excludeTypes ? excludeTypes.split(',') : undefined;
+    const isHero = showInHero === 'true' ? true : showInHero === 'false' ? false : undefined;
+    return this.placesService.findAll(exclude, isHero, type);
   }
 
   @Get(':id')

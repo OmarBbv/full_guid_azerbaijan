@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { Star, Bookmark, ArrowRight, ChevronLeft, ChevronRight, MapPin } from "lucide-react";
 
-// ─── Slides ──────────────────────────────────────────────────────────────────
+import { useHeroPlaces } from "@/hooks/use-places";
+import { Place } from "@/types/place";
+import { getImageUrl } from "@/lib/utils";
 
-const slides = [
+const defaultSlides = [
   {
     bg: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=90&w=2400&auto=format&fit=crop",
     country: "AZƏRBAYCAN",
@@ -157,9 +159,47 @@ const slides = [
   },
 ];
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export default function Hero() {
+  const { data: heroPlaces, isLoading } = useHeroPlaces();
+
+  const slides = useMemo(() => {
+    if (!heroPlaces || heroPlaces.length === 0) return defaultSlides;
+
+    const grouped = heroPlaces.reduce((acc, place) => {
+      const cityRaw = place.city?.trim() || 'Azərbaycan';
+      const city = cityRaw.charAt(0).toUpperCase() + cityRaw.slice(1).toLowerCase();
+
+      if (!acc[city]) acc[city] = [];
+      acc[city].push(place);
+      return acc;
+    }, {} as Record<string, Place[]>);
+
+    return Object.entries(grouped).map(([city, cityPlaces]) => {
+      const firstPlace = cityPlaces[0];
+      const imageUrl = getImageUrl(firstPlace, defaultSlides[0].bg);
+
+      return {
+        bg: imageUrl,
+        country: city.toUpperCase(),
+        subtitle: firstPlace.subtitle || 'Möhtəşəm məkan kəşfi',
+        description: firstPlace.short_description || firstPlace.title,
+        accent: firstPlace.accent_color || '#3b9cf5',
+        cards: cityPlaces.map(p => {
+          const pImg = getImageUrl(p, defaultSlides[0].bg);
+          return {
+            name: p.title,
+            region: city,
+            subtitle: p.subtitle || '',
+            description: p.short_description || p.title,
+            img: pImg,
+            rating: Number(p.average_rating) || 0,
+            reviews: p.review_count ? `${p.review_count} rəy` : '0 rəy',
+          };
+        }),
+      };
+    });
+  }, [heroPlaces]);
+
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
   const [savedCards, setSavedCards] = useState<Record<string, boolean>>({});
@@ -169,8 +209,11 @@ export default function Hero() {
   const [isCardView, setIsCardView] = useState(false);
 
   const total = slides.length;
-  const slide = slides[current];
-  const activeCardData = slide.cards[activeCard];
+  const safeCurrent = Math.min(current, Math.max(0, total - 1));
+  const slide = slides[safeCurrent] || defaultSlides[0];
+
+  const safeActiveCard = Math.min(activeCard, Math.max(0, (slide?.cards?.length || 1) - 1));
+  const activeCardData = slide?.cards?.[safeActiveCard] || defaultSlides[0].cards[0];
 
   const goTo = useCallback(
     (idx: number) => {
@@ -190,7 +233,6 @@ export default function Hero() {
   const next = () => goTo((current + 1) % total);
   const back = () => goTo((current - 1 + total) % total);
 
-  // Auto-play
   useEffect(() => {
     const t = setInterval(next, 8000);
     return () => clearInterval(t);
@@ -236,6 +278,7 @@ export default function Hero() {
             className="object-cover"
             style={{ filter: "brightness(0.45) saturate(1.1)" }}
             priority={i === 0}
+            unoptimized
           />
         </div>
       ))}
@@ -254,6 +297,7 @@ export default function Hero() {
             className="object-cover"
             style={{ filter: "brightness(0.35) saturate(1.2)" }}
             priority
+            unoptimized
           />
         </div>
       )}

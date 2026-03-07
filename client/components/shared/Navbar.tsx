@@ -53,7 +53,7 @@ export default function Navbar() {
   const authRoutes = ['/login', '/register'];
   const isAuthPage = authRoutes.some(route => pathname?.includes(route));
   const lightRoutes = ['/mekanlar', '/blog', '/contact', '/secilmisler', '/login', '/register'];
-  const isLightPage = lightRoutes.some(route => pathname?.includes(route));
+  const isLightPage = false; // Always dark text to contrast with dark glass effect
 
   useEffect(() => {
     if (isAuthPage) return;
@@ -64,22 +64,19 @@ export default function Navbar() {
 
   if (isAuthPage) return null;
 
-  const navColor = isLightPage ? 'text-foreground' : 'text-white';
-  const navColorMuted = isLightPage ? 'text-muted-foreground' : 'text-white/70';
-  const activeLinkColor = isLightPage ? 'var(--primary)' : '#3b9cf5';
+  const navColor = 'text-white';
+  const navColorMuted = 'text-white/70';
+  const activeLinkColor = '#3b9cf5';
 
   return (
     <>
       <nav
         className="fixed top-0 left-0 z-50 w-full transition-all duration-500"
         style={{
-          background: isLightPage
-            ? scrolled || isLightPage ? 'rgba(255, 255, 255, 0.92)' : 'rgba(255, 255, 255, 0.6)'
-            : scrolled ? 'rgba(10, 12, 20, 0.82)' : 'transparent',
-          backdropFilter: (scrolled || isLightPage) ? 'blur(24px)' : 'none',
-          borderBottom: (scrolled || isLightPage)
-            ? isLightPage ? '1px solid rgba(0,0,0,0.05)' : '1px solid rgba(255,255,255,0.06)'
-            : 'none',
+          background: 'rgba(10, 12, 20, 0.75)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
+          borderBottom: '1px solid rgba(255,255,255,0.08)',
           paddingTop: scrolled ? 0 : 0,
         }}
       >

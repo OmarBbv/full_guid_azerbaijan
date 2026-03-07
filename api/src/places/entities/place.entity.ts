@@ -23,6 +23,9 @@ export enum PlaceType {
   HOTEL = 'HOTEL',
   HOSTEL = 'HOSTEL',
   LANDMARK = 'LANDMARK',
+  NATURE = 'NATURE',
+  ENTERTAINMENT = 'ENTERTAINMENT',
+  MUSEUM = 'MUSEUM',
   OTHER = 'OTHER',
 }
 
@@ -77,6 +80,12 @@ export class Place {
 
   @Column({ type: 'text', nullable: true })
   detailed_description: string | null;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  subtitle: string | null;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  accent_color: string | null;
 
   @Column({ type: 'enum', enum: PlaceType, default: PlaceType.OTHER })
   type: PlaceType;
@@ -169,6 +178,9 @@ export class Place {
 
   @Column({ type: 'boolean', default: false })
   is_featured: boolean;
+
+  @Column({ type: 'boolean', default: false })
+  show_in_hero: boolean;
 
   @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
   average_rating: number;

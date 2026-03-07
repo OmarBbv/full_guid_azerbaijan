@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In, Not } from 'typeorm';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 import { Place } from './entities/place.entity';
@@ -21,12 +21,28 @@ export class PlacesService {
     return await this.placeRepository.save(place);
   }
 
-  async findAll(): Promise<Place[]> {
-    return await this.placeRepository.find();
+  async findAll(excludeTypes?: string[], showInHero?: boolean, type?: string): Promise<Place[]> {
+    const where: any = {};
+    if (excludeTypes && excludeTypes.length > 0) {
+      where.type = Not(In(excludeTypes));
+    }
+    if (showInHero !== undefined) {
+      where.show_in_hero = showInHero;
+    }
+    if (type) {
+      where.type = type;
+    }
+    return await this.placeRepository.find({
+      where,
+      relations: ['images', 'reviews'],
+    });
   }
 
   async findOne(id: string): Promise<Place> {
-    const place = await this.placeRepository.findOne({ where: { id } });
+    const place = await this.placeRepository.findOne({
+      where: { id },
+      relations: ['images', 'reviews'],
+    });
     if (!place) {
       throw new NotFoundException(`Place with ID ${id} not found`);
     }

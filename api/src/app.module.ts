@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PlacesModule } from './places/places.module';
@@ -12,6 +14,10 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],

@@ -4,33 +4,20 @@ import { Users, Backpack, MapPin, PiggyBank, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 
+import { usePlacesByType } from '@/hooks/use-places';
+import { getImageUrl } from '@/lib/utils';
+
 export default function HostelsPage() {
-  const hostels = [
-    {
-      id: "sahil-hostel",
-      title: "Sahil Hostel & Hotel",
-      desc: "Dəniz kənarına və Tarqovıy küçəsinə çox yaxın məsafədə, çox təmiz və dostcanlı mühit tapan bir hosterldir.",
-      icon: <PiggyBank className="text-emerald-500 w-6 h-6" />,
-      image: "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=800",
-      specialty: "Mərkəzi mövqe, €15-dan başlayır"
-    },
-    {
-      id: "kichik-qala",
-      title: "Kichik Qala 98",
-      desc: "İçərişəhərin tarixi dar küçələrində yerləşir. Qonaqlara qədim arxitekturası olan otaqlarda unikal təcrübə vəd edir.",
-      icon: <MapPin className="text-emerald-500 w-6 h-6" />,
-      image: "https://images.unsplash.com/photo-1510323334692-284fb835db5f?auto=format&fit=crop&q=80&w=800",
-      specialty: "Tarixi Bina, €20-dan başlayır"
-    },
-    {
-      id: "cheeky-carabao",
-      title: "Cheeky Carabao Backpackers",
-      desc: "Solo səyyahlar üçün ideal, çox əyləncəli ortaq istirahət zonası və barı olan fərqli konseptdəki məkan.",
-      icon: <Users className="text-emerald-500 w-6 h-6" />,
-      image: "https://images.unsplash.com/photo-1527853787696-f7be74f2e39a?auto=format&fit=crop&q=80&w=800",
-      specialty: "Sosial Atmosfer, €12-dan başlayır"
-    }
-  ];
+  const { data: hostelsData, isLoading } = usePlacesByType('hostel');
+  const hostels = hostelsData || [];
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-emerald-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background pb-20">
@@ -67,30 +54,38 @@ export default function HostelsPage() {
       </section>
 
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {hostels.map((t, i) => (
-          <Link
-            key={i}
-            href={`/places/hostels/${t.id}`}
-            className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col"
-          >
-            <div className="h-48 relative overflow-hidden">
-              <Image src={t.image} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
-              <div className="absolute bottom-4 left-4 bg-emerald-600 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg">
-                {t.specialty}
+        {!hostels || hostels.length === 0 ? (
+          <div className="col-span-full text-center py-20">
+            <p className="text-muted-foreground text-xl">Hələ ki heç bir hostel əlavə edilməyib.</p>
+          </div>
+        ) : (
+          hostels.map((t: any, i: number) => (
+            <Link
+              key={i}
+              href={`/places/hostels/${t.id}`}
+              className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col"
+            >
+              <div className="h-48 relative overflow-hidden">
+                <Image src={getImageUrl(t, 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop')} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+                <div className="absolute bottom-4 left-4 bg-emerald-600 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg">
+                  {t.price_range || t.priceRange || 'Gündəlik'}
+                </div>
               </div>
-            </div>
-            <div className="p-8 flex-1 flex flex-col">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2 rounded-xl group-hover:bg-emerald-100 transition-colors">{t.icon}</div>
-                <h3 className="text-2xl font-bold">{t.title}</h3>
+              <div className="p-8 flex-1 flex flex-col">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2 rounded-xl group-hover:bg-emerald-100 transition-colors">
+                    <Backpack className="text-emerald-500 w-6 h-6" />
+                  </div>
+                  <h3 className="text-2xl font-bold">{t.title}</h3>
+                </div>
+                <p className="text-muted-foreground flex-1 mb-6 line-clamp-3">{t.short_description || t.subtitle || ''}</p>
+                <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm mt-auto">
+                  Ətraflı Bax <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </div>
               </div>
-              <p className="text-muted-foreground flex-1 mb-6">{t.desc}</p>
-              <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm">
-                Ətraflı Bax <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   );

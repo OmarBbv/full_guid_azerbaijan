@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
+import { QueryProvider } from '@/providers/query-provider';
 
 // Şəkildəki HelveticaNeueLT vizual olaraq tam bu formada olacaq:
 const inter = Inter({
@@ -38,13 +39,15 @@ export default async function RootLayout({
     <html lang={locale}>
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-1">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <QueryProvider>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-1">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </QueryProvider>
         </NextIntlClientProvider>
       </body>
     </html>
