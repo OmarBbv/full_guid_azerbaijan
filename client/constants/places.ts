@@ -1,6 +1,6 @@
 import { Place } from "@/types/place";
 
-export const PLACES: Place[] = [
+export const PLACES: any[] = [
   {
     id: 1,
     name: "Yanar Dağ",

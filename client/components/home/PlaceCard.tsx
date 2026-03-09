@@ -7,7 +7,7 @@ import { Place } from "@/types/place";
 import { useTranslations } from "next-intl";
 
 interface PlaceCardProps {
-  place: Place;
+  place: any;
   index: number;
 }
 
@@ -18,10 +18,9 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    // Initial load
     const saved = localStorage.getItem("favorites");
     if (saved) {
-      const favorites = JSON.parse(saved) as number[];
+      const favorites = JSON.parse(saved) as (number | string)[];
       setLiked(favorites.includes(place.id));
     }
 
@@ -38,7 +37,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
     e.preventDefault();
 
     const saved = localStorage.getItem("favorites");
-    let favorites = saved ? (JSON.parse(saved) as number[]) : [];
+    let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
 
     if (favorites.includes(place.id)) {
       favorites = favorites.filter(id => id !== place.id);

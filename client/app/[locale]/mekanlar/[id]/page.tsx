@@ -8,16 +8,16 @@ import { useState, useEffect } from "react";
 
 export default function PlaceDetailPage() {
   const params = useParams();
-  const id = Number(params.id);
-  const place = PLACES.find((p) => p.id === id);
+  const idParam = params.id as string;
+  const id = Number(idParam);
+  const place: any = PLACES.find((p) => p.id === id as any);
   const [liked, setLiked] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("haqqında");
 
   useEffect(() => {
-    // Initial load
     const saved = localStorage.getItem("favorites");
     if (saved && place) {
-      const favorites = JSON.parse(saved) as number[];
+      const favorites = JSON.parse(saved) as (number | string)[];
       setLiked(favorites.includes(place.id));
     }
   }, [place?.id]);
@@ -26,7 +26,7 @@ export default function PlaceDetailPage() {
     if (!place) return;
 
     const saved = localStorage.getItem("favorites");
-    let favorites = saved ? (JSON.parse(saved) as number[]) : [];
+    let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
 
     if (favorites.includes(place.id)) {
       favorites = favorites.filter(id => id !== place.id);
@@ -161,7 +161,7 @@ export default function PlaceDetailPage() {
                       Üstünlüklər və İmkanlar
                     </h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      {place.features.map((feature, i) => (
+                      {place.features.map((feature: string, i: number) => (
                         <div key={i} className="flex items-center gap-3 p-4 bg-muted/30 rounded-2xl border border-border/40 group hover:border-accent/40 transition-colors">
                           <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-accent">
                             <CheckCircle2 size={18} />
@@ -184,7 +184,7 @@ export default function PlaceDetailPage() {
                     Foto Qalereya
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {(place.gallery || [place.img]).map((img, i) => (
+                    {(place.gallery || [place.img]).map((img: string, i: number) => (
                       <div key={i} className="group relative aspect-square rounded-3xl overflow-hidden cursor-zoom-in bg-muted">
                         <img
                           src={img}
@@ -248,7 +248,7 @@ export default function PlaceDetailPage() {
                 <div className="p-6">
                   <h4 className="font-bold text-foreground mb-4">Bənzər Yerlər</h4>
                   <div className="space-y-3">
-                    {PLACES.filter(p => p.id !== place.id).slice(0, 2).map(p => (
+                    {PLACES.filter(p => p.id !== place.id).slice(0, 2).map((p: any) => (
                       <Link key={p.id} href={`/mekanlar/${p.id}`} className="flex items-center gap-3 p-3 bg-card rounded-2xl border border-border/50 hover:border-primary/30 transition-all hover:shadow-lg group">
                         <img src={p.img} alt={p.name} className="w-14 h-14 rounded-xl object-cover" />
                         <div className="flex-1 min-w-0">

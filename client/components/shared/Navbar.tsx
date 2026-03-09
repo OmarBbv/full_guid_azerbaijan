@@ -287,33 +287,33 @@ export default function Navbar() {
 
         {/* Drawer */}
         <div
-          className="absolute top-0 right-0 h-full w-[85vw] max-w-[320px] flex flex-col pt-24 pb-8 px-6 transition-transform duration-400 overflow-y-auto"
+          className="absolute top-0 right-0 h-full w-full max-w-md flex flex-col pt-20 pb-8 px-6 transition-transform duration-400 overflow-y-auto"
           style={{
-            background: isLightPage ? 'rgba(255, 255, 255, 0.98)' : 'rgba(10, 12, 22, 0.98)',
+            background: isLightPage ? 'rgba(255, 255, 255, 1)' : 'rgba(10, 12, 22, 1)',
             borderLeft: isLightPage ? '1px solid rgba(0,0,0,0.07)' : '1px solid rgba(255,255,255,0.07)',
             transform: mobileOpen ? 'translateX(0)' : 'translateX(100%)',
           }}
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
             {navLinks.map((link) => (
-              <div key={link.id} className="flex flex-col border-b border-border/10 pb-2">
+              <div key={link.id} className="flex flex-col border-b border-white/10 last:border-0">
                 {link.subLinks ? (
                   <>
                     <button
-                      className={`flex items-center justify-between w-full text-left ${isLightPage ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} text-[16px] font-semibold py-2 transition-colors`}
+                      className={`flex items-center justify-between w-full text-left ${isLightPage ? 'text-foreground/90 hover:text-foreground' : 'text-white/90 hover:text-white'} text-[14px] tracking-wider uppercase font-bold py-4 transition-colors`}
                       onClick={() => setOpenMobileDropdown(openMobileDropdown === link.id ? null : link.id)}
                     >
                       {link.label}
-                      <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${openMobileDropdown === link.id ? 'rotate-180' : ''}`} />
+                      <ChevronRight className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${openMobileDropdown === link.id ? 'rotate-90' : ''}`} />
                     </button>
                     {openMobileDropdown === link.id && (
-                      <div className="flex flex-col gap-2 mt-2 ml-4 mb-2 animate-in slide-in-from-top-2 duration-200">
+                      <div className="flex flex-col gap-0 bg-black/20 rounded-xl mb-4 overflow-hidden border border-white/5">
                         {link.subLinks.map(sub => (
                           <Link
                             key={sub.href}
                             href={sub.href}
                             onClick={() => setMobileOpen(false)}
-                            className={`text-[14px] py-1.5 transition-colors ${isLightPage ? 'text-foreground/60 hover:text-primary' : 'text-white/60 hover:text-white'
+                            className={`text-[13px] py-3 px-5 transition-colors border-b border-white/5 last:border-0 ${isLightPage ? 'text-foreground/70 hover:text-primary' : 'text-white/70 hover:text-white bg-white/5 hover:bg-white/10'
                               }`}
                           >
                             {sub.label}
@@ -325,61 +325,64 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={link.href as any}
-                    className={`${isLightPage ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} text-[16px] font-semibold py-2 transition-colors`}
+                    className={`flex items-center justify-between w-full text-left ${isLightPage ? 'text-foreground/90 hover:text-foreground' : 'text-white/90 hover:text-white'} text-[14px] tracking-wider uppercase font-bold py-4 transition-colors`}
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.label}
+                    <ChevronRight className="w-4 h-4 text-blue-500" />
                   </Link>
                 )}
               </div>
             ))}
           </div>
 
-          <div className="mt-auto pt-8 flex items-center justify-between gap-4">
-            <div className="flex gap-4">
-              <button className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors`}>
-                <Search className="w-5 h-5" />
-              </button>
-              <button className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors`}>
-                <Map className="w-5 h-5" />
-              </button>
-              <Link
-                href="/secilmisler"
-                className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors`}
-                onClick={() => setMobileOpen(false)}
-              >
-                <Heart className="w-5 h-5" />
-              </Link>
-            </div>
+          <div className="mt-8 grid grid-cols-2 gap-[1px] bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-sm">
+            {/* Map */}
+            <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
+              <Map className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('map')}</span>
+            </button>
 
-            {/* Mobile Language Switcher */}
-            <div className="flex gap-2">
-              {LANGUAGES.map(lang => (
-                <button
-                  key={lang.code}
-                  onClick={() => {
-                    router.replace(pathname, { locale: lang.code as 'az' | 'en' | 'ru' });
-                    setMobileOpen(false);
-                  }}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-xl text-[13px] font-bold transition-all ${locale === lang.code
-                    ? 'bg-blue-500/20 text-blue-400 ring-1 ring-blue-400/40'
-                    : 'text-white/50 hover:text-white hover:bg-white/5'
-                    }`}
-                >
-                  {lang.flag} {lang.code.toUpperCase()}
-                </button>
-              ))}
-            </div>
+            {/* Profile */}
+            <Link href="/login" onClick={() => setMobileOpen(false)} className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
+              <User className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('login')}</span>
+            </Link>
+
+            {/* Favorites */}
+            <Link href="/secilmisler" onClick={() => setMobileOpen(false)} className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
+              <Heart className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('favorites')}</span>
+            </Link>
+
+            {/* Search */}
+            <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
+              <Search className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('search')}</span>
+            </button>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-border/10">
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className="w-full py-4 bg-primary text-primary-foreground rounded-xl font-black text-center block shadow-lg shadow-primary/20"
-            >
-              {t('login')}
-            </Link>
+          {/* Languages Section at bottom matching the style if needed, or keeping it below */}
+          <div className="mt-6 flex flex-col border border-white/10 rounded-xl overflow-hidden">
+            {LANGUAGES.map(lang => (
+              <button
+                key={lang.code}
+                onClick={() => {
+                  router.replace(pathname, { locale: lang.code as 'az' | 'en' | 'ru' });
+                  setMobileOpen(false);
+                }}
+                className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${locale === lang.code
+                  ? 'bg-blue-500/10 text-blue-400'
+                  : 'text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5'
+                  }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-lg">{lang.flag}</span>
+                  <span className="uppercase tracking-wider">{lang.label}</span>
+                </div>
+                {locale === lang.code && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+              </button>
+            ))}
           </div>
         </div>
       </div>

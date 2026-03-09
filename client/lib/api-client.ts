@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5555';
+
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5555',
+  baseURL: baseURL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -9,8 +11,7 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.response.use(
   (response) => {
-    const baseURL = response.config.baseURL as string;
-
+    // const baseURL = response.config.baseURL as string;
     const transformData = (data: any) => {
       if (!data) return;
       if (Array.isArray(data)) {
