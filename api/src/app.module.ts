@@ -32,6 +32,9 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
         autoLoadEntities: true,
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
+        ssl: configService.get<string>('NODE_ENV') === 'production' ? {
+          rejectUnauthorized: false
+        } : false,
       }),
       inject: [ConfigService],
     }),

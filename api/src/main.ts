@@ -6,7 +6,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  app.enableCors();
+  app.enableCors({
+    origin: ['https://full-guid-azerbaijan.onrender.com', 'http://localhost:3000', 'http://localhost:3001'],
+    credentials: true,
+  });
 
   const port = configService.get<number>('PORT', 5555);
   await app.listen(port);
