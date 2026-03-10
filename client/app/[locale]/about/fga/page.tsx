@@ -9,18 +9,17 @@ export default function FGAPage() {
     <div className="bg-background pb-20">
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-16" style={{ height: "100dvh", minHeight: 680 }}>
-        {/* Background Overlay */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.6) 100%)" }} />
-        <div className="absolute inset-0 z-10 bg-linear-to-r from-blue-900/40 to-purple-900/40 mix-blend-multiply" />
-
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <img
-            src="https://images.unsplash.com/photo-1606775791264-b333a5cf05cc?q=80&w=2070&auto=format&fit=crop"
-            alt="FGA Haqqında"
-            className="w-full h-full object-cover"
-            style={{ filter: "brightness(0.65) saturate(1.1)", transform: "scale(1.02)" }}
+          <Image
+            src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?q=80&w=2070&auto=format&fit=crop"
+            alt="FGA About"
+            fill
+            className="object-cover"
+            style={{ filter: "brightness(0.5) saturate(1.1)" }}
+            priority
           />
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/20 to-background" />
         </div>
 
         {/* Hero Content */}

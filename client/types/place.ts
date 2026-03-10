@@ -19,4 +19,5 @@ export interface Place {
   review_count: number;
   show_in_hero: boolean;
   is_featured: boolean;
+  type?: string;
 }

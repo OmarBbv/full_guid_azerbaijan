@@ -7,9 +7,19 @@
     "getting_started": "Başlanğıc",
     "about_baku": "Azərbaycan / Bakı haqqında ümumi məlumat",
     "airport_info": "Hava limanı ilə bağlı məlumat və istiqamətləndirmə",
-    "getting_around": "Hərəkət",
-    "taxi_services": "Taksi xidmətləri",
-    "public_transport": "İctimai nəqliyyat",
+    "where_to_go": "Hara getməli",
+    "discover_destinations": "Məkanlarımızı kəşf edin",
+    "baku": "Bakı",
+    "sheki": "Şəki",
+    "qabala": "Qəbələ",
+    "quba": "Quba",
+    "shamakhi": "Şamaxı",
+    "lankaran": "Lənkəran",
+    "ganja": "Gəncə",
+    "nakhchivan": "Naxçıvan",
+    "see_all_destinations": "Bütün məkanları gör",
+    "search_other_destinations": "Digər məkanları axtarın",
+    "interactive_map": "İnteraktiv Xəritə",
     "destinations": "Məkanlar",
     "landmarks": "Tarixi və turistik məkanlar (Landmarks)",
     "restaurants": "Restoranlar",
@@ -127,5 +137,69 @@
     "email_placeholder": "E-mail ünvanınız...",
     "subscribe": "Abunə ol",
     "no_spam": "Spam yoxdur. İstədiyiniz zaman abunəliyi ləğv edə bilərsiniz."
+  },
+  "Blog": {
+    "title": "Bələdçi & Hekayələr",
+    "hero_title_part1": "Dünyanı",
+    "hero_title_accent": "Kəşf Et",
+    "hero_title_part2": "İlham Al",
+    "hero_subtitle": "Səyahət tövsiyələri, maraqlı məkanlar və unudulmaz təcrübələrlə dolu məqalələri oxuyun.",
+    "search_placeholder": "Məqalə, yer və ya mövzu axtar...",
+    "search_button": "Axtar",
+    "all_articles": "Bütün Məqalələr",
+    "guide": "Səyahət Bələdçisi",
+    "culture": "Mədəniyyət",
+    "nature": "Təbiət & Ekstrim",
+    "featured_label": "Həftənin seçimi",
+    "read_time": "dəq oxuma",
+    "no_results_title": "Məqalə tapılmadı",
+    "no_results_desc": "Axtarış meyarlarınıza uyğun məqalə yoxdur. Zəhmət olmasa başqa sözlə sınayın və ya filtrləri təmizləyin.",
+    "clear_filters": "Təmizlə",
+    "load_more": "Daha çox köhnə məqalə"
+  },
+  "Testimonials": {
+    "anonymous": "Anonim",
+    "list": [
+      {
+        "name": "Anonim",
+        "country": "Rusiya",
+        "text": "Bakı məni tamamilə heyrətlə qarşıladı. FullGuide sayəsində gizli məkanları tapdım."
+      },
+      {
+        "name": "Anonim",
+        "country": "İtaliya",
+        "text": "Şuşa turu həyatımın ən yaxşı səyahəti oldu. Yerli musiqi və təbiət möhtəşəm idi."
+      },
+      {
+        "name": "Anonim",
+        "country": "Yaponiya",
+        "text": "Qəbələdə 5 gün keçirdim. Platforma çox detallı. Azərbaycan gözləntilərimden çox daha gözəldi!"
+      },
+      {
+        "name": "Anonim",
+        "country": "BƏƏ",
+        "text": "Lənkəran — Azərbaycanın gizli cənnəti. FullGuide planlaşdırmağı çox asanlaşdırdı."
+      },
+      {
+        "name": "Anonim",
+        "country": "ABŞ",
+        "text": "Bələdçilik yüksək səviyyədə idi. Şəkidəki yerli təcrübəni çox sevdim."
+      },
+      {
+        "name": "Anonim",
+        "country": "Almaniya",
+        "text": "Çox təsir edicidir! Tətbiq bizə orijinal yerləri tapmaqda kömək etdi."
+      },
+      {
+        "name": "Anonim",
+        "country": "Türkiyə",
+        "text": "Qardaş ölkə Azərbaycanda gəziləcək o qədər yer var ki! FullGuide möhtəşəmdir."
+      },
+      {
+        "name": "Anonim",
+        "country": "Fransa",
+        "text": "Unudulmaz bir təcrübə. Bakının memarlığı möhtəşəmdir."
+      }
+    ]
   }
 }

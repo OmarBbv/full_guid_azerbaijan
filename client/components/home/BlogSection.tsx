@@ -1,71 +1,55 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { useLocale } from "next-intl";
+import { useBlogPosts } from "@/hooks/use-blog";
+import type { BlogPost } from "@/types/blog";
 import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { Link } from "@/i18n/routing";
 
-const articles = [
-  {
-    id: 1,
-    title: "Bakının ən gözəl 10 nöqtəsi — fotosevərlərin xəritəsi",
-    excerpt:
-      "Alov Qüllələrindən İçərişəhərə, Xəzər sahilindən Biləcəri stansiyasına — şəhərin ən fotogenik yerləri.",
-    img: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=80&w=700&auto=format&fit=crop",
-    category: "Bakı",
-    categoryColor: "#3b9cf5",
-    date: "24 Fevral 2026",
-    readTime: "6 dəq",
-    author: "Leyla M.",
-    authorImg: "https://i.pravatar.cc/40?img=5",
-  },
-  {
-    id: 2,
-    title: "Qəbələ dağlarında 4 günlük trekkinq — tam bələdçi",
-    excerpt:
-      "Tufandağdan Nohur gölünə qədər uzanan bu cığır, Azərbaycanın ən gözəl dağ mənzərələrini təqdim edir.",
-    img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=700&auto=format&fit=crop",
-    category: "Trekkinq",
-    categoryColor: "#4dd9ac",
-    date: "18 Fevral 2026",
-    readTime: "9 dəq",
-    author: "Murad H.",
-    authorImg: "https://i.pravatar.cc/40?img=12",
-    featured: true,
-  },
-  {
-    id: 3,
-    title: "Şuşa — yenidən doğan şəhərin ruhu ilə tanışlıq",
-    excerpt:
-      "Azərbaycanın mədəni paytaxtı Şuşa, tarixi bərpa ilə yenidən həyata qayıdır. Buraya getməzdən 5 şeyi bilin.",
-    img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=700&auto=format&fit=crop",
-    category: "Mədəniyyət",
-    categoryColor: "#f5a623",
-    date: "12 Fevral 2026",
-    readTime: "7 dəq",
-    author: "Aytən R.",
-    authorImg: "https://i.pravatar.cc/40?img=9",
-  },
-  {
-    id: 4,
-    title: "Lənkəran çay bağçaları — Azərbaycanın gizli cənnəti",
-    excerpt:
-      "Subtropik iqlim, yaşıl bağçalar və Xəzər sahilinin möhtəşəm mənzərəsi — Lənkəranda itirilmiş bir həftə.",
-    img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=700&auto=format&fit=crop",
-    category: "Təbiət",
-    categoryColor: "#8bc34a",
-    date: "5 Fevral 2026",
-    readTime: "5 dəq",
-    author: "Rauf K.",
-    authorImg: "https://i.pravatar.cc/40?img=15",
-  },
-];
+function mapPostToUi(post: BlogPost, locale: string, t_blog: any) {
+  const publishedDate = post.published_at || post.created_at;
+  const date = publishedDate
+    ? new Date(publishedDate).toLocaleDateString(locale === "az" ? "az-AZ" : locale === "ru" ? "ru-RU" : "en-US", {
+      day: "2-digit",
+      month: "long",
+      year: "numeric",
+    })
+    : "";
+
+  const readTimeUnit = t_blog("read_time") || (locale === "az" ? "dəq" : "min");
+  const readTime = post.read_time_minutes
+    ? `${post.read_time_minutes} ${readTimeUnit}`
+    : "";
+
+  return {
+    id: post.id,
+    title: post.title,
+    slug: post.slug,
+    excerpt: post.excerpt,
+    img:
+      post.cover_image_url ??
+      "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=700&auto=format&fit=crop",
+    category: post.category_label ?? post.category ?? "",
+    categoryColor: post.category_color ?? "#3b9cf5",
+    date,
+    readTime,
+    author: post.author_name ?? "Admin",
+    authorImg:
+      post.author_avatar_url ??
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(post.author_name || 'A')}`,
+    featured: post.is_featured,
+  };
+}
 
 function ArticleCard({ article, index, large = false }: {
-  article: typeof articles[0];
+  article: ReturnType<typeof mapPostToUi>;
   index: number;
   large?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
+  const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -78,24 +62,27 @@ function ArticleCard({ article, index, large = false }: {
   }, []);
 
   return (
-    <div
+    <Link
+      href={`/bloq/${article.slug}`}
       ref={ref}
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(32px)",
         transition: `opacity 0.65s ease ${index * 0.09}s, transform 0.65s cubic-bezier(0.22,1,0.36,1) ${index * 0.09}s`,
       }}
-      className={large ? "h-full" : ""}
+      className={`block ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-3xl ${large ? "h-full" : ""}`}
     >
       <article
-        className={`bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] hover:-translate-y-1 group relative rounded-3xl overflow-hidden cursor-pointer ${large ? "h-full flex flex-col" : ""}`}
+        className={`bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] group relative rounded-3xl overflow-hidden cursor-pointer ${large ? "h-full flex flex-col" : ""}`}
       >
         {/* Image */}
-        <div className="relative overflow-hidden" style={{ height: large ? 320 : 200 }}>
-          <img
+        <div className="relative w-full overflow-hidden" style={{ height: large ? 320 : 200 }}>
+          <Image
             src={article.img}
             alt={article.title}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            fill
+            unoptimized
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
           />
           <div
             className="absolute inset-0"
@@ -132,10 +119,13 @@ function ArticleCard({ article, index, large = false }: {
             className="flex items-center gap-3 pt-3"
             style={{ borderTop: "1px solid var(--border)" }}
           >
-            <img
+            <Image
               src={article.authorImg}
               alt={article.author}
-              className="w-7 h-7 rounded-full object-cover"
+              width={28}
+              height={28}
+              unoptimized
+              className="rounded-full object-cover"
             />
             <span className="text-xs font-medium" style={{ color: "var(--foreground)" }}>
               {article.author}
@@ -157,12 +147,25 @@ function ArticleCard({ article, index, large = false }: {
           </div>
         </div>
       </article>
-    </div>
+    </Link>
   );
 }
 
 export default function BlogSection() {
   const t = useTranslations('Home');
+  const t_blog = useTranslations('Blog');
+  const locale = useLocale();
+  const { data } = useBlogPosts({
+    language: locale,
+    published: true,
+    featured: true,
+  });
+
+  const articles = (data ?? [])
+    .map(post => mapPostToUi(post, locale, t_blog))
+    .slice(0, 4);
+
+  console.log(articles)
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute w-[500px] h-[500px] rounded-full blur-[100px] opacity-5 bg-[#f5a623] -top-[100px] -left-[100px] pointer-events-none" />
@@ -180,9 +183,9 @@ export default function BlogSection() {
               {t('blog_desc')}
             </p>
           </div>
-          <a
+          <Link
             href="/bloq"
-            className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 hover:-translate-y-1 shrink-0 self-start md:self-auto"
+            className="flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm transition-all duration-300 shrink-0 self-start md:self-auto"
             style={{
               background: "var(--primary)",
               color: "var(--primary-foreground)",
@@ -191,10 +194,9 @@ export default function BlogSection() {
           >
             {t('all_articles')}
             <ArrowRight size={15} />
-          </a>
+          </Link>
         </div>
 
-        {/* Blog columns */}
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
           {articles.map((a, i) => (
             <div key={a.id} className="break-inside-avoid mb-6">

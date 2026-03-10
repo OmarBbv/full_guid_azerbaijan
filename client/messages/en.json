@@ -7,9 +7,19 @@
     "getting_started": "Getting Started",
     "about_baku": "General information about Azerbaijan / Baku",
     "airport_info": "Airport information and directions",
-    "getting_around": "Getting Around",
-    "taxi_services": "Taxi services",
-    "public_transport": "Public transport",
+    "where_to_go": "Where to go",
+    "discover_destinations": "Discover our destinations",
+    "baku": "Baku",
+    "sheki": "Sheki",
+    "qabala": "Gabala",
+    "quba": "Quba",
+    "shamakhi": "Shamakhi",
+    "lankaran": "Lankaran",
+    "ganja": "Ganja",
+    "nakhchivan": "Nakhchivan",
+    "see_all_destinations": "See all destinations",
+    "search_other_destinations": "Search other destinations",
+    "interactive_map": "Interactive Map",
     "destinations": "Destinations",
     "landmarks": "Historical and tourist sites (Landmarks)",
     "restaurants": "Restaurants",
@@ -127,5 +137,69 @@
     "email_placeholder": "Your email address...",
     "subscribe": "Subscribe",
     "no_spam": "No spam. You can unsubscribe at any time."
+  },
+  "Blog": {
+    "title": "Guides & Stories",
+    "hero_title_part1": "Discover",
+    "hero_title_accent": "the World",
+    "hero_title_part2": "Get Inspired",
+    "hero_subtitle": "Read articles full of travel tips, interesting places, and unforgettable experiences.",
+    "search_placeholder": "Search articles, places or topics...",
+    "search_button": "Search",
+    "all_articles": "All Articles",
+    "guide": "Travel Guide",
+    "culture": "Culture",
+    "nature": "Nature & Extreme",
+    "featured_label": "Editor's Choice",
+    "read_time": "min read",
+    "no_results_title": "No articles found",
+    "no_results_desc": "There are no articles matching your search criteria. Please try different keywords or clear the filters.",
+    "clear_filters": "Clear",
+    "load_more": "Load more old articles"
+  },
+  "Testimonials": {
+    "anonymous": "Anonymous",
+    "list": [
+      {
+        "name": "Anonymous",
+        "country": "Russia",
+        "text": "Baku absolutely amazed me. I found hidden places thanks to FullGuide."
+      },
+      {
+        "name": "Anonymous",
+        "country": "Italy",
+        "text": "The Shusha tour was the best trip of my life. Local music and nature were amazing."
+      },
+      {
+        "name": "Anonymous",
+        "country": "Japan",
+        "text": "I spent 5 days in Gabala. The platform is very detailed. Azerbaijan is more beautiful than I expected!"
+      },
+      {
+        "name": "Anonymous",
+        "country": "UAE",
+        "text": "Lankaran — Azerbaijan's hidden paradise. FullGuide made planning so much easier."
+      },
+      {
+        "name": "Anonymous",
+        "country": "USA",
+        "text": "The guidance was top-notch. I loved the local experience in Sheki."
+      },
+      {
+        "name": "Anonymous",
+        "country": "Germany",
+        "text": "Very impressive! The app helped us find authentic places."
+      },
+      {
+        "name": "Anonymous",
+        "country": "Turkey",
+        "text": "There are so many places to visit in brother country Azerbaijan! FullGuide is wonderful."
+      },
+      {
+        "name": "Anonymous",
+        "country": "France",
+        "text": "An unforgettable experience. The architecture of Baku is magnificent."
+      }
+    ]
   }
 }

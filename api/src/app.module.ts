@@ -9,6 +9,7 @@ import { PlacesModule } from './places/places.module';
 import { HostelsModule } from './hostels/hostels.module';
 import { HotelsModule } from './hotels/hotels.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
+import { BlogModule } from './blog/blog.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { RestaurantsModule } from './restaurants/restaurants.module';
     HostelsModule,
     HotelsModule,
     RestaurantsModule,
+    BlogModule,
   ],
   controllers: [AppController],
   providers: [AppService],

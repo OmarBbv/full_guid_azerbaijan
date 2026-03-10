@@ -9,6 +9,7 @@ export const navItems = [
   { key: 'hostels', title: 'Hostels', href: paths.dashboard.hostels, icon: 'bed' },
   { key: 'landmarks', title: 'Landmarks', href: paths.dashboard.landmarks, icon: 'map-pin' },
   { key: 'restaurants', title: 'Restaurants', href: paths.dashboard.restaurants, icon: 'fork-knife' },
+  { key: 'blog', title: 'Blog', href: paths.dashboard.blog, icon: 'notebook' },
   { key: 'settings', title: 'Settings', href: paths.dashboard.settings, icon: 'gear-six' },
   { key: 'account', title: 'Account', href: paths.dashboard.account, icon: 'user' },
 ] satisfies NavItemConfig[];

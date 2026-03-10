@@ -3,10 +3,19 @@ import { placeService } from '@/services/api/place.service';
 
 export const PLACE_KEYS = {
   all: ['places'] as const,
+  list: (params: any) => ['places', 'list', params] as const,
   hero: (locale?: string) => ['places', 'hero', locale] as const,
   type: (type: string, locale?: string) => ['places', 'type', type, locale] as const,
   detail: (id: string, locale?: string) => ['places', 'detail', id, locale] as const,
 };
+
+export function usePlaces(params: any) {
+  return useQuery({
+    queryKey: PLACE_KEYS.list(params),
+    queryFn: () => placeService.getPlaces(params),
+    staleTime: 5 * 60 * 1000,
+  });
+}
 
 export function useHeroPlaces(locale?: string) {
   return useQuery({

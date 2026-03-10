@@ -27,18 +27,15 @@ export default function HotelsPage() {
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-16" style={{ height: "100dvh", minHeight: 680 }}>
         {/* Background Overlay */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.8) 100%)" }} />
-        <div className="absolute inset-0 z-10 bg-linear-to-r from-blue-900/40 to-slate-900/50 mix-blend-multiply" />
+        <div className="absolute inset-0 z-10 bg-linear-to-b from-black/70 via-transparent to-black/30" />
 
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <Image
+          <img
             src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop"
-            alt="Otellər"
-            fill
-            className="object-cover"
-            style={{ filter: "brightness(0.65) saturate(1.2)" }}
-            priority
+            alt="Hotels"
+            className="w-full h-full object-cover"
+            style={{ filter: "brightness(0.5)" }}
           />
         </div>
 

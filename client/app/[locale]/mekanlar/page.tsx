@@ -1,28 +1,38 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Star, Map, SlidersHorizontal } from "lucide-react";
+import { Search, Star, Map, SlidersHorizontal, Loader2 } from "lucide-react";
 import { PlaceCard } from "@/components/home/PlaceCard";
-import { PLACES } from "@/constants/places";
+import { usePlaces } from "@/hooks/use-places";
+import { useLocale } from "next-intl";
 
-// Categories
 const categories = [
   { id: "hamısı", label: "Bütün Məkanlar", icon: "✨" },
-  { id: "dağlar", label: "Dağlar", icon: "🏔️" },
-  { id: "şəhərlər", label: "Şəhərlər", icon: "🏙️" },
-  { id: "tarix", label: "Tarixi Yerlər", icon: "🏛️" },
-  { id: "təbiət", label: "Təbiət", icon: "🌿" },
-  { id: "sahil", label: "Sahil", icon: "🏖️" },
+  { id: "landmark", label: "Tarixi Yerlər", icon: "🏛️" },
+  { id: "hotel", label: "Otellər", icon: "🏨" },
+  { id: "hostel", label: "Hostellər", icon: "🛌" },
+  { id: "restaurant", label: "Restoranlar", icon: "🍴" },
+  { id: "nature", label: "Təbiət", icon: "🌿" },
 ];
 
 export default function PlacesPage() {
+  const locale = useLocale();
   const [activeCategory, setActiveCategory] = useState("hamısı");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredPlaces = PLACES.filter(place => {
-    const matchesCategory = activeCategory === "hamısı" || place.category === activeCategory;
-    const matchesSearch = place.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      place.region.toLowerCase().includes(searchQuery.toLowerCase());
+  const { data: allPlaces, isLoading } = usePlaces({
+    language: locale
+  });
+
+  const filteredPlaces = (allPlaces || []).filter(place => {
+    const matchesCategory = activeCategory === "hamısı" ||
+      (place.type?.toLowerCase() === activeCategory.toLowerCase());
+
+    const matchesSearch =
+      place.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      place.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      place.short_description?.toLowerCase().includes(searchQuery.toLowerCase());
+
     return matchesCategory && matchesSearch;
   });
 
@@ -130,7 +140,11 @@ export default function PlacesPage() {
           {/* Results Info */}
           <div className="mb-8 flex items-center justify-between text-muted-foreground">
             <p className="font-medium">
-              <span className="text-foreground font-bold">{filteredPlaces.length}</span> məkan tapıldı
+              {isLoading ? (
+                <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Yüklənir...</span>
+              ) : (
+                <><span className="text-foreground font-bold">{filteredPlaces.length}</span> məkan tapıldı</>
+              )}
             </p>
             {/* Sort Dropdown Placeholder */}
             <div className="flex items-center gap-2 text-sm font-medium hover:text-foreground cursor-pointer transition-colors">
@@ -139,7 +153,13 @@ export default function PlacesPage() {
           </div>
 
           {/* Grid */}
-          {filteredPlaces.length > 0 ? (
+          {isLoading ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="aspect-[4/5] bg-muted animate-pulse rounded-[40px]" />
+              ))}
+            </div>
+          ) : filteredPlaces.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {filteredPlaces.map((place, i) => (
                 <PlaceCard key={place.id} place={place} index={i} />
@@ -162,7 +182,7 @@ export default function PlacesPage() {
           )}
 
           {/* Load More Button */}
-          {filteredPlaces.length > 0 && (
+          {!isLoading && filteredPlaces.length > 10 && (
             <div className="mt-16 flex justify-center">
               <button className="px-8 py-3.5 bg-card border border-border rounded-xl text-foreground font-bold hover:bg-muted transition-colors shadow-sm flex items-center gap-2">
                 Daha çox yüklə

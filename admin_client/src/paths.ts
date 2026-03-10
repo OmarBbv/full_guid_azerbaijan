@@ -17,6 +17,8 @@ export const paths = {
     placesCreate: '/dashboard/places/create',
     restaurants: '/dashboard/restaurants',
     restaurantsCreate: '/dashboard/restaurants/create',
+    blog: '/dashboard/blog',
+    blogCreate: '/dashboard/blog/create',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

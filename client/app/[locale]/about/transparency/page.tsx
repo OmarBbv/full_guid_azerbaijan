@@ -10,19 +10,18 @@ export default function TransparencyPage() {
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-16" style={{ height: "100dvh", minHeight: 680 }}>
         {/* Background Overlay */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.6) 100%)" }} />
-        <div className="absolute inset-0 z-10 bg-linear-to-r from-green-900/60 to-teal-900/60 mix-blend-multiply" />
+        {/* Background Overlay */}
+        <div className="absolute inset-0 z-10 bg-linear-to-b from-black/60 via-transparent to-black/20" />
 
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1599806136154-18dd48bf1218?q=80&w=2070&auto=format&fit=crop"
-            alt="Şəffaflıq"
-            fill
-            className="object-cover"
-            style={{ filter: "brightness(0.65) saturate(1.1)" }}
-            priority
+          <img
+            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+            alt="Transparency Background"
+            className="w-full h-full object-cover"
+            style={{ filter: "brightness(0.5)" }}
           />
+          <div className="absolute inset-0 bg-black/30" />
         </div>
 
         {/* Hero Content */}

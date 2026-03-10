@@ -7,7 +7,7 @@ import { Place } from "@/types/place";
 import { useTranslations } from "next-intl";
 
 interface PlaceCardProps {
-  place: any;
+  place: Place;
   index: number;
 }
 
@@ -48,15 +48,16 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
     }
 
     localStorage.setItem("favorites", JSON.stringify(favorites));
-    // Optional: Dispatch a custom event to notify other components (like Favorites page or Navbar)
     window.dispatchEvent(new Event("storage_favorites_updated"));
   };
+
+  const accentColor = place.accent_color || "#3b9cf5";
 
   return (
     <Link
       href={`/mekanlar/${place.id}`}
       ref={ref}
-      className="group block relative rounded-3xl overflow-hidden cursor-pointer bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.13)]"
+      className="group block relative rounded-3xl overflow-hidden cursor-pointer bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.13)] h-full"
       style={{
         opacity: visible ? 1 : 0,
         transform: visible ? "translateY(0)" : "translateY(32px)",
@@ -64,10 +65,10 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
       }}
     >
       {/* Image */}
-      <div className="relative overflow-hidden" style={{ height: 260 }}>
+      <div className="relative w-full overflow-hidden h-[260px]">
         <img
-          src={place.img}
-          alt={place.name}
+          src={place.thumbnail || (place.images?.[0]?.url) || "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=700&auto=format&fit=crop"}
+          alt={place.title}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.08]"
         />
         <div
@@ -78,12 +79,12 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
         />
 
         {/* Badge */}
-        {place.badge && (
+        {place.is_featured && (
           <div
             className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider"
-            style={{ background: `${place.accent}dd`, backdropFilter: "blur(8px)" }}
+            style={{ background: `${accentColor}dd`, backdropFilter: "blur(8px)" }}
           >
-            {place.badge}
+            TOP
           </div>
         )}
 
@@ -104,49 +105,51 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
           />
         </button>
 
-        {/* Tag */}
-        <div
-          className="absolute bottom-4 left-4 px-3 py-1 rounded-full text-[11px] font-medium text-white/80"
-          style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
-        >
-          {place.tag}
-        </div>
+        {/* Tag (Type) */}
+        {place.type && (
+          <div
+            className="absolute bottom-4 left-4 px-3 py-1 rounded-full text-[11px] font-medium text-white/80"
+            style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
+          >
+            {place.type}
+          </div>
+        )}
       </div>
 
       {/* Content */}
-      <div className="p-5 bg-card">
+      <div className="p-5 bg-card h-full flex flex-col">
         <div className="flex items-start justify-between mb-2">
-          <div>
-            <h3 className="font-bold text-lg leading-tight mb-1 text-foreground">
-              {place.name}
+          <div className="flex-1">
+            <h3 className="font-bold text-lg leading-tight mb-1 text-foreground line-clamp-1">
+              {place.title}
             </h3>
             <div className="flex items-center gap-1.5">
               <MapPin size={12} className="text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                {place.region}
+              <span className="text-sm text-muted-foreground line-clamp-1">
+                {place.city}
               </span>
             </div>
           </div>
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-sm font-bold shrink-0"
-            style={{ background: `${place.accent}18`, color: place.accent }}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-sm font-bold shrink-0 ml-2"
+            style={{ background: `${accentColor}18`, color: accentColor }}
           >
             <Star size={12} className="fill-current" />
-            {place.rating}
+            {Number(place.average_rating) || 0}
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
           <span className="text-xs text-muted-foreground">
-            {place.reviews} {t('reviews')}
+            {place.review_count || 0} {t('reviews')}
           </span>
-          <button
+          <div
             className="flex items-center gap-1.5 text-xs font-bold transition-transform duration-200 group-hover:translate-x-1"
-            style={{ color: place.accent }}
+            style={{ color: accentColor }}
           >
             {t('explore')}
             <ArrowRight size={13} />
-          </button>
+          </div>
         </div>
       </div>
     </Link>

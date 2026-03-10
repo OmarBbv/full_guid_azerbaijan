@@ -7,7 +7,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: ['https://full-guid-azerbaijan.onrender.com', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://full-guid-azerbaijan.onrender.com', 'http://localhost:3333', 'http://localhost:3334', 'http://localhost:3000'],
     credentials: true,
   });
 

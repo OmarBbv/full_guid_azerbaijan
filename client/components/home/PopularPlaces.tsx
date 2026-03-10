@@ -1,35 +1,20 @@
 "use client";
 
-import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { PlaceCard } from "./PlaceCard";
-import { Place } from "@/types/place";
-import { useTranslations } from "next-intl";
-
-
-
-import { PLACES } from "@/constants/places";
+import { useLocale, useTranslations } from "next-intl";
+import { usePlaces } from "@/hooks/use-places";
 
 export default function PopularPlaces() {
   const t = useTranslations('Home');
-  const [activeCategory, setActiveCategory] = useState("all");
-
-  const categories = [
-    { id: "all", label: t('all'), icon: "✨", count: 340 },
-    { id: "dağlar", label: t('mountains'), icon: "🏔️", count: 48 },
-    { id: "şəhərlər", label: t('cities'), icon: "🏙️", count: 32 },
-    { id: "tarix", label: t('historical_places'), icon: "🏛️", count: 67 },
-    { id: "təbiət", label: t('nature'), icon: "🌿", count: 54 },
-    { id: "sahil", label: t('coast'), icon: "🏖️", count: 23 },
-  ];
-
-  const filtered = activeCategory === "all"
-    ? PLACES
-    : PLACES.filter((p) => p.category === activeCategory);
+  const locale = useLocale();
+  const { data: places, isLoading } = usePlaces({
+    language: locale,
+    is_featured: true
+  });
 
   return (
     <section className="py-24 relative overflow-hidden">
-      {/* Decorative blobs */}
       <div className="absolute rounded-full blur-[80px] opacity-[0.06] pointer-events-none w-[500px] h-[500px] bg-[#3b9cf5] -top-[100px] -right-[100px]" />
       <div className="absolute rounded-full blur-[80px] opacity-[0.06] pointer-events-none w-[400px] h-[400px] bg-[#4dd9ac] -bottom-[80px] -left-[80px]" />
 
@@ -63,41 +48,17 @@ export default function PopularPlaces() {
           </a>
         </div>
 
-        {/* Category Filter */}
-        <div className="flex gap-2 flex-wrap mb-10">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className="flex items-center gap-2 px-4 py-2.5 rounded-full text-sm font-medium transition-all duration-300"
-              style={{
-                background: activeCategory === cat.id ? "var(--primary)" : "var(--card)",
-                color: activeCategory === cat.id ? "var(--primary-foreground)" : "var(--muted-foreground)",
-                border: `1px solid ${activeCategory === cat.id ? "transparent" : "var(--border)"}`,
-                boxShadow: activeCategory === cat.id ? "0 4px 16px rgba(30,58,138,0.3)" : "none",
-                transform: activeCategory === cat.id ? "scale(1.04)" : "scale(1)",
-              }}
-            >
-              <span>{cat.icon}</span>
-              {cat.label}
-              <span
-                className="text-[11px] px-1.5 py-0.5 rounded-full font-bold"
-                style={{
-                  background: activeCategory === cat.id ? "rgba(255,255,255,0.25)" : "var(--muted)",
-                  color: activeCategory === cat.id ? "white" : "var(--muted-foreground)",
-                }}
-              >
-                {cat.count}
-              </span>
-            </button>
-          ))}
-        </div>
-
-        {/* Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((place, i) => (
-            <PlaceCard key={place.id} place={place} index={i} />
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
+          {isLoading ? (
+            // Simple Skeleton
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="bg-muted/50 rounded-3xl h-[450px] animate-pulse" />
+            ))
+          ) : (
+            places?.slice(0, 6).map((place, i) => (
+              <PlaceCard key={place.id} place={place} index={i} />
+            ))
+          )}
         </div>
       </div>
     </section>

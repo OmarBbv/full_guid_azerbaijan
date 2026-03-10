@@ -10,8 +10,7 @@ export default function PrinciplesPage() {
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-16" style={{ height: "100dvh", minHeight: 680 }}>
         {/* Background Overlay */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.6) 100%)" }} />
-        <div className="absolute inset-0 z-10 bg-linear-to-r from-zinc-900/80 to-slate-900/80 mix-blend-multiply" />
+        <div className="absolute inset-0 z-10 bg-linear-to-b from-black/50 via-transparent to-background" />
 
         {/* Background Image */}
         <div className="absolute inset-0 z-0">

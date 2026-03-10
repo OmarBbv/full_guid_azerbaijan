@@ -24,18 +24,15 @@ export default function RestaurantsPage() {
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-16" style={{ height: "60dvh", minHeight: 400 }}>
         {/* Background Overlay */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.8) 100%)" }} />
-        <div className="absolute inset-0 z-10 bg-linear-to-r from-orange-600/30 to-red-900/50 mix-blend-multiply" />
+        <div className="absolute inset-0 z-10 bg-linear-to-b from-black/70 via-transparent to-black/30" />
 
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?q=80&w=2074&auto=format&fit=crop"
-            alt="Restoranlar"
-            fill
-            className="object-cover"
-            style={{ filter: "brightness(0.65) saturate(1.2)" }}
-            priority
+          <img
+            src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074&auto=format&fit=crop"
+            alt="Restaurants"
+            className="w-full h-full object-cover"
+            style={{ filter: "brightness(0.5)" }}
           />
         </div>
 

@@ -4,205 +4,116 @@ import { useRef, useEffect, useState } from "react";
 import { Quote } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-const testimonials = [
-  {
-    id: 1,
-    name: "Elena Sorokina",
-    country: "Rusiya",
-    flag: "🇷🇺",
-    avatar: "https://i.pravatar.cc/80?img=47",
-    text: "Bakı məni tamamilə heyrətlə qarşıladı. FullGuide sayəsində gizli məkanları, yerli restoranları tapdım. Növbəti il mütləq Qəbələyə getmək istəyirəm!",
-    rating: 5,
-    place: "Bakı, Abşeron",
-    accent: "#3b9cf5",
-  },
-  {
-    id: 2,
-    name: "Marco Bianchi",
-    country: "İtaliya",
-    flag: "🇮🇹",
-    avatar: "https://i.pravatar.cc/80?img=33",
-    text: "Şuşa turu həyatımın ən yaxşı səyahəti oldu. Yerli musiqi, tarixi qala, möhtəşəm təbiət — hamısı bir yerdə idi. FullGuide-ın bələdçisi əvəzolunmazdı.",
-    rating: 5,
-    place: "Şuşa, Qarabağ",
-    accent: "#f5a623",
-  },
-  {
-    id: 3,
-    name: "Yuna Tanaka",
-    country: "Yaponiya",
-    flag: "🇯🇵",
-    avatar: "https://i.pravatar.cc/80?img=44",
-    text: "Qəbələdə 5 gün keçirdim — dağlar, göllər, saf hava. Platforma ingiliscədir, amma məlumatlar çox detallı. Azərbaycan gözləntilərimden çox daha gözəldi!",
-    rating: 5,
-    place: "Qəbələ, Şimal",
-    accent: "#4dd9ac",
-  },
-  {
-    id: 4,
-    name: "Farida Al-Rashid",
-    country: "BƏƏ",
-    flag: "🇦🇪",
-    avatar: "https://i.pravatar.cc/80?img=21",
-    text: "Lənkəran — Azərbaycanın gizli cənnəti. Çay bağçaları, fərqli mətbəx, mehribanlıq. FullGuide bu unudulmaz səyahəti planlaşdırmağı çox asanlaşdırdı.",
-    rating: 5,
-    place: "Lənkəran",
-    accent: "#8bc34a",
-  },
-];
-
-export default function TestimonialsSection() {
-  const t = useTranslations('Home');
-  const [active, setActive] = useState(1);
-  const ref = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setVisible(true); },
-      { threshold: 0.2 }
-    );
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, []);
-
-  // Auto rotate
-  useEffect(() => {
-    const t = setInterval(() => setActive((a) => (a + 1) % testimonials.length), 5000);
-    return () => clearInterval(t);
-  }, []);
-
-  const current = testimonials[active];
-
+function TestimonialCard({ item }: { item: any }) {
   return (
-    <section
-      ref={ref}
-      className="py-24 relative overflow-hidden"
-      style={{
-        background: "linear-gradient(135deg, color-mix(in srgb, var(--primary) 5%, var(--background)) 0%, var(--background) 100%)",
-      }}
-    >
-      {/* decorative */}
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, var(--border) 1px, transparent 0)",
-          backgroundSize: "40px 40px",
-          opacity: 0.4,
-        }}
-      />
-
-      <div className="relative max-w-5xl mx-auto px-6">
-        <div className="text-center mb-16">
-          <span className="section-pill">💬 {t('reviews', { fallback: 'Rəylər' })}</span>
-          <h2 className="section-title mt-4">
-            {t('what_travelers_say')}
-          </h2>
-          <p className="section-desc mx-auto mt-3 text-center">
-            {t('travelers_experience_desc')}
-          </p>
-        </div>
-
-        {/* Main testimonial */}
-        <div
-          className="testimonial-card relative rounded-3xl p-10 mb-8 text-center"
-          style={{
-            opacity: visible ? 1 : 0,
-            transform: visible ? "translateY(0)" : "translateY(24px)",
-            transition: "opacity 0.7s ease, transform 0.7s cubic-bezier(0.22,1,0.36,1)",
-          }}
-        >
-          {/* Quote icon */}
-          <Quote
-            size={40}
-            className="mx-auto mb-6 opacity-15"
-            style={{ color: current.accent }}
-          />
-
-          {/* Text */}
-          <p
-            className="text-xl leading-relaxed font-medium mb-8 max-w-2xl mx-auto"
-            style={{ color: "var(--foreground)" }}
-            key={active}
-          >
-            "{current.text}"
-          </p>
-
-          {/* Stars */}
-          <div className="flex items-center justify-center gap-1 mb-6">
-            {[...Array(5)].map((_, i) => (
-              <span key={i} style={{ color: current.accent }} className="text-xl">
-                ★
-              </span>
-            ))}
-          </div>
-
-          {/* Author */}
-          <div className="flex flex-col items-center gap-3">
-            <img
-              src={current.avatar}
-              alt={current.name}
-              className="w-14 h-14 rounded-full object-cover ring-4 ring-white/20"
-            />
-            <div>
-              <div className="font-bold text-base" style={{ color: "var(--foreground)" }}>
-                {current.name} {current.flag}
-              </div>
-              <div className="text-sm" style={{ color: "var(--muted-foreground)" }}>
-                {current.country} · {current.place}
-              </div>
-            </div>
-          </div>
-
-          {/* Accent border bottom */}
-          <div
-            className="absolute bottom-0 left-0 right-0 h-1 rounded-b-3xl"
-            style={{
-              background: `linear-gradient(90deg, transparent, ${current.accent}, transparent)`,
-              transition: "background 0.8s ease",
-            }}
+    <div className="shrink-0 w-[400px] mx-4 p-8 rounded-3xl bg-card border border-border shadow-md hover:shadow-xl transition-shadow duration-300">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="w-12 h-12 rounded-full overflow-hidden ring-2 ring-primary/20 shrink-0">
+          <img
+            src={`https://ui-avatars.com/api/?name=A&background=random&color=fff&bold=true`}
+            alt="Anonymous"
+            className="w-full h-full object-cover"
           />
         </div>
-
-        {/* Thumbnails */}
-        <div className="flex items-center justify-center gap-4">
-          {testimonials.map((t, i) => (
-            <button
-              key={t.id}
-              onClick={() => setActive(i)}
-              className="relative transition-all duration-400"
-              style={{
-                transform: i === active ? "scale(1.15)" : "scale(1)",
-                opacity: i === active ? 1 : 0.5,
-              }}
-            >
-              <img
-                src={t.avatar}
-                alt={t.name}
-                className="w-12 h-12 rounded-full object-cover"
-                style={{
-                  border: i === active ? `3px solid ${t.accent}` : "3px solid transparent",
-                  transition: "border-color 0.3s ease",
-                }}
-              />
-              {i === active && (
-                <div
-                  className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full"
-                  style={{ background: t.accent }}
-                />
-              )}
-            </button>
+        <div>
+          <h4 className="font-bold text-foreground text-sm uppercase tracking-tight">{item.name}</h4>
+          <p className="text-xs text-muted-foreground">{item.country}</p>
+        </div>
+        <div className="ml-auto flex gap-0.5">
+          {[...Array(5)].map((_, i) => (
+            <span key={i} className="text-[#f5a623] text-xs">★</span>
           ))}
         </div>
       </div>
+      <p className="text-muted-foreground text-[14px] leading-relaxed italic">
+        "{item.text}"
+      </p>
+    </div>
+  );
+}
 
-      <style jsx global>{`
-        .testimonial-card {
-          background: var(--card);
-          border: 1px solid var(--border);
-          box-shadow: 0 8px 40px rgba(0,0,0,0.08);
+export default function TestimonialsSection() {
+  const t = useTranslations('Testimonials');
+  const t_home = useTranslations('Home');
+  const items = t.raw('list') || [];
+
+  const mid = Math.ceil(items.length / 2);
+  const row1 = [...items.slice(0, mid), ...items.slice(0, mid)];
+  const row2 = [...items.slice(mid), ...items.slice(mid)];
+
+  return (
+    <section className="py-24 relative overflow-hidden bg-background">
+      {/* Decorative Blobs */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="relative max-w-7xl mx-auto px-6 mb-16 text-center">
+        <span className="section-pill">💬 {t_home('reviews', { fallback: 'Rəylər' })}</span>
+        <h2 className="section-title mt-4">
+          {t_home('what_travelers_say')}
+        </h2>
+      </div>
+
+      <div className="relative flex flex-col gap-8">
+        {/* Row 1: To Right */}
+        <div className="marquee-wrapper overflow-hidden">
+          <div className="marquee-track marquee-to-right">
+            {row1.map((item: any, i: number) => (
+              <TestimonialCard key={`row1-${i}`} item={item} />
+            ))}
+          </div>
+        </div>
+
+        {/* Row 2: To Left */}
+        <div className="marquee-wrapper overflow-hidden">
+          <div className="marquee-track marquee-to-left">
+            {row2.map((item: any, i: number) => (
+              <TestimonialCard key={`row2-${i}`} item={item} />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <style jsx>{`
+        .marquee-wrapper {
+          width: 100%;
+          mask-image: linear-gradient(
+            to right,
+            transparent,
+            black 10%,
+            black 90%,
+            transparent
+          );
+        }
+
+        .marquee-track {
+          display: flex;
+          width: max-content;
+        }
+
+        .marquee-to-right {
+          animation: marquee-right 40s linear infinite;
+        }
+
+        .marquee-to-left {
+          animation: marquee-left 40s linear infinite;
+        }
+
+        @keyframes marquee-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+        @keyframes marquee-right {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0); }
+        }
+
+        .marquee-track:hover {
+          animation-play-state: paused;
         }
       `}</style>
     </section>
   );
 }
+

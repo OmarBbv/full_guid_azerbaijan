@@ -1,55 +1,61 @@
 "use client";
 
-import { Link, usePathname, useRouter } from '@/i18n/routing';
-import { useLocale, useTranslations } from 'next-intl';
-import { Map, User, Menu, MapPin, Search, Globe, ChevronRight, Heart, X, ChevronDown } from 'lucide-react';
-import { useState, useEffect, useRef } from 'react';
+import { Link, usePathname, useRouter } from "@/i18n/routing";
+import Azerbaijan from "@react-map/azerbaijan";
+import {
+  ChevronDown,
+  ChevronRight,
+  Globe,
+  Heart,
+  Map,
+  MapPin,
+  Menu,
+  Search,
+  User,
+  X,
+} from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
+
+const CITY_MARKERS = [
+  { name: "Bakı", pctX: 90.5, pctY: 42.6 },
+  { name: "Şəki", pctX: 42.3, pctY: 20.2 },
+  { name: "Qəbələ", pctX: 54.4, pctY: 26.3 },
+  { name: "Quba", pctX: 66.3, pctY: 15.4 },
+  { name: "Şamaxı", pctX: 66.7, pctY: 36.3 },
+  { name: "Lənkəran", pctX: 70.3, pctY: 89.9 },
+  { name: "Gəncə", pctX: 27.9, pctY: 34.8 },
+  { name: "Naxçıvan", pctX: 10.9, pctY: 76.9 },
+] as const;
+
+const CITY_ROUTES: { from: string; to: string }[] = [
+  // Bakıdan şimal-qərb turu
+  { from: "Bakı", to: "Şamaxı" },
+  { from: "Şamaxı", to: "Qəbələ" },
+  { from: "Qəbələ", to: "Şəki" },
+  { from: "Şəki", to: "Quba" },
+  // Bakıdan cənub və qərb xətləri
+  { from: "Bakı", to: "Lənkəran" },
+  { from: "Bakı", to: "Gəncə" },
+  { from: "Gəncə", to: "Naxçıvan" },
+];
+
+type NavLink = {
+  id: string;
+  label: string;
+  href?: string;
+  subLinks?: { label: string; href: string; mapKey?: string }[];
+  isMega?: boolean;
+};
 
 export default function Navbar() {
-  const t = useTranslations('Navbar');
+  const t = useTranslations("Navbar");
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  const navLinks = [
-    { id: 'home', label: t('home'), href: '/' },
-    {
-      id: 'getting-started',
-      label: t('getting_started'),
-      subLinks: [
-        { label: t('about_baku'), href: '/info/baku' },
-        { label: t('airport_info'), href: '/info/airport' },
-      ]
-    },
-    {
-      id: 'getting-around',
-      label: t('getting_around'),
-      subLinks: [
-        { label: t('taxi_services'), href: '/transport/taxi' },
-        { label: t('public_transport'), href: '/transport/public' },
-      ]
-    },
-    {
-      id: 'destinations',
-      label: t('destinations'),
-      subLinks: [
-        { label: t('landmarks'), href: '/places/landmarks' },
-        { label: t('restaurants'), href: '/places/restaurants' },
-        { label: t('hotels'), href: '/places/hotels' },
-        { label: t('hostels'), href: '/places/hostels' },
-      ]
-    },
-    {
-      id: 'about',
-      label: t('about'),
-      subLinks: [
-        { label: t('about_fga'), href: '/about/fga' },
-        { label: t('platform_principles'), href: '/about/principles' },
-        { label: t('transparency'), href: '/about/transparency' },
-      ]
-    },
-    { id: 'contact', label: t('contact'), href: '/contact' },
-  ];
-  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(null);
+  const [hoveredMapCity, setHoveredMapCity] = useState<string | null>(null);
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<string | null>(
+    null,
+  );
   const [langOpen, setLangOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
@@ -57,50 +63,114 @@ export default function Navbar() {
   const locale = useLocale();
 
   const LANGUAGES = [
-    { code: 'az', label: 'Azərbaycan', flag: '🇦🇿' },
-    { code: 'en', label: 'English', flag: '🇬🇧' },
-    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+    { code: "az", label: "Azərbaycan", flag: "🇦🇿" },
+    { code: "en", label: "English", flag: "🇬🇧" },
+    { code: "ru", label: "Русский", flag: "🇷🇺" },
+  ];
+  const currentLang = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
+
+  const navLinks: NavLink[] = [
+    { id: "home", label: t("home"), href: "/" },
+    {
+      id: "getting-started",
+      label: t("getting_started"),
+      subLinks: [
+        { label: t("about_baku"), href: "/info/baku" },
+        { label: t("airport_info"), href: "/info/airport" },
+      ],
+    },
+    {
+      id: "where-to-go",
+      label: t("where_to_go"),
+      isMega: true,
+      subLinks: [
+        { label: t("baku"), href: "/regions/baku", mapKey: "Bakı" },
+        { label: t("sheki"), href: "/regions/sheki", mapKey: "Şəki" },
+        { label: t("qabala"), href: "/regions/qabala", mapKey: "Qəbələ" },
+        { label: t("quba"), href: "/regions/quba", mapKey: "Quba" },
+        { label: t("shamakhi"), href: "/regions/shamakhi", mapKey: "Şamaxı" },
+        { label: t("lankaran"), href: "/regions/lankaran", mapKey: "Lənkəran" },
+        { label: t("ganja"), href: "/regions/ganja", mapKey: "Gəncə" },
+        {
+          label: t("nakhchivan"),
+          href: "/regions/nakhchivan",
+          mapKey: "Naxçıvan",
+        },
+      ],
+    },
+    {
+      id: "destinations",
+      label: t("destinations"),
+      subLinks: [
+        { label: t("landmarks"), href: "/places/landmarks" },
+        { label: t("restaurants"), href: "/places/restaurants" },
+        { label: t("hotels"), href: "/places/hotels" },
+        { label: t("hostels"), href: "/places/hostels" },
+      ],
+    },
+    {
+      id: "about",
+      label: t("about"),
+      subLinks: [
+        { label: t("about_fga"), href: "/about/fga" },
+        { label: t("platform_principles"), href: "/about/principles" },
+        { label: t("transparency"), href: "/about/transparency" },
+      ],
+    },
+    { id: "contact", label: t("contact"), href: "/contact" },
   ];
 
-  const currentLang = LANGUAGES.find(l => l.code === locale) ?? LANGUAGES[0];
+  const authRoutes = ["/login", "/register"];
+  const isAuthPage = authRoutes.some((r) => pathname?.includes(r));
+  if (isAuthPage) return null;
 
   useEffect(() => {
-    function handler(e: MouseEvent) {
+    const onScroll = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
       if (langRef.current && !langRef.current.contains(e.target as Node)) {
         setLangOpen(false);
       }
-    }
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  const authRoutes = ['/login', '/register'];
-  const isAuthPage = authRoutes.some(route => pathname?.includes(route));
-  const isLightPage = false;
+  const navColor = "text-white";
+  const navColorMuted = "text-white/70";
+  const activeLinkColor = "#3b9cf5";
 
-  useEffect(() => {
-    if (isAuthPage) return;
-    const onScroll = () => setScrolled(window.scrollY > 40);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [isAuthPage]);
+  const routeMap: Record<string, string> = {
+    Bakı: "/regions/baku",
+    Şəki: "/regions/sheki",
+    Qəbələ: "/regions/qabala",
+    Quba: "/regions/quba",
+    Şamaxı: "/regions/shamakhi",
+    Lənkəran: "/regions/lankaran",
+    Gəncə: "/regions/ganja",
+    Naxçıvan: "/regions/nakhchivan",
+  };
 
-  if (isAuthPage) return null;
-
-  const navColor = 'text-white';
-  const navColorMuted = 'text-white/70';
-  const activeLinkColor = '#3b9cf5';
+  const markerLookup = CITY_MARKERS.reduce<
+    Record<string, { pctX: number; pctY: number }>
+  >((acc, m) => {
+    acc[m.name] = { pctX: m.pctX, pctY: m.pctY };
+    return acc;
+  }, {});
 
   return (
     <>
       <nav
         className="fixed top-0 left-0 z-50 w-full transition-all duration-500"
         style={{
-          background: 'rgba(10, 12, 20, 0.75)',
-          backdropFilter: 'blur(24px)',
-          WebkitBackdropFilter: 'blur(24px)',
-          borderBottom: '1px solid rgba(255,255,255,0.08)',
-          paddingTop: scrolled ? 0 : 0,
+          background: "rgba(10, 12, 20, 0.75)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderBottom: "1px solid rgba(255,255,255,0.08)",
         }}
       >
         <div className="mx-auto max-w-7xl px-6 md:px-14">
@@ -108,57 +178,230 @@ export default function Navbar() {
             className="flex items-center justify-between transition-all duration-300"
             style={{ height: scrolled ? 60 : 72 }}
           >
-
-            {/* Logo */}
             <Link href="/" className="flex items-center gap-2 group">
               <div
                 className="w-8 h-8 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
-                style={{ background: 'linear-gradient(135deg, #3b9cf5, #6f5cf6)' }}
+                style={{
+                  background: "linear-gradient(135deg, #3b9cf5, #6f5cf6)",
+                }}
               >
                 <MapPin className="w-4 h-4 text-white" />
               </div>
-              <span className={`font-extrabold text-lg tracking-tight ${isLightPage ? 'text-foreground' : 'text-white'}`}>
-                Full<span style={{ color: '#3b9cf5' }}>Guide</span>
+              <span className="font-extrabold text-lg tracking-tight text-white">
+                Full<span style={{ color: "#3b9cf5" }}>Guide</span>
               </span>
             </Link>
 
-            {/* Center Links */}
-            <div className="hidden lg:flex items-center gap-7">
+            <div className="hidden lg:flex items-center gap-7 h-full">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href || (link.subLinks && link.subLinks.some(sub => pathname === sub.href));
+                const isActive =
+                  pathname === link.href ||
+                  (link.subLinks?.some((sub) => pathname === sub.href) ??
+                    false);
+
                 return link.subLinks ? (
-                  <div key={link.id} className="relative group/nav-item py-4 cursor-pointer">
-                    <span className={`relative flex items-center gap-1 text-[14px] font-semibold transition-colors duration-200 ${isActive ? navColor : navColorMuted} group-hover/nav-item:${navColor}`}>
+                  <div
+                    key={link.id}
+                    className="relative group/nav-item h-full flex items-center cursor-pointer"
+                  >
+                    <span
+                      className={`flex items-center gap-1 text-[14px] font-semibold transition-colors duration-200 ${
+                        isActive ? navColor : navColorMuted
+                      } group-hover/nav-item:text-white`}
+                    >
                       {link.label}
                       <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover/nav-item:rotate-180 transition-transform duration-300" />
-                      <span
-                        className={`absolute -bottom-1 left-0 h-[2px] w-0 rounded-full transition-all duration-300 group-hover/nav-item:w-full ${isActive ? 'w-full' : ''}`}
-                        style={{ background: activeLinkColor }}
-                      />
                     </span>
+                    <span
+                      className={`absolute bottom-0 left-0 h-[3px] transition-all duration-300 group-hover/nav-item:w-full ${
+                        isActive ? "w-full" : "w-0"
+                      }`}
+                      style={{
+                        background: activeLinkColor,
+                        borderRadius: "4px 4px 0 0",
+                      }}
+                    />
 
-                    {/* PC Dropdown Menu */}
-                    <div className="absolute top-full left-0 pt-2 opacity-0 translate-y-2 pointer-events-none group-hover/nav-item:opacity-100 group-hover/nav-item:translate-y-0 group-hover/nav-item:pointer-events-auto transition-all duration-300">
+                    <div
+                      className={`absolute top-full ${
+                        link.isMega
+                          ? "left-1/2 -translate-x-[45%] w-[980px]"
+                          : "left-0 w-[280px]"
+                      } pt-2 opacity-0 translate-y-2 pointer-events-none
+                        group-hover/nav-item:opacity-100 group-hover/nav-item:translate-y-0
+                        group-hover/nav-item:pointer-events-auto transition-all duration-300`}
+                    >
                       <div
-                        className="w-[280px] rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] overflow-hidden py-2"
+                        className={`rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] overflow-hidden ${
+                          link.isMega ? "p-12" : "py-2"
+                        }`}
                         style={{
-                          background: isLightPage ? '#ffffff' : 'rgba(15, 18, 25, 0.98)',
-                          border: isLightPage ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.08)',
-                          backdropFilter: 'blur(20px)'
+                          background: "rgba(15, 18, 25, 0.98)",
+                          border: "1px solid rgba(255,255,255,0.08)",
+                          backdropFilter: "blur(20px)",
                         }}
                       >
-                        {link.subLinks.map(sub => (
-                          <Link
-                            key={sub.href}
-                            href={sub.href}
-                            className={`block px-5 py-3 text-[13.5px] font-medium transition-colors ${isLightPage
-                              ? 'text-foreground/80 hover:text-primary hover:bg-slate-50/50'
-                              : 'text-white/80 hover:text-white hover:bg-white/5'
-                              } ${pathname === sub.href ? (isLightPage ? 'text-primary bg-slate-50' : 'text-white bg-white/10') : ''}`}
-                          >
-                            {sub.label}
-                          </Link>
-                        ))}
+                        {link.isMega ? (
+                          <div className="flex gap-12">
+                            {/* City list */}
+                            <div className="w-[32%] flex flex-col">
+                              <h3 className="text-xl font-bold mb-8 flex items-center gap-2 text-white">
+                                <span className="w-2 h-2 rounded-full bg-blue-500" />
+                                {t("discover_destinations")}
+                              </h3>
+                              <div className="grid grid-cols-2 gap-x-6 gap-y-4">
+                                {link.subLinks?.map((sub) => (
+                                  <Link
+                                    key={sub.href}
+                                    href={sub.href}
+                                    onMouseEnter={() =>
+                                      sub.mapKey &&
+                                      setHoveredMapCity(sub.mapKey)
+                                    }
+                                    onMouseLeave={() => setHoveredMapCity(null)}
+                                    className={`text-[15px] font-medium transition-colors ${
+                                      hoveredMapCity === sub.mapKey
+                                        ? "text-blue-400"
+                                        : "text-white/70 hover:text-blue-400"
+                                    }`}
+                                  >
+                                    {sub.label}
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="w-[68%] flex justify-center items-center p-4">
+                              <div className="relative inline-block">
+                                <Azerbaijan
+                                  type="select-single"
+                                  size={580}
+                                  mapColor="rgba(255,255,255,0.03)"
+                                  strokeColor="rgba(255,255,255,0.08)"
+                                  strokeWidth={1}
+                                  hoverColor="#3b9cf5"
+                                  selectColor="#3b9cf5"
+                                  cityColors={
+                                    hoveredMapCity
+                                      ? { [hoveredMapCity]: "#3b9cf5" }
+                                      : {}
+                                  }
+                                  hints={false}
+                                  hintTextColor="#ffffff"
+                                  hintBackgroundColor="#3b9cf5"
+                                  hintPadding="6px 12px"
+                                  hintBorderRadius={8}
+                                  onSelect={(state) => {
+                                    if (state && routeMap[state]) {
+                                      router.push(routeMap[state]);
+                                    }
+                                  }}
+                                />
+
+                                <div className="absolute inset-0 pointer-events-none">
+                                  <svg
+                                    className="w-full h-full"
+                                    viewBox="0 0 100 100"
+                                    preserveAspectRatio="none"
+                                  >
+                                    <defs>
+                                      <marker
+                                        id="city-arrow"
+                                        markerWidth="4"
+                                        markerHeight="4"
+                                        refX="3.5"
+                                        refY="2"
+                                        orient="auto"
+                                        markerUnits="strokeWidth"
+                                      >
+                                        <path
+                                          d="M0,0 L0,4 L4,2 z"
+                                          fill="#7dd3fc"
+                                        />
+                                      </marker>
+                                    </defs>
+                                    {CITY_ROUTES.map((route) => {
+                                      const from = markerLookup[route.from];
+                                      const to = markerLookup[route.to];
+                                      if (!from || !to) return null;
+                                      const isActive =
+                                        hoveredMapCity === route.from ||
+                                        hoveredMapCity === route.to;
+
+                                      return (
+                                        <line
+                                          key={`${route.from}-${route.to}`}
+                                          x1={from.pctX}
+                                          y1={from.pctY}
+                                          x2={to.pctX}
+                                          y2={to.pctY}
+                                          stroke={
+                                            isActive
+                                              ? "rgba(125,211,252,0.9)"
+                                              : "rgba(125,211,252,0.45)"
+                                          }
+                                          strokeWidth={isActive ? 1.2 : 0.85}
+                                          strokeDasharray="3 3"
+                                          markerEnd="url(#city-arrow)"
+                                        />
+                                      );
+                                    })}
+                                  </svg>
+
+                                  {CITY_MARKERS.map((marker) => (
+                                    <div
+                                      key={marker.name}
+                                      className="absolute"
+                                      style={{
+                                        left: `${marker.pctX}%`,
+                                        top: `${marker.pctY}%`,
+                                        transform: "translate(-50%, -50%)",
+                                      }}
+                                    >
+                                      <div
+                                        className={`relative flex items-center justify-center transition-all duration-300 ${
+                                          hoveredMapCity === marker.name
+                                            ? "scale-[1.6]"
+                                            : "scale-100"
+                                        }`}
+                                      >
+                                        <div
+                                          className={`absolute w-3 h-3 rounded-full bg-red-500 animate-ping transition-opacity ${
+                                            hoveredMapCity === marker.name
+                                              ? "opacity-50"
+                                              : "opacity-20"
+                                          }`}
+                                        />
+                                        <div
+                                          className={`rounded-full bg-red-500 border border-white shadow-[0_0_8px_rgba(239,68,68,0.6)] transition-all ${
+                                            hoveredMapCity === marker.name
+                                              ? "w-2.5 h-2.5 bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.9)]"
+                                              : "w-2 h-2"
+                                          }`}
+                                        />
+                                      </div>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          /* ── Sadə dropdown ── */
+                          link.subLinks?.map((sub) => (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              className={`block px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 hover:text-white hover:bg-white/5 ${
+                                pathname === sub.href
+                                  ? "text-white bg-white/10"
+                                  : ""
+                              }`}
+                            >
+                              {sub.label}
+                            </Link>
+                          ))
+                        )}
                       </div>
                     </div>
                   </div>
@@ -166,155 +409,180 @@ export default function Navbar() {
                   <Link
                     key={link.id}
                     href={link.href as any}
-                    className={`relative text-[14px] font-semibold transition-colors duration-200 group ${pathname === link.href ? navColor : navColorMuted} hover:${navColor}`}
+                    className={`relative h-full flex items-center text-[14px] font-semibold transition-colors duration-200 group ${
+                      pathname === link.href ? navColor : navColorMuted
+                    } hover:text-white`}
                   >
-                    {link.label}
+                    <span>{link.label}</span>
                     <span
-                      className={`absolute -bottom-1 left-0 h-[2px] w-0 rounded-full transition-all duration-300 group-hover:w-full ${pathname === link.href ? 'w-full' : ''}`}
-                      style={{ background: activeLinkColor }}
+                      className={`absolute bottom-0 left-0 h-[3px] transition-all duration-300 group-hover:w-full ${
+                        pathname === link.href ? "w-full" : "w-0"
+                      }`}
+                      style={{
+                        background: activeLinkColor,
+                        borderRadius: "4px 4px 0 0",
+                      }}
                     />
                   </Link>
                 );
               })}
             </div>
 
-            {/* Right Actions */}
+            {/* ── Desktop right actions ── */}
             <div className="hidden lg:flex items-center gap-5">
               <button
-                className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors duration-200`}
-                aria-label={t('search')}
+                className="text-white/60 hover:text-white transition-colors duration-200"
+                aria-label={t("search")}
               >
                 <Search className="w-[18px] h-[18px]" />
               </button>
 
               <button
-                className={`${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors duration-200`}
-                aria-label={t('map')}
+                className="text-white/60 hover:text-white transition-colors duration-200"
+                aria-label={t("map")}
               >
                 <Map className="w-[18px] h-[18px]" />
               </button>
 
               <Link
                 href="/secilmisler"
-                className={`relative ${isLightPage ? 'text-foreground/60 hover:text-foreground' : 'text-white/60 hover:text-white'} transition-colors duration-200`}
-                aria-label={t('favorites')}
+                className="text-white/60 hover:text-white transition-colors duration-200"
+                aria-label={t("favorites")}
               >
                 <Heart className="w-[18px] h-[18px]" />
               </Link>
 
-              {/* Language Switcher */}
               <div ref={langRef} className="relative">
                 <button
                   onClick={() => setLangOpen(!langOpen)}
                   className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors duration-200 text-[13px] font-semibold cursor-pointer"
-                  aria-label={t('select_language')}
+                  aria-label={t("select_language")}
                 >
                   <Globe className="w-4 h-4" />
-                  <span>{currentLang.flag} {currentLang.code.toUpperCase()}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${langOpen ? 'rotate-180' : ''}`} />
+                  <span>
+                    {currentLang.flag} {currentLang.code.toUpperCase()}
+                  </span>
+                  <ChevronDown
+                    className={`w-3.5 h-3.5 transition-transform duration-300 ${
+                      langOpen ? "rotate-180" : ""
+                    }`}
+                  />
                 </button>
 
                 {langOpen && (
                   <div
                     className="absolute top-full right-0 mt-2 w-44 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] overflow-hidden py-1.5 z-50"
                     style={{
-                      background: 'rgba(10, 12, 22, 0.98)',
-                      border: '1px solid rgba(255,255,255,0.08)',
-                      backdropFilter: 'blur(20px)',
+                      background: "rgba(10, 12, 22, 0.98)",
+                      border: "1px solid rgba(255,255,255,0.08)",
+                      backdropFilter: "blur(20px)",
                     }}
                   >
-                    {LANGUAGES.map(lang => (
+                    {LANGUAGES.map((lang) => (
                       <button
                         key={lang.code}
                         onClick={() => {
-                          router.replace(pathname, { locale: lang.code as 'az' | 'en' | 'ru' });
+                          router.replace(pathname, {
+                            locale: lang.code as "az" | "en" | "ru",
+                          });
                           setLangOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors ${locale === lang.code
-                          ? 'text-white bg-white/10'
-                          : 'text-white/70 hover:text-white hover:bg-white/5'
-                          }`}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors ${
+                          locale === lang.code
+                            ? "text-white bg-white/10"
+                            : "text-white/70 hover:text-white hover:bg-white/5"
+                        }`}
                       >
                         <span className="text-base">{lang.flag}</span>
                         <span>{lang.label}</span>
-                        {locale === lang.code && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400" />}
+                        {locale === lang.code && (
+                          <span className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-400" />
+                        )}
                       </button>
                     ))}
                   </div>
                 )}
               </div>
 
-              {/* User Avatar */}
               <Link
                 href="/login"
                 className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95"
                 style={{
-                  background: 'linear-gradient(135deg, #3b9cf5, #6f5cf6)',
-                  boxShadow: isLightPage ? '0 0 0 2px rgba(59,156,245,0.2)' : '0 0 0 2px rgba(59,156,245,0.35)',
+                  background: "linear-gradient(135deg, #3b9cf5, #6f5cf6)",
+                  boxShadow: "0 0 0 2px rgba(59,156,245,0.35)",
                 }}
               >
                 <User className="w-4 h-4 text-white" />
               </Link>
             </div>
 
-            {/* Mobile Hamburger */}
             <button
-              className={`lg:hidden ${isLightPage ? 'text-foreground/80 hover:text-foreground' : 'text-white/80 hover:text-white'} transition-colors`}
+              className="lg:hidden text-white/80 hover:text-white transition-colors"
               onClick={() => setMobileOpen(!mobileOpen)}
-              aria-label={t('menu')}
+              aria-label={t("menu")}
             >
-              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
-
           </div>
         </div>
       </nav>
 
-      {/* Mobile Drawer */}
       <div
         className="fixed inset-0 z-40 lg:hidden transition-all duration-400"
         style={{
           opacity: mobileOpen ? 1 : 0,
-          pointerEvents: mobileOpen ? 'all' : 'none',
+          pointerEvents: mobileOpen ? "all" : "none",
         }}
       >
-        {/* Backdrop */}
         <div
           className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}
+          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
           onClick={() => setMobileOpen(false)}
         />
 
-        {/* Drawer */}
         <div
-          className="absolute top-0 right-0 h-full w-full max-w-md flex flex-col pt-20 pb-8 px-6 transition-transform duration-400 overflow-y-auto"
+          className="absolute top-0 right-0 h-full w-full max-w-md flex flex-col pt-20 pb-8 px-6 overflow-y-auto transition-transform duration-400"
           style={{
-            background: isLightPage ? 'rgba(255, 255, 255, 1)' : 'rgba(10, 12, 22, 1)',
-            borderLeft: isLightPage ? '1px solid rgba(0,0,0,0.07)' : '1px solid rgba(255,255,255,0.07)',
-            transform: mobileOpen ? 'translateX(0)' : 'translateX(100%)',
+            background: "rgba(10, 12, 22, 1)",
+            borderLeft: "1px solid rgba(255,255,255,0.07)",
+            transform: mobileOpen ? "translateX(0)" : "translateX(100%)",
           }}
         >
           <div className="flex flex-col">
             {navLinks.map((link) => (
-              <div key={link.id} className="flex flex-col border-b border-white/10 last:border-0">
+              <div
+                key={link.id}
+                className="flex flex-col border-b border-white/10 last:border-0"
+              >
                 {link.subLinks ? (
                   <>
                     <button
-                      className={`flex items-center justify-between w-full text-left ${isLightPage ? 'text-foreground/90 hover:text-foreground' : 'text-white/90 hover:text-white'} text-[14px] tracking-wider uppercase font-bold py-4 transition-colors`}
-                      onClick={() => setOpenMobileDropdown(openMobileDropdown === link.id ? null : link.id)}
+                      className="flex items-center justify-between w-full text-left text-white/90 hover:text-white text-[14px] tracking-wider uppercase font-bold py-4 transition-colors"
+                      onClick={() =>
+                        setOpenMobileDropdown(
+                          openMobileDropdown === link.id ? null : link.id,
+                        )
+                      }
                     >
                       {link.label}
-                      <ChevronRight className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${openMobileDropdown === link.id ? 'rotate-90' : ''}`} />
+                      <ChevronRight
+                        className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${
+                          openMobileDropdown === link.id ? "rotate-90" : ""
+                        }`}
+                      />
                     </button>
                     {openMobileDropdown === link.id && (
                       <div className="flex flex-col gap-0 bg-black/20 rounded-xl mb-4 overflow-hidden border border-white/5">
-                        {link.subLinks.map(sub => (
+                        {link.subLinks.map((sub) => (
                           <Link
                             key={sub.href}
                             href={sub.href}
                             onClick={() => setMobileOpen(false)}
-                            className={`text-[13px] py-3 px-5 transition-colors border-b border-white/5 last:border-0 ${isLightPage ? 'text-foreground/70 hover:text-primary' : 'text-white/70 hover:text-white bg-white/5 hover:bg-white/10'
-                              }`}
+                            className="text-[13px] py-3 px-5 transition-colors border-b border-white/5 last:border-0 text-white/70 hover:text-white bg-white/5 hover:bg-white/10"
                           >
                             {sub.label}
                           </Link>
@@ -325,7 +593,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     href={link.href as any}
-                    className={`flex items-center justify-between w-full text-left ${isLightPage ? 'text-foreground/90 hover:text-foreground' : 'text-white/90 hover:text-white'} text-[14px] tracking-wider uppercase font-bold py-4 transition-colors`}
+                    className="flex items-center justify-between w-full text-left text-white/90 hover:text-white text-[14px] tracking-wider uppercase font-bold py-4 transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.label}
@@ -336,51 +604,78 @@ export default function Navbar() {
             ))}
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-[1px] bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-sm">
-            {/* Map */}
+          {/* Quick actions grid */}
+          <div className="mt-8 grid grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-sm">
             <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
-              <Map className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('map')}</span>
+              <Map
+                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                strokeWidth={1.5}
+              />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                {t("map")}
+              </span>
             </button>
-
-            {/* Profile */}
-            <Link href="/login" onClick={() => setMobileOpen(false)} className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
-              <User className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('login')}</span>
+            <Link
+              href="/login"
+              onClick={() => setMobileOpen(false)}
+              className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+            >
+              <User
+                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                strokeWidth={1.5}
+              />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                {t("login")}
+              </span>
             </Link>
-
-            {/* Favorites */}
-            <Link href="/secilmisler" onClick={() => setMobileOpen(false)} className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
-              <Heart className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('favorites')}</span>
+            <Link
+              href="/secilmisler"
+              onClick={() => setMobileOpen(false)}
+              className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+            >
+              <Heart
+                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                strokeWidth={1.5}
+              />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                {t("favorites")}
+              </span>
             </Link>
-
-            {/* Search */}
             <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
-              <Search className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">{t('search')}</span>
+              <Search
+                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                strokeWidth={1.5}
+              />
+              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                {t("search")}
+              </span>
             </button>
           </div>
 
-          {/* Languages Section at bottom matching the style if needed, or keeping it below */}
+          {/* Language selector */}
           <div className="mt-6 flex flex-col border border-white/10 rounded-xl overflow-hidden">
-            {LANGUAGES.map(lang => (
+            {LANGUAGES.map((lang) => (
               <button
                 key={lang.code}
                 onClick={() => {
-                  router.replace(pathname, { locale: lang.code as 'az' | 'en' | 'ru' });
+                  router.replace(pathname, {
+                    locale: lang.code as "az" | "en" | "ru",
+                  });
                   setMobileOpen(false);
                 }}
-                className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${locale === lang.code
-                  ? 'bg-blue-500/10 text-blue-400'
-                  : 'text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5'
-                  }`}
+                className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${
+                  locale === lang.code
+                    ? "bg-blue-500/10 text-blue-400"
+                    : "text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5"
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{lang.flag}</span>
                   <span className="uppercase tracking-wider">{lang.label}</span>
                 </div>
-                {locale === lang.code && <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />}
+                {locale === lang.code && (
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                )}
               </button>
             ))}
           </div>
