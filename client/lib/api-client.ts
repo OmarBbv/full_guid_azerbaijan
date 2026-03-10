@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// const baseURL = 'http://localhost:5555';
-const baseURL = 'https://full-guid-azerbaijan-1.onrender.com';
+const baseURL = 'http://localhost:5555';
+// const baseURL = 'https://full-guid-azerbaijan-1.onrender.com';
 
 export const apiClient = axios.create({
   baseURL: baseURL,
