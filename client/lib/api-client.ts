@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const baseURL = 'http://localhost:5555';
-// const baseURL = 'https://full-guid-azerbaijan-1.onrender.com';
+const baseURL = process.env.NEXT_PUBLIC_API_URL;
 
 export const apiClient = axios.create({
   baseURL: baseURL,
