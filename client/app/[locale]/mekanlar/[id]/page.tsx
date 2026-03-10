@@ -5,6 +5,7 @@ import { Star, MapPin, Heart, ArrowLeft, Share2, Info, Camera, CheckCircle2, Che
 import { Link } from "@/i18n/routing";
 import { useState, useEffect } from "react";
 import { usePlaceById } from "@/hooks/use-places";
+import un_photo_1526779259212_939e64788e3c_8ece6282 from "@/assets/unsplash/photo-1526779259212-939e64788e3c_8ece6282.jpg";
 
 export default function PlaceDetailPage() {
   const params = useParams();
@@ -64,7 +65,7 @@ export default function PlaceDetailPage() {
     );
   }
 
-  const mainImage = place.thumbnail || (place.images?.[0]?.url) || "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=700&auto=format&fit=crop";
+  const mainImage = place.thumbnail || (place.images?.[0]?.url) || un_photo_1526779259212_939e64788e3c_8ece6282;
   const accentColor = place.accent_color || "#3b9cf5";
 
   return (

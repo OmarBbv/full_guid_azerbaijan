@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Eye, ShieldCheck, Flag } from 'lucide-react';
+import un_photo_1451187580459_43490279c0fa_4b267726 from "@/assets/unsplash/photo-1451187580459-43490279c0fa_4b267726.jpg";
 
 export default function TransparencyPage() {
   return (
@@ -16,7 +17,7 @@ export default function TransparencyPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+            src={un_photo_1451187580459_43490279c0fa_4b267726}
             alt="Transparency Background"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}

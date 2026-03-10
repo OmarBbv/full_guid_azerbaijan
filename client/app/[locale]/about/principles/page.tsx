@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { CheckCircle2, HeartHandshake, Scale, Target } from 'lucide-react';
+import un_photo_1541746972996_4e0b0f43e02a_24bb943f from "@/assets/unsplash/photo-1541746972996-4e0b0f43e02a_24bb943f.jpg";
 
 export default function PrinciplesPage() {
   return (
@@ -15,12 +16,13 @@ export default function PrinciplesPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?q=80&w=2070&auto=format&fit=crop"
+            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f}
             alt="Prinsiplər"
             fill
             className="object-cover"
             style={{ filter: "brightness(0.65) saturate(1.1)" }}
             priority
+            unoptimized
           />
         </div>
 

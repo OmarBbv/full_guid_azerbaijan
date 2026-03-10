@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Plane, Compass, AlertCircle, Calendar } from 'lucide-react';
+import un_photo_1570710891163_6d3b5c47248b_24bb943f from "@/assets/unsplash/photo-1570710891163-6d3b5c47248b_24bb943f.jpg";
 
 export default function AirportInfoPage() {
   return (
@@ -16,12 +17,13 @@ export default function AirportInfoPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1570710891163-6d3b5c47248b?q=80&w=2070&auto=format&fit=crop"
+            src={un_photo_1570710891163_6d3b5c47248b_24bb943f}
             alt="Hava Limanı"
             fill
             className="object-cover"
             style={{ filter: "brightness(0.65) saturate(1.1)" }}
             priority
+            unoptimized
           />
         </div>
 

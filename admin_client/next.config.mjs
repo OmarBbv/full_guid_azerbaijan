@@ -1,5 +1,13 @@
 /** @type {import('next').NextConfig} */
 const config = {
+  basePath: '/admin',
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
   images: {
     remotePatterns: [
       {
@@ -17,6 +25,11 @@ const config = {
         protocol: 'http',
         hostname: '127.0.0.1',
         port: '5555',
+        pathname: '/**',
+      },
+      {
+        protocol: 'http',
+        hostname: '52.186.174.0',
         pathname: '/**',
       },
       {

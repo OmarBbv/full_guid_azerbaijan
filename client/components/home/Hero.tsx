@@ -8,10 +8,24 @@ import { useLocale, useTranslations } from "next-intl";
 import { useHeroPlaces } from "@/hooks/use-places";
 import { Place } from "@/types/place";
 import { getImageUrl } from "@/lib/utils";
+import un_photo_1448375240586_882707db888b_1e93d564 from "@/assets/unsplash/photo-1448375240586-882707db888b_1e93d564.jpg";
+import un_photo_1448375240586_882707db888b_629753b7 from "@/assets/unsplash/photo-1448375240586-882707db888b_629753b7.jpg";
+import un_photo_1464822759023_fed622ff2c3b_629753b7 from "@/assets/unsplash/photo-1464822759023-fed622ff2c3b_629753b7.jpg";
+import un_photo_1500534314209_a25ddb2bd429_629753b7 from "@/assets/unsplash/photo-1500534314209-a25ddb2bd429_629753b7.jpg";
+import un_photo_1501854140801_50d01698950b_629753b7 from "@/assets/unsplash/photo-1501854140801-50d01698950b_629753b7.jpg";
+import un_photo_1506905925346_21bda4d32df4_629753b7 from "@/assets/unsplash/photo-1506905925346-21bda4d32df4_629753b7.jpg";
+import un_photo_1519681393784_d120267933ba_1e93d564 from "@/assets/unsplash/photo-1519681393784-d120267933ba_1e93d564.jpg";
+import un_photo_1519681393784_d120267933ba_629753b7 from "@/assets/unsplash/photo-1519681393784-d120267933ba_629753b7.jpg";
+import un_photo_1527489377706_5bf97e608852_629753b7 from "@/assets/unsplash/photo-1527489377706-5bf97e608852_629753b7.jpg";
+import un_photo_1534531173927_aeb928d54385_629753b7 from "@/assets/unsplash/photo-1534531173927-aeb928d54385_629753b7.jpg";
+import un_photo_1544735716_392fe2489ffa_1e93d564 from "@/assets/unsplash/photo-1544735716-392fe2489ffa_1e93d564.jpg";
+import un_photo_1544735716_392fe2489ffa_629753b7 from "@/assets/unsplash/photo-1544735716-392fe2489ffa_629753b7.jpg";
+import un_photo_1570168007204_dfb528c6958f_1e93d564 from "@/assets/unsplash/photo-1570168007204-dfb528c6958f_1e93d564.jpg";
+import un_photo_1570168007204_dfb528c6958f_629753b7 from "@/assets/unsplash/photo-1570168007204-dfb528c6958f_629753b7.jpg";
 
 const defaultSlides = [
   {
-    bg: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=90&w=2400&auto=format&fit=crop",
+    bg: un_photo_1570168007204_dfb528c6958f_1e93d564,
     country: "AZƏRBAYCAN",
     subtitle: "Şərqin açarı, Qafqazın incisi",
     description:
@@ -23,7 +37,7 @@ const defaultSlides = [
         region: "Abşeron",
         subtitle: "Şərqin Paris'i",
         description: "Qədim İçərişəhər, Alov qüllələri və müasir arxitektura — Bakı hər gün yeni sirlər açır.",
-        img: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1570168007204_dfb528c6958f_629753b7,
         rating: 4.9,
         reviews: "12.4k",
       },
@@ -32,7 +46,7 @@ const defaultSlides = [
         region: "Qarabağ",
         subtitle: "Musiqi şəhəri",
         description: "Qarabağın döyünən ürəyi, musiqi və şeirin beşiyi olan bu şəhər zamana aparan bir gəzinti təklif edir.",
-        img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1506905925346_21bda4d32df4_629753b7,
         rating: 4.9,
         reviews: "5.1k",
       },
@@ -41,14 +55,14 @@ const defaultSlides = [
         region: "Şimal",
         subtitle: "Dağların qucağı",
         description: "Böyük Qafqazın yaşıl qoynunda göllər, şəlalələr və Tufandağ ski mərkəzi — mövsümü olmayan cənnət.",
-        img: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1464822759023_fed622ff2c3b_629753b7,
         rating: 4.8,
         reviews: "8.2k",
       },
     ],
   },
   {
-    bg: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=90&w=2400&auto=format&fit=crop",
+    bg: un_photo_1519681393784_d120267933ba_1e93d564,
     country: "QƏBƏLƏ",
     subtitle: "Böyük Qafqazın qucağında",
     description:
@@ -60,7 +74,7 @@ const defaultSlides = [
         region: "Qəbələ",
         subtitle: "Kristal ayna",
         description: "Dağların arasında gizlənmiş bu əsrarlı göl, sakit sularıyla ziyarətçilərini heyran qoyur.",
-        img: "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1501854140801_50d01698950b_629753b7,
         rating: 4.8,
         reviews: "3.2k",
       },
@@ -69,7 +83,7 @@ const defaultSlides = [
         region: "Qəbələ",
         subtitle: "Yaşıl vadilər",
         description: "Heyrətamiz meşə yolları, füsunkar vadilər və təmiz dağ havası ilə Vəndam unudulmaz bir gəzinti yeridir.",
-        img: "https://images.unsplash.com/photo-1527489377706-5bf97e608852?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1527489377706_5bf97e608852_629753b7,
         rating: 4.7,
         reviews: "2.8k",
       },
@@ -78,14 +92,14 @@ const defaultSlides = [
         region: "Qəbələ",
         subtitle: "Ski cənnəti",
         description: "Qışda qarla örtülü yamaclar, yayda isə gözəl trekkinq marşrutları ilə Tufandağ hər mövsüm gözəldir.",
-        img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1519681393784_d120267933ba_629753b7,
         rating: 4.9,
         reviews: "4.1k",
       },
     ],
   },
   {
-    bg: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=90&w=2400&auto=format&fit=crop",
+    bg: un_photo_1544735716_392fe2489ffa_1e93d564,
     country: "ŞUŞA",
     subtitle: "Qarabağın döyünən ürəyi",
     description:
@@ -97,7 +111,7 @@ const defaultSlides = [
         region: "Şuşa",
         subtitle: "Tarixi möcüzə",
         description: "Şuşanın simvolu olan bu qədim qala şəhərin tarixini özündə yaşadır və panoramik mənzərə təklif edir.",
-        img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1544735716_392fe2489ffa_629753b7,
         rating: 4.9,
         reviews: "7.3k",
       },
@@ -106,7 +120,7 @@ const defaultSlides = [
         region: "Şuşa",
         subtitle: "Təbiətin qoynunda",
         description: "Sakit kənd həyatı, yaşıl bağçalar və isti mehmanpərvərlik — şəhər həyatının stresindən uzaqlaşın.",
-        img: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1500534314209_a25ddb2bd429_629753b7,
         rating: 4.6,
         reviews: "1.9k",
       },
@@ -115,14 +129,14 @@ const defaultSlides = [
         region: "Şuşa",
         subtitle: "Açıq havada",
         description: "Tarixi at yarışlarının keçirildiyi bu gözəl düzənlik bu gün də mədəni tədbirlərə ev sahibliyi edir.",
-        img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1448375240586_882707db888b_629753b7,
         rating: 4.8,
         reviews: "3.5k",
       },
     ],
   },
   {
-    bg: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=90&w=2400&auto=format&fit=crop",
+    bg: un_photo_1448375240586_882707db888b_1e93d564,
     country: "LƏNKƏRAN",
     subtitle: "Subtropik cənnətin qucağında",
     description:
@@ -134,7 +148,7 @@ const defaultSlides = [
         region: "Lənkəran",
         subtitle: "UNESCO mirası",
         description: "Nadir nəbatat və heyvanatlara ev sahib olan bu qoruq dünyanın ən qədim meşə ekosistemlərindən biridir.",
-        img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1448375240586_882707db888b_629753b7,
         rating: 4.7,
         reviews: "2.2k",
       },
@@ -143,7 +157,7 @@ const defaultSlides = [
         region: "Lənkəran",
         subtitle: "Sərhəd şəhəri",
         description: "İranla sərhəddə yerləşən bu şəhər, çay bağçaları və Xəzər sahilinin möhtəşəm mənzərəsi ilə məşhurdur.",
-        img: "https://images.unsplash.com/photo-1534531173927-aeb928d54385?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1534531173927_aeb928d54385_629753b7,
         rating: 4.5,
         reviews: "1.8k",
       },
@@ -152,7 +166,7 @@ const defaultSlides = [
         region: "Lənkəran",
         subtitle: "Uzunömürlülər yurdu",
         description: "Dünyanın ən uzunömürlü sakinlərinin yaşadığı bu dağ rayonu saf hava və gözəl təbiəti ilə heyranedicidir.",
-        img: "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=600&auto=format&fit=crop",
+        img: un_photo_1501854140801_50d01698950b_629753b7,
         rating: 4.6,
         reviews: "1.3k",
       },
@@ -305,23 +319,21 @@ export default function Hero() {
         </div>
       )}
 
-      {/* Gradient overlays */}
       <div
-        className="absolute inset-0 z-[1]"
+        className="absolute inset-0 z-1"
         style={{
           background:
             "linear-gradient(90deg, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.2) 55%, rgba(0,0,0,0.35) 100%)",
         }}
       />
       <div
-        className="absolute inset-0 z-[1]"
+        className="absolute inset-0 z-1"
         style={{
           background:
             "linear-gradient(180deg, rgba(0,0,0,0.3) 0%, transparent 35%, transparent 60%, rgba(0,0,0,0.6) 100%)",
         }}
       />
 
-      {/* ── Left Slide Indicator ── */}
       <div className="absolute left-5 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-3">
         {slides.map((_, i) => (
           <button
@@ -338,11 +350,8 @@ export default function Hero() {
         ))}
       </div>
 
-      {/* ── Main Layout ── */}
       <div className="relative z-10 h-full flex items-center px-16 gap-8">
-        {/* ── Left Content ── */}
         <div className="flex-1 flex flex-col justify-center max-w-[520px] space-y-6">
-          {/* Accent Tag */}
           <div
             key={`tag-${leftContentKey}`}
             className="hero-fadein inline-flex items-center gap-2 self-start"
@@ -518,12 +527,16 @@ export default function Hero() {
                   onClick={() => handleCardClick(idx)}
                 >
                   {/* Card image */}
-                  <img
-                    src={card.img}
-                    alt={card.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    style={{ filter: isActive ? "brightness(0.6) saturate(1.2)" : "brightness(0.55) saturate(1.0)" }}
-                  />
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={card.img}
+                      alt={card.name}
+                      fill
+                      unoptimized
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
+                      style={{ filter: isActive ? "brightness(0.6) saturate(1.2)" : "brightness(0.55) saturate(1.0)" }}
+                    />
+                  </div>
 
                   {/* Gradient */}
                   <div
@@ -658,10 +671,12 @@ export default function Hero() {
                 border: i === current ? `1.5px solid ${s.accent}` : "1.5px solid transparent",
               }}
             >
-              <img
+              <Image
                 src={s.bg}
                 alt={s.country}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                fill
+                unoptimized
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
               {i === current && (
                 <div className="absolute inset-0 flex items-center justify-center">

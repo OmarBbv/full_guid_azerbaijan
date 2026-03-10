@@ -22,6 +22,7 @@ export default function BakuInfoPage() {
             className="object-cover"
             style={{ filter: "brightness(0.65) saturate(1.1)" }}
             priority
+            unoptimized
           />
         </div>
 

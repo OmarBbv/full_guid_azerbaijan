@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { usePlacesByType } from '@/hooks/use-places';
 import { useParams } from 'next/navigation';
+import un_photo_1555396273_367ea4eb4db5_3224055e from "@/assets/unsplash/photo-1555396273-367ea4eb4db5_3224055e.jpg";
 
 export default function RestaurantsPage() {
   const { locale } = useParams<{ locale: string }>();
@@ -29,7 +30,7 @@ export default function RestaurantsPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=2074&auto=format&fit=crop"
+            src={un_photo_1555396273_367ea4eb4db5_3224055e}
             alt="Restaurants"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}

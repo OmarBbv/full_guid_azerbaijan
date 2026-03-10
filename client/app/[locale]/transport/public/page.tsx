@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Bus, Train, Route } from 'lucide-react';
+import un_photo_1544620347_c4fd4a3d5957_7459f728 from "@/assets/unsplash/photo-1544620347-c4fd4a3d5957_7459f728.jpg";
 
 export default function PublicTransportPage() {
   return (
@@ -16,12 +17,13 @@ export default function PublicTransportPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=2070&auto=format&fit=crop"
+            src={un_photo_1544620347_c4fd4a3d5957_7459f728}
             alt="İctimai Nəqliyyat"
             fill
             className="object-cover"
             style={{ filter: "brightness(0.65) saturate(1.1)" }}
             priority
+            unoptimized
           />
         </div>
 

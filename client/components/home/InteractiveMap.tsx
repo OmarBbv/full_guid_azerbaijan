@@ -1,9 +1,16 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { MapPin, Navigation, ArrowRight, Camera } from "lucide-react";
 import Azerbaijan from "@react-map/azerbaijan";
 import { useTranslations } from "next-intl";
+import un_photo_1448375240586_882707db888b_fec9fe51 from "@/assets/unsplash/photo-1448375240586-882707db888b_fec9fe51.jpg";
+import un_photo_1506905925346_21bda4d32df4_fec9fe51 from "@/assets/unsplash/photo-1506905925346-21bda4d32df4_fec9fe51.jpg";
+import un_photo_1519681393784_d120267933ba_fec9fe51 from "@/assets/unsplash/photo-1519681393784-d120267933ba_fec9fe51.jpg";
+import un_photo_1544735716_392fe2489ffa_fec9fe51 from "@/assets/unsplash/photo-1544735716-392fe2489ffa_fec9fe51.jpg";
+import sheki_fixed from "@/assets/unsplash/sheki_fixed.jpg";
+import baku_fixed from "@/assets/unsplash/baku_fixed.jpg";
 
 
 
@@ -11,37 +18,37 @@ export default function InteractiveMap() {
   const t = useTranslations('Home');
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
 
-  const regionDetails: Record<string, { desc: string, img: string, famous: string }> = {
+  const regionDetails: Record<string, { desc: string, img: any, famous: string }> = {
     "Bakı": {
       desc: t('baku_desc'),
-      img: "https://images.unsplash.com/photo-1548625361-58a9a9d27293?q=80&w=800",
+      img: baku_fixed,
       famous: t('baku_famous')
     },
     "Şəki": {
       desc: t('sheki_desc'),
-      img: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?q=80&w=800",
+      img: sheki_fixed,
       famous: t('sheki_famous')
     },
     "Qəbələ": {
       desc: t('qabala_desc'),
-      img: "https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=800",
+      img: un_photo_1519681393784_d120267933ba_fec9fe51,
       famous: t('qabala_famous')
     },
     "Lənkəran": {
       desc: t('lankaran_desc'),
-      img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800",
+      img: un_photo_1448375240586_882707db888b_fec9fe51,
       famous: t('lankaran_famous')
     },
     "Şuşa": {
       desc: t('shusha_desc'),
-      img: "https://images.unsplash.com/photo-1544735716-392fe2489ffa?q=80&w=800",
+      img: un_photo_1544735716_392fe2489ffa_fec9fe51,
       famous: t('shusha_famous')
     }
   };
 
   const defaultData = {
     desc: t('default_map_desc'),
-    img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800",
+    img: un_photo_1506905925346_21bda4d32df4_fec9fe51,
     famous: t('default_famous')
   };
 
@@ -72,7 +79,9 @@ export default function InteractiveMap() {
                 </div>
 
                 <div className="relative w-full h-64 rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl shadow-black/10">
-                  <img src={currentData.img} alt={activeRegion || "Azerbaijan"} className="w-full h-full object-cover" />
+                  <Image
+                    unoptimized
+                    src={currentData.img} alt={activeRegion || "Azerbaijan"} fill className="object-cover" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent flex items-end p-6">
                     <p className="text-white text-xs font-medium flex items-center gap-2 opacity-90">
                       <Camera size={16} /> {t('famous')}: {currentData.famous}

@@ -7,6 +7,7 @@ import { Link } from '@/i18n/routing';
 import { usePlacesByType } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
 import { useParams } from 'next/navigation';
+import un_photo_1555854877_bab0e564b8d5_1934a6f6 from "@/assets/unsplash/photo-1555854877-bab0e564b8d5_1934a6f6.jpg";
 
 export default function HostelsPage() {
   const { locale } = useParams<{ locale: string }>();
@@ -31,7 +32,7 @@ export default function HostelsPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop"
+            src={un_photo_1555854877_bab0e564b8d5_1934a6f6}
             alt="Hostels"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}
@@ -65,7 +66,13 @@ export default function HostelsPage() {
               className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col"
             >
               <div className="h-48 relative overflow-hidden">
-                <Image src={getImageUrl(t, 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop')} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+                <Image
+                  unoptimized
+                  src={getImageUrl(t, un_photo_1555854877_bab0e564b8d5_1934a6f6)}
+                  alt={t.title}
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-110"
+                />
                 <div className="absolute bottom-4 left-4 bg-emerald-600 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg">
                   {t.price_range || t.priceRange || 'Gündəlik'}
                 </div>

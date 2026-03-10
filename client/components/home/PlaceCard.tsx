@@ -2,9 +2,13 @@
 
 import { useState, useRef, useEffect } from "react";
 import { MapPin, Heart, ArrowRight, Star } from "lucide-react";
+import Image from "next/image";
 import { Link } from "@/i18n/routing";
 import { Place } from "@/types/place";
 import { useTranslations } from "next-intl";
+import { getImageUrl } from "@/lib/utils";
+
+import fallbackImage from "@/assets/unsplash/photo-1514933651103-005eec06c04b_3224055e.jpg";
 
 interface PlaceCardProps {
   place: Place;
@@ -16,6 +20,12 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
   const [liked, setLiked] = useState<boolean>(false);
   const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
+  const [imgSrc, setImgSrc] = useState<any>(getImageUrl(place));
+
+  // Reset img src if place changes
+  useEffect(() => {
+    setImgSrc(getImageUrl(place));
+  }, [place]);
 
   useEffect(() => {
     const saved = localStorage.getItem("favorites");
@@ -66,10 +76,13 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
     >
       {/* Image */}
       <div className="relative w-full overflow-hidden h-[260px]">
-        <img
-          src={place.thumbnail || (place.images?.[0]?.url) || "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=700&auto=format&fit=crop"}
-          alt={place.title}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.08]"
+        <Image
+          src={imgSrc || fallbackImage}
+          alt={place.title || ""}
+          fill
+          unoptimized
+          onError={() => setImgSrc(fallbackImage)}
+          className="object-cover transition-transform duration-700 group-hover:scale-[1.08]"
         />
         <div
           className="absolute inset-0"

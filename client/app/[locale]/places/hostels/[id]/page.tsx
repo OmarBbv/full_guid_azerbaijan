@@ -9,6 +9,7 @@ import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
 import ImageLightbox from '@/components/shared/ImageLightbox';
+import un_photo_1596394516093_501ba68a0ba6_629067c0 from "@/assets/unsplash/photo-1596394516093-501ba68a0ba6_629067c0.jpg";
 
 export default function HostelDetailPage() {
   const params = useParams();
@@ -51,7 +52,7 @@ export default function HostelDetailPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={getImageUrl(hostel, 'https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&q=80&w=2000')}
+            src={getImageUrl(hostel, un_photo_1596394516093_501ba68a0ba6_629067c0)}
             alt={hostel.title}
             fill
             className="object-cover"

@@ -210,26 +210,7 @@ export default function ContactPage() {
 
           </div>
         </section>
-
-        {/* Map Section (Placeholder for real map) */}
-        <section className="px-6 pb-24 max-w-7xl mx-auto">
-          <div className="w-full h-[400px] md:h-[500px] rounded-[3rem] overflow-hidden bg-card border border-border/50 shadow-xl relative group">
-            {/* Real map integration would go here (Google Maps / Leaflet) */}
-            <div className="absolute inset-0 bg-muted flex items-center justify-center grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center text-primary mx-auto mb-4 animate-bounce">
-                  <MapPin size={32} />
-                </div>
-                <p className="font-bold text-foreground">Xəritədə Baxın</p>
-                <p className="text-sm text-muted-foreground">Bakı, Nizami 103</p>
-              </div>
-            </div>
-            {/* Overlay Gradient */}
-            <div className="absolute inset-0 pointer-events-none bg-linear-to-t from-background/40 to-transparent" />
-          </div>
-        </section>
-
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

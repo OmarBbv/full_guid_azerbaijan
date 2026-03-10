@@ -15,6 +15,7 @@ import {
   Compass,
   Coffee,
 } from "lucide-react";
+import un_photo_1526779259212_939e64788e3c_be9dcf27 from "@/assets/unsplash/photo-1526779259212-939e64788e3c_be9dcf27.jpg";
 
 function mapPostToUi(
   post: BlogPost,
@@ -24,7 +25,7 @@ function mapPostToUi(
   id: string;
   title: string;
   excerpt: string;
-  img: string;
+  img: any;
   category: string | null;
   categoryLabel: string | null;
   categoryColor: string | null;
@@ -52,7 +53,7 @@ function mapPostToUi(
     excerpt: post.excerpt,
     img:
       post.cover_image_url ??
-      "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=1200&auto=format&fit=crop",
+      un_photo_1526779259212_939e64788e3c_be9dcf27,
     category: post.category,
     categoryLabel: post.category_label,
     categoryColor: post.category_color,
@@ -103,6 +104,7 @@ function ArticleCard({ article, index, t, layout = "grid" }: {
               alt={article.title}
               fill
               className="object-cover transition-transform duration-700 group-hover:scale-105"
+              unoptimized
             />
             <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent lg:bg-linear-to-r lg:from-transparent lg:to-black/30" />
 
@@ -140,6 +142,7 @@ function ArticleCard({ article, index, t, layout = "grid" }: {
                   width={40}
                   height={40}
                   className="rounded-full object-cover border-2 border-background"
+                  unoptimized
                 />
                 <div>
                   <p className="text-sm font-bold text-foreground">{article.author}</p>
@@ -177,6 +180,7 @@ function ArticleCard({ article, index, t, layout = "grid" }: {
             alt={article.title}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-110"
+            unoptimized
           />
           <div className="absolute inset-0 bg-linear-to-t from-black/50 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
 
@@ -207,6 +211,7 @@ function ArticleCard({ article, index, t, layout = "grid" }: {
               width={32}
               height={32}
               className="rounded-full object-cover"
+              unoptimized
             />
             <span className="text-xs font-bold text-foreground">
               {article.author}

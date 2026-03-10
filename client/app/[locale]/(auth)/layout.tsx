@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import un_photo_1534067783941_51c9c23ecefd_261adc91 from "@/assets/unsplash/photo-1534067783941-51c9c23ecefd_261adc91.jpg";
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
   return (
@@ -6,7 +7,7 @@ export default function AuthLayout({ children }: { children: ReactNode }) {
       {/* Immersive Background */}
       <div className="absolute inset-0 z-0">
         <img
-          src="https://images.unsplash.com/photo-1548625361-58a9a9d27293?q=80&w=2000&auto=format&fit=crop"
+          src={un_photo_1534067783941_51c9c23ecefd_261adc91.src}
           alt="Auth Background"
           className="w-full h-full object-cover scale-110 blur-sm opacity-20"
         />

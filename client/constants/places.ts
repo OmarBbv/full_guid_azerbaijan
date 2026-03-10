@@ -1,61 +1,58 @@
 import { Place } from "@/types/place";
+import un_photo_1448375240586_882707db888b_31728d34 from "@/assets/unsplash/photo-1448375240586-882707db888b_31728d34.jpg";
+import un_photo_1464822759023_fed622ff2c3b_31728d34 from "@/assets/unsplash/photo-1464822759023-fed622ff2c3b_31728d34.jpg";
+import un_photo_1472396961693_142e6e269027_31728d34 from "@/assets/unsplash/photo-1472396961693-142e6e269027_31728d34.jpg";
+import un_photo_1506905925346_21bda4d32df4_31728d34 from "@/assets/unsplash/photo-1506905925346-21bda4d32df4_31728d34.jpg";
+import un_photo_1534067783941_51c9c23ecefd_31728d34 from "@/assets/unsplash/photo-1534067783941-51c9c23ecefd_31728d34.jpg";
+import un_photo_1542273917363_3b1817f69a2d_31728d34 from "@/assets/unsplash/photo-1542273917363-3b1817f69a2d_31728d34.jpg";
+import un_photo_1558981408_db0ecd8a1ee4_31728d34 from "@/assets/unsplash/photo-1558981408_db0ecd8a1ee4_31728d34.jpg";
+import un_photo_1472396961693_142e6e269027_32cc0056 from "@/assets/unsplash/photo-1472396961693-142e6e269027_32cc0056.jpg";
+import un_photo_1534067783941_51c9c23ecefd_261adc91 from "@/assets/unsplash/photo-1534067783941-51c9c23ecefd_261adc91.jpg";
 
 export const PLACES: any[] = [
   {
-    id: 1,
-    name: "Yanar Dağ",
-    region: "Abşeron",
-    category: "təbiət",
-    rating: 4.8,
-    reviews: "9.2k",
-    img: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop",
-    tag: "Nadir fenomen",
-    accent: "#f5a623",
-    badge: "Ən populyar",
-    description: "Abşeron yarımadasında, Bakıdan cəmi 27 km məsafədə yerləşən bu əfsanəvi yer onilliklər və ya bəlkə də yüz illərdir sönməyən təbii yanğınları ilə məşhurdur. Yer səthindəki qatdan sızan təbii qaz atmosferlə təmasda olaraq daimi alov yaradır. 'Klassik atəşpərəstlik' mədəniyyətinin ən mühüm nümunələrindən biri hesab olunur.",
-    features: ["Təbiət möcüzəsi", "Gecə mənzərəsi", "Tarixi abidə", "Açıq səma muzeyi"],
-    gallery: [
-      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1472396961693-142e6e269027?q=80&w=800&auto=format&fit=crop"
-    ]
+    id: "1",
+    title: "Yanar Dağ",
+    city: "Abşeron",
+    type: "Təbiət",
+    average_rating: 4.8,
+    review_count: 9200,
+    thumbnail: un_photo_1506905925346_21bda4d32df4_31728d34,
+    accent_color: "#f5a623",
+    is_featured: true,
+    short_description: "Abşeron yarımadasında sönməyən təbii yanğınları ilə məşhur olan əfsanəvi yer.",
+    slug: "yanar-dag",
+    subtitle: "Nadir fenomen",
+    images: []
   },
   {
-    id: 2,
-    name: "İçərişəhər",
-    region: "Bakı",
-    category: "tarix",
-    rating: 4.9,
-    reviews: "18.6k",
-    img: "https://images.unsplash.com/photo-1548625361-58a9a9d27293?q=80&w=800&auto=format&fit=crop",
-    tag: "UNESCO mirası",
-    accent: "#3b9cf5",
-    badge: "Tövsiyə edilir",
-    description: "Azərbaycanın paytaxtı Bakıda yerləşən ən qədim hissə və tarixi-memarlıq qoruğudur. UNESCO-nun Ümumdünya İrsi Siyahısına daxil edilmişdir. Burada məşhur Qız Qalası, Şirvanşahlar Sarayı və dar, dolanbac küçələr yerləşir. Bu yer 'Bakının Akropolu' kimi də tanınır.",
-    features: ["Qədim memarlıq", "UNESCO İrsi", "Muzeylər", "Suvenir dükanları"],
-    gallery: [
-      "https://images.unsplash.com/photo-1548625361-58a9a9d27293?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1534067783941-51c9c23ecefd?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1558981408-db0ecd8a1ee4?q=80&w=800&auto=format&fit=crop"
-    ]
+    id: "2",
+    title: "İçərişəhər",
+    city: "Bakı",
+    type: "Tarix",
+    average_rating: 4.9,
+    review_count: 18600,
+    thumbnail: un_photo_1534067783941_51c9c23ecefd_261adc91,
+    accent_color: "#3b9cf5",
+    is_featured: true,
+    short_description: "Bakının ən qədim hissəsi, UNESCO-nun Ümumdünya İrsi Siyahısına daxil edilmiş memarlıq qoruğu.",
+    slug: "iceri-seher",
+    subtitle: "UNESCO mirası",
+    images: []
   },
   {
-    id: 3,
-    name: "Qax Meşəsi",
-    region: "Şəki-Zaqatala",
-    category: "dağlar",
-    rating: 4.7,
-    reviews: "4.3k",
-    img: "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800&auto=format&fit=crop",
-    tag: "Trekkinq cənnəti",
-    accent: "#4dd9ac",
-    badge: "Yeni",
-    description: "Böyük Qafqaz silsiləsinin cənub yamaclarında yerləşən Qax meşələri zəngin faunası və florası ilə seçilir. Burada Şəlalələr (məsələn: Mamırlı şəlalə), qədim qala divarları və bənzərsiz mənzərələr sizi gözləyir. Təbiət sevərlər və kempinq həvəskarları üçün mükəmməl məkandır.",
-    features: ["Trekkinq", "Kempinq", "Vəhşi təbiət", "Şəlalələr"],
-    gallery: [
-      "https://images.unsplash.com/photo-1448375240586-882707db888b?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?q=80&w=800&auto=format&fit=crop",
-      "https://images.unsplash.com/photo-1426604966848-d7adac402bdb?q=80&w=800&auto=format&fit=crop"
-    ]
+    id: "3",
+    title: "Qax Meşəsi",
+    city: "Qax",
+    type: "Dağlar",
+    average_rating: 4.7,
+    review_count: 4300,
+    thumbnail: un_photo_1448375240586_882707db888b_31728d34,
+    accent_color: "#4dd9ac",
+    is_featured: true,
+    short_description: "Böyük Qafqazın cənub yamaclarında zəngin faunası və şəlalələri ilə seçilən təbii cənnət.",
+    slug: "qax-mesesi",
+    subtitle: "Trekkinq cənnəti",
+    images: []
   }
 ];

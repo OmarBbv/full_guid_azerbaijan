@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 
 import { Link } from "@/i18n/routing";
+import un_photo_1526779259212_939e64788e3c_be9dcf27 from "@/assets/unsplash/photo-1526779259212-939e64788e3c_be9dcf27.jpg";
 
 function mapPostToUi(
   post: BlogPost,
@@ -56,7 +57,7 @@ function mapPostToUi(
     excerpt: post.excerpt,
     img:
       post.cover_image_url ??
-      "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=1200&auto=format&fit=crop",
+      un_photo_1526779259212_939e64788e3c_be9dcf27,
     category: post.category,
     categoryLabel: post.category_label,
     categoryColor: post.category_color,

@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { usePlacesByType } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
 import { useParams } from 'next/navigation';
+import un_photo_1541746972996_4e0b0f43e02a_24bb943f from "@/assets/unsplash/photo-1541746972996-4e0b0f43e02a_24bb943f.jpg";
 
 export default function LandmarksPage() {
   const { locale } = useParams<{ locale: string }>();
@@ -29,7 +30,7 @@ export default function LandmarksPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?q=80&w=2070&auto=format&fit=crop"
+            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f}
             alt="Landmarks"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}

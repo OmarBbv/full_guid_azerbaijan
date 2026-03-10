@@ -21,6 +21,7 @@ export default function TaxiServicesPage() {
             className="object-cover"
             style={{ filter: "brightness(0.65) saturate(1.2)" }}
             priority
+            unoptimized
           />
         </div>
 

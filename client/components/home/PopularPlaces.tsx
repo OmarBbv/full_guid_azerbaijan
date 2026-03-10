@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { PlaceCard } from "./PlaceCard";
 import { useLocale, useTranslations } from "next-intl";
 import { usePlaces } from "@/hooks/use-places";
+import { PLACES } from "@/constants/places";
 
 export default function PopularPlaces() {
   const t = useTranslations('Home');
@@ -50,12 +51,11 @@ export default function PopularPlaces() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[400px]">
           {isLoading ? (
-            // Simple Skeleton
             Array.from({ length: 3 }).map((_, i) => (
               <div key={i} className="bg-muted/50 rounded-3xl h-[450px] animate-pulse" />
             ))
           ) : (
-            places?.slice(0, 6).map((place, i) => (
+            (places && places.length > 0 ? places.slice(0, 6) : PLACES.slice(0, 6)).map((place, i) => (
               <PlaceCard key={place.id} place={place} index={i} />
             ))
           )}

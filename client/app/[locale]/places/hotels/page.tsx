@@ -8,6 +8,7 @@ import { usePlacesByType } from '@/hooks/use-places';
 import { Place } from '@/types/place';
 import { getImageUrl } from '@/lib/utils';
 import { useParams } from 'next/navigation';
+import un_photo_1566073771259_6a8506099945_24bb943f from "@/assets/unsplash/photo-1566073771259-6a8506099945_24bb943f.jpg";
 
 export default function HotelsPage() {
   const { locale } = useParams<{ locale: string }>();
@@ -32,7 +33,7 @@ export default function HotelsPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop"
+            src={un_photo_1566073771259_6a8506099945_24bb943f}
             alt="Hotels"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}
@@ -66,7 +67,7 @@ export default function HotelsPage() {
               className="flex flex-col lg:flex-row bg-card border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group"
             >
               <div className="lg:w-1/2 h-64 lg:h-auto relative overflow-hidden">
-                <Image src={getImageUrl(t, 'https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=2070&auto=format&fit=crop')} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+                <Image src={getImageUrl(t, un_photo_1566073771259_6a8506099945_24bb943f)} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
               </div>
               <div className="p-8 lg:w-1/2 flex flex-col justify-between">
                 <div>

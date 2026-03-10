@@ -11,7 +11,6 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.response.use(
   (response) => {
-    // const baseURL = response.config.baseURL as string;
     const transformData = (data: any) => {
       if (!data) return;
       if (Array.isArray(data)) {

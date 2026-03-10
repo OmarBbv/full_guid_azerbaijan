@@ -8,6 +8,8 @@ import { ArrowRight, Calendar, Clock } from "lucide-react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
+import blog_default from "@/assets/unsplash/baku_fixed.jpg";
+import { MOCK_BLOG_POSTS } from "@/constants/blog";
 
 function mapPostToUi(post: BlogPost, locale: string, t_blog: any) {
   const publishedDate = post.published_at || post.created_at;
@@ -31,7 +33,7 @@ function mapPostToUi(post: BlogPost, locale: string, t_blog: any) {
     excerpt: post.excerpt,
     img:
       post.cover_image_url ??
-      "https://images.unsplash.com/photo-1526779259212-939e64788e3c?q=80&w=700&auto=format&fit=crop",
+      blog_default,
     category: post.category_label ?? post.category ?? "",
     categoryColor: post.category_color ?? "#3b9cf5",
     date,
@@ -133,7 +135,7 @@ function ArticleCard({ article, index, large = false }: {
             <div className="flex items-center gap-3 ml-auto">
               <div className="flex items-center gap-1">
                 <Calendar size={11} style={{ color: "var(--muted-foreground)" }} />
-                <span className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
+                <span suppressHydrationWarning className="text-[11px]" style={{ color: "var(--muted-foreground)" }}>
                   {article.date}
                 </span>
               </div>
@@ -161,11 +163,10 @@ export default function BlogSection() {
     featured: true,
   });
 
-  const articles = (data ?? [])
-    .map(post => mapPostToUi(post, locale, t_blog))
+  const articles = (data && data.length > 0 ? data : MOCK_BLOG_POSTS)
+    .map(post => mapPostToUi(post as any, locale, t_blog))
     .slice(0, 4);
 
-  console.log(articles)
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute w-[500px] h-[500px] rounded-full blur-[100px] opacity-5 bg-[#f5a623] -top-[100px] -left-[100px] pointer-events-none" />
@@ -200,7 +201,7 @@ export default function BlogSection() {
         <div className="columns-1 md:columns-2 lg:columns-3 gap-6">
           {articles.map((a, i) => (
             <div key={a.id} className="break-inside-avoid mb-6">
-              <ArticleCard article={a} index={i} large={a.featured} />
+              <ArticleCard article={a as any} index={i} large={a.featured} />
             </div>
           ))}
         </div>

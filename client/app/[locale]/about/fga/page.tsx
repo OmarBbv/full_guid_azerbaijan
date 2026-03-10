@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { Info, Globe, Shield, Sparkles } from 'lucide-react';
+import un_photo_1541746972996_4e0b0f43e02a_24bb943f from "@/assets/unsplash/photo-1541746972996-4e0b0f43e02a_24bb943f.jpg";
 
 export default function FGAPage() {
   return (
@@ -12,12 +13,13 @@ export default function FGAPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1541746972996-4e0b0f43e02a?q=80&w=2070&auto=format&fit=crop"
+            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f}
             alt="FGA About"
             fill
             className="object-cover"
             style={{ filter: "brightness(0.5) saturate(1.1)" }}
             priority
+            unoptimized
           />
           <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/20 to-background" />
         </div>
