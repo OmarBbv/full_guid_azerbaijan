@@ -17,7 +17,7 @@ export default function AirportInfoPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={un_photo_1570710891163_6d3b5c47248b_24bb943f}
+            src={un_photo_1570710891163_6d3b5c47248b_24bb943f.src}
             alt="Hava Limanı"
             fill
             className="object-cover"

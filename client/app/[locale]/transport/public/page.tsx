@@ -17,7 +17,7 @@ export default function PublicTransportPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={un_photo_1544620347_c4fd4a3d5957_7459f728}
+            src={un_photo_1544620347_c4fd4a3d5957_7459f728.src}
             alt="İctimai Nəqliyyat"
             fill
             className="object-cover"

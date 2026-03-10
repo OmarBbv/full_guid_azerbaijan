@@ -6,6 +6,7 @@ import ExperienceSection from '@/components/home/ExperienceSection';
 import BlogSection from '@/components/home/BlogSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
+import HomeVenues from '@/components/home/HomeVenues';
 
 export default function Home() {
   return (
@@ -17,6 +18,9 @@ export default function Home() {
 
         {/* Stats / Statistikalar */}
         <StatsSection />
+
+        {/* Məkanlar: Restoran, Otel, Hostel */}
+        <HomeVenues />
 
         {/* Interactive Map */}
         <InteractiveMap />

@@ -17,7 +17,7 @@ export default function TransparencyPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src={un_photo_1451187580459_43490279c0fa_4b267726}
+            src={un_photo_1451187580459_43490279c0fa_4b267726.src}
             alt="Transparency Background"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}

@@ -16,7 +16,7 @@ export default function PrinciplesPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f}
+            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f.src}
             alt="Prinsiplər"
             fill
             className="object-cover"

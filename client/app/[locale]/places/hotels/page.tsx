@@ -33,7 +33,7 @@ export default function HotelsPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src={un_photo_1566073771259_6a8506099945_24bb943f}
+            src={un_photo_1566073771259_6a8506099945_24bb943f.src}
             alt="Hotels"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}

@@ -30,7 +30,7 @@ export default function LandmarksPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f}
+            src={un_photo_1541746972996_4e0b0f43e02a_24bb943f.src}
             alt="Landmarks"
             className="w-full h-full object-cover"
             style={{ filter: "brightness(0.5)" }}

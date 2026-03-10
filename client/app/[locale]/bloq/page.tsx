@@ -28,7 +28,7 @@ function mapPostToUi(
   title: string;
   slug: string;
   excerpt: string;
-  img: string;
+  img: any;
   category: string | null;
   categoryLabel: string | null;
   categoryColor: string | null;
