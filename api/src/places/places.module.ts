@@ -9,20 +9,9 @@ import { PlaceImage } from './entities/place-image.entity';
 import { PlaceReview } from './entities/place-review.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      Place,
-      PlaceImage,
-      PlaceReview,
-    ]),
-  ],
-  controllers: [
-    PlacesController,
-  ],
+  imports: [TypeOrmModule.forFeature([Place, PlaceImage, PlaceReview])],
+  controllers: [PlacesController],
   providers: [PlacesService],
-  exports: [
-    TypeOrmModule,
-    PlacesService,
-  ],
+  exports: [TypeOrmModule, PlacesService],
 })
-export class PlacesModule { }
+export class PlacesModule {}

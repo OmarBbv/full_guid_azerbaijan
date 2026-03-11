@@ -21,15 +21,19 @@ export class RestaurantsService {
     private readonly restaurantRepo: Repository<Restaurant>,
 
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   // ─── Create ───────────────────────────────────────────────────────────────
 
   async create(dto: CreateRestaurantDto): Promise<Restaurant> {
     const language = dto.language ?? 'az';
-    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug, language } });
+    const existing = await this.placeRepo.findOne({
+      where: { slug: dto.slug, language },
+    });
     if (existing) {
-      throw new ConflictException(`Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`);
+      throw new ConflictException(
+        `Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`,
+      );
     }
 
     return this.dataSource.transaction(async (manager) => {
@@ -56,7 +60,10 @@ export class RestaurantsService {
         meta_description: dto.meta_description ?? null,
         is_featured: dto.is_featured ?? false,
       };
-      const savedPlace = await manager.save(Place, Object.assign(new Place(), placeData));
+      const savedPlace = await manager.save(
+        Place,
+        Object.assign(new Place(), placeData),
+      );
 
       // 2. Build & save the Restaurant-specific record
       const restaurantData: Partial<Restaurant> = {
@@ -78,7 +85,10 @@ export class RestaurantsService {
         has_private_rooms: dto.has_private_rooms ?? false,
         accepts_cards: dto.accepts_cards ?? false,
       };
-      return manager.save(Restaurant, Object.assign(new Restaurant(), restaurantData));
+      return manager.save(
+        Restaurant,
+        Object.assign(new Restaurant(), restaurantData),
+      );
     });
   }
 
@@ -115,7 +125,9 @@ export class RestaurantsService {
       relations: ['place', 'place.images', 'place.reviews'],
     });
     if (!restaurant) {
-      throw new NotFoundException(`Restaurant data for slug "${slug}" not found.`);
+      throw new NotFoundException(
+        `Restaurant data for slug "${slug}" not found.`,
+      );
     }
     return restaurant;
   }
@@ -129,22 +141,30 @@ export class RestaurantsService {
       // Update base Place fields (only what's provided)
       const placeUpdate: Partial<Place> = {};
       if (dto.title !== undefined) placeUpdate.title = dto.title;
-      if (dto.short_description !== undefined) placeUpdate.short_description = dto.short_description;
-      if (dto.detailed_description !== undefined) placeUpdate.detailed_description = dto.detailed_description;
-      if (dto.whatsapp_number !== undefined) placeUpdate.whatsapp_number = dto.whatsapp_number;
-      if (dto.whatsapp_message_template !== undefined) placeUpdate.whatsapp_message_template = dto.whatsapp_message_template;
-      if (dto.phone_number !== undefined) placeUpdate.phone_number = dto.phone_number;
+      if (dto.short_description !== undefined)
+        placeUpdate.short_description = dto.short_description;
+      if (dto.detailed_description !== undefined)
+        placeUpdate.detailed_description = dto.detailed_description;
+      if (dto.whatsapp_number !== undefined)
+        placeUpdate.whatsapp_number = dto.whatsapp_number;
+      if (dto.whatsapp_message_template !== undefined)
+        placeUpdate.whatsapp_message_template = dto.whatsapp_message_template;
+      if (dto.phone_number !== undefined)
+        placeUpdate.phone_number = dto.phone_number;
       if (dto.email !== undefined) placeUpdate.email = dto.email;
       if (dto.address !== undefined) placeUpdate.address = dto.address;
       if (dto.city !== undefined) placeUpdate.city = dto.city;
       if (dto.latitude !== undefined) placeUpdate.latitude = dto.latitude;
       if (dto.longitude !== undefined) placeUpdate.longitude = dto.longitude;
       if (dto.thumbnail !== undefined) placeUpdate.thumbnail = dto.thumbnail;
-      if (dto.working_hours !== undefined) placeUpdate.working_hours = dto.working_hours;
+      if (dto.working_hours !== undefined)
+        placeUpdate.working_hours = dto.working_hours;
       if (dto.features !== undefined) placeUpdate.features = dto.features;
       if (dto.meta_title !== undefined) placeUpdate.meta_title = dto.meta_title;
-      if (dto.meta_description !== undefined) placeUpdate.meta_description = dto.meta_description;
-      if (dto.is_featured !== undefined) placeUpdate.is_featured = dto.is_featured;
+      if (dto.meta_description !== undefined)
+        placeUpdate.meta_description = dto.meta_description;
+      if (dto.is_featured !== undefined)
+        placeUpdate.is_featured = dto.is_featured;
 
       if (Object.keys(placeUpdate).length > 0) {
         await manager.update(Place, restaurant.place_id, placeUpdate);
@@ -152,22 +172,37 @@ export class RestaurantsService {
 
       // Update restaurant-specific fields
       const restaurantUpdate: Partial<Restaurant> = {};
-      if (dto.cuisine_type !== undefined) restaurantUpdate.cuisine_type = dto.cuisine_type;
-      if (dto.specialties !== undefined) restaurantUpdate.specialties = dto.specialties;
-      if (dto.dining_style !== undefined) restaurantUpdate.dining_style = dto.dining_style;
-      if (dto.price_range !== undefined) restaurantUpdate.price_range = dto.price_range;
-      if (dto.avg_bill_per_person_azn !== undefined) restaurantUpdate.avg_bill_per_person_azn = dto.avg_bill_per_person_azn;
-      if (dto.seating_capacity !== undefined) restaurantUpdate.seating_capacity = dto.seating_capacity;
-      if (dto.menu_pdf_url !== undefined) restaurantUpdate.menu_pdf_url = dto.menu_pdf_url;
-      if (dto.menu_images !== undefined) restaurantUpdate.menu_images = dto.menu_images;
+      if (dto.cuisine_type !== undefined)
+        restaurantUpdate.cuisine_type = dto.cuisine_type;
+      if (dto.specialties !== undefined)
+        restaurantUpdate.specialties = dto.specialties;
+      if (dto.dining_style !== undefined)
+        restaurantUpdate.dining_style = dto.dining_style;
+      if (dto.price_range !== undefined)
+        restaurantUpdate.price_range = dto.price_range;
+      if (dto.avg_bill_per_person_azn !== undefined)
+        restaurantUpdate.avg_bill_per_person_azn = dto.avg_bill_per_person_azn;
+      if (dto.seating_capacity !== undefined)
+        restaurantUpdate.seating_capacity = dto.seating_capacity;
+      if (dto.menu_pdf_url !== undefined)
+        restaurantUpdate.menu_pdf_url = dto.menu_pdf_url;
+      if (dto.menu_images !== undefined)
+        restaurantUpdate.menu_images = dto.menu_images;
       if (dto.has_wifi !== undefined) restaurantUpdate.has_wifi = dto.has_wifi;
-      if (dto.has_parking !== undefined) restaurantUpdate.has_parking = dto.has_parking;
-      if (dto.has_outdoor_seating !== undefined) restaurantUpdate.has_outdoor_seating = dto.has_outdoor_seating;
-      if (dto.has_live_music !== undefined) restaurantUpdate.has_live_music = dto.has_live_music;
-      if (dto.is_halal_certified !== undefined) restaurantUpdate.is_halal_certified = dto.is_halal_certified;
-      if (dto.is_vegetarian_friendly !== undefined) restaurantUpdate.is_vegetarian_friendly = dto.is_vegetarian_friendly;
-      if (dto.has_private_rooms !== undefined) restaurantUpdate.has_private_rooms = dto.has_private_rooms;
-      if (dto.accepts_cards !== undefined) restaurantUpdate.accepts_cards = dto.accepts_cards;
+      if (dto.has_parking !== undefined)
+        restaurantUpdate.has_parking = dto.has_parking;
+      if (dto.has_outdoor_seating !== undefined)
+        restaurantUpdate.has_outdoor_seating = dto.has_outdoor_seating;
+      if (dto.has_live_music !== undefined)
+        restaurantUpdate.has_live_music = dto.has_live_music;
+      if (dto.is_halal_certified !== undefined)
+        restaurantUpdate.is_halal_certified = dto.is_halal_certified;
+      if (dto.is_vegetarian_friendly !== undefined)
+        restaurantUpdate.is_vegetarian_friendly = dto.is_vegetarian_friendly;
+      if (dto.has_private_rooms !== undefined)
+        restaurantUpdate.has_private_rooms = dto.has_private_rooms;
+      if (dto.accepts_cards !== undefined)
+        restaurantUpdate.accepts_cards = dto.accepts_cards;
 
       if (Object.keys(restaurantUpdate).length > 0) {
         await manager.update(Restaurant, restaurant.id, restaurantUpdate);
@@ -184,10 +219,15 @@ export class RestaurantsService {
     await this.placeRepo.remove(restaurant.place);
   }
 
-  async uploadImages(id: string, files: Express.Multer.File[]): Promise<Restaurant> {
+  async uploadImages(
+    id: string,
+    files: Express.Multer.File[],
+  ): Promise<Restaurant> {
     const restaurant = await this.findOne(id);
     const placeImageRepo = this.dataSource.getRepository(PlaceImage);
-    const existingCount = await placeImageRepo.count({ where: { place_id: restaurant.place_id } });
+    const existingCount = await placeImageRepo.count({
+      where: { place_id: restaurant.place_id },
+    });
 
     if (files && files.length > 0) {
       const placeImages = files.map((file, index) => {

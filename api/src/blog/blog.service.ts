@@ -14,7 +14,7 @@ export class BlogService {
   constructor(
     @InjectRepository(BlogPost)
     private readonly blogRepo: Repository<BlogPost>,
-  ) { }
+  ) {}
 
   // ─── Create ────────────────────────────────────────────────────────────────
 
@@ -154,4 +154,3 @@ export class BlogService {
     return this.blogRepo.save(post);
   }
 }
-

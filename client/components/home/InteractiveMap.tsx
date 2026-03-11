@@ -69,7 +69,6 @@ export default function InteractiveMap() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
-          {/* Left Side: Info Panel */}
           <div className="lg:col-span-5 order-2 lg:order-1">
             <div className="relative h-full min-h-[450px] flex flex-col justify-center py-6">
 

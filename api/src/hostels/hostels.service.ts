@@ -21,12 +21,17 @@ export class HostelsService {
     private readonly hostelRepo: Repository<Hostel>,
 
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(dto: CreateHostelDto): Promise<Hostel> {
     const language = dto.language ?? 'az';
-    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug, language } });
-    if (existing) throw new ConflictException(`Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`);
+    const existing = await this.placeRepo.findOne({
+      where: { slug: dto.slug, language },
+    });
+    if (existing)
+      throw new ConflictException(
+        `Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`,
+      );
 
     return this.dataSource.transaction(async (manager) => {
       const placeData: Partial<Place> = {
@@ -51,7 +56,10 @@ export class HostelsService {
         meta_description: dto.meta_description ?? null,
         is_featured: dto.is_featured ?? false,
       };
-      const savedPlace = await manager.save(Place, Object.assign(new Place(), placeData));
+      const savedPlace = await manager.save(
+        Place,
+        Object.assign(new Place(), placeData),
+      );
 
       const hostelData: Partial<Hostel> = {
         place_id: savedPlace.id,
@@ -97,18 +105,23 @@ export class HostelsService {
       where: { id },
       relations: ['place', 'place.images', 'place.reviews'],
     });
-    if (!hostel) throw new NotFoundException(`Hostel with ID "${id}" not found.`);
+    if (!hostel)
+      throw new NotFoundException(`Hostel with ID "${id}" not found.`);
     return hostel;
   }
 
   async findBySlug(slug: string): Promise<Hostel> {
-    const place = await this.placeRepo.findOne({ where: { slug, type: PlaceType.HOSTEL } });
-    if (!place) throw new NotFoundException(`Hostel with slug "${slug}" not found.`);
+    const place = await this.placeRepo.findOne({
+      where: { slug, type: PlaceType.HOSTEL },
+    });
+    if (!place)
+      throw new NotFoundException(`Hostel with slug "${slug}" not found.`);
     const hostel = await this.hostelRepo.findOne({
       where: { place_id: place.id },
       relations: ['place', 'place.images', 'place.reviews'],
     });
-    if (!hostel) throw new NotFoundException(`Hostel data for slug "${slug}" not found.`);
+    if (!hostel)
+      throw new NotFoundException(`Hostel data for slug "${slug}" not found.`);
     return hostel;
   }
 
@@ -118,49 +131,76 @@ export class HostelsService {
     return this.dataSource.transaction(async (manager) => {
       const placeUpdate: Partial<Place> = {};
       if (dto.title !== undefined) placeUpdate.title = dto.title;
-      if (dto.short_description !== undefined) placeUpdate.short_description = dto.short_description;
-      if (dto.detailed_description !== undefined) placeUpdate.detailed_description = dto.detailed_description;
-      if (dto.whatsapp_number !== undefined) placeUpdate.whatsapp_number = dto.whatsapp_number;
-      if (dto.phone_number !== undefined) placeUpdate.phone_number = dto.phone_number;
+      if (dto.short_description !== undefined)
+        placeUpdate.short_description = dto.short_description;
+      if (dto.detailed_description !== undefined)
+        placeUpdate.detailed_description = dto.detailed_description;
+      if (dto.whatsapp_number !== undefined)
+        placeUpdate.whatsapp_number = dto.whatsapp_number;
+      if (dto.phone_number !== undefined)
+        placeUpdate.phone_number = dto.phone_number;
       if (dto.email !== undefined) placeUpdate.email = dto.email;
       if (dto.address !== undefined) placeUpdate.address = dto.address;
       if (dto.city !== undefined) placeUpdate.city = dto.city;
       if (dto.latitude !== undefined) placeUpdate.latitude = dto.latitude;
       if (dto.longitude !== undefined) placeUpdate.longitude = dto.longitude;
       if (dto.thumbnail !== undefined) placeUpdate.thumbnail = dto.thumbnail;
-      if (dto.working_hours !== undefined) placeUpdate.working_hours = dto.working_hours;
+      if (dto.working_hours !== undefined)
+        placeUpdate.working_hours = dto.working_hours;
       if (dto.features !== undefined) placeUpdate.features = dto.features;
-      if (dto.is_featured !== undefined) placeUpdate.is_featured = dto.is_featured;
+      if (dto.is_featured !== undefined)
+        placeUpdate.is_featured = dto.is_featured;
 
       if (Object.keys(placeUpdate).length > 0) {
         await manager.update(Place, hostel.place_id, placeUpdate);
       }
 
       const hostelUpdate: Partial<Hostel> = {};
-      if (dto.hostel_type !== undefined) hostelUpdate.hostel_type = dto.hostel_type;
-      if (dto.dorm_beds_count !== undefined) hostelUpdate.dorm_beds_count = dto.dorm_beds_count;
-      if (dto.private_rooms_count !== undefined) hostelUpdate.private_rooms_count = dto.private_rooms_count;
-      if (dto.max_dorm_size !== undefined) hostelUpdate.max_dorm_size = dto.max_dorm_size;
-      if (dto.available_dorm_gender !== undefined) hostelUpdate.available_dorm_gender = dto.available_dorm_gender;
-      if (dto.dorm_price_from_eur !== undefined) hostelUpdate.dorm_price_from_eur = dto.dorm_price_from_eur;
-      if (dto.private_price_from_eur !== undefined) hostelUpdate.private_price_from_eur = dto.private_price_from_eur;
-      if (dto.check_in_time !== undefined) hostelUpdate.check_in_time = dto.check_in_time;
-      if (dto.check_out_time !== undefined) hostelUpdate.check_out_time = dto.check_out_time;
+      if (dto.hostel_type !== undefined)
+        hostelUpdate.hostel_type = dto.hostel_type;
+      if (dto.dorm_beds_count !== undefined)
+        hostelUpdate.dorm_beds_count = dto.dorm_beds_count;
+      if (dto.private_rooms_count !== undefined)
+        hostelUpdate.private_rooms_count = dto.private_rooms_count;
+      if (dto.max_dorm_size !== undefined)
+        hostelUpdate.max_dorm_size = dto.max_dorm_size;
+      if (dto.available_dorm_gender !== undefined)
+        hostelUpdate.available_dorm_gender = dto.available_dorm_gender;
+      if (dto.dorm_price_from_eur !== undefined)
+        hostelUpdate.dorm_price_from_eur = dto.dorm_price_from_eur;
+      if (dto.private_price_from_eur !== undefined)
+        hostelUpdate.private_price_from_eur = dto.private_price_from_eur;
+      if (dto.check_in_time !== undefined)
+        hostelUpdate.check_in_time = dto.check_in_time;
+      if (dto.check_out_time !== undefined)
+        hostelUpdate.check_out_time = dto.check_out_time;
       if (dto.has_wifi !== undefined) hostelUpdate.has_wifi = dto.has_wifi;
-      if (dto.has_kitchen !== undefined) hostelUpdate.has_kitchen = dto.has_kitchen;
-      if (dto.has_common_room !== undefined) hostelUpdate.has_common_room = dto.has_common_room;
-      if (dto.has_lockers !== undefined) hostelUpdate.has_lockers = dto.has_lockers;
-      if (dto.has_free_breakfast !== undefined) hostelUpdate.has_free_breakfast = dto.has_free_breakfast;
+      if (dto.has_kitchen !== undefined)
+        hostelUpdate.has_kitchen = dto.has_kitchen;
+      if (dto.has_common_room !== undefined)
+        hostelUpdate.has_common_room = dto.has_common_room;
+      if (dto.has_lockers !== undefined)
+        hostelUpdate.has_lockers = dto.has_lockers;
+      if (dto.has_free_breakfast !== undefined)
+        hostelUpdate.has_free_breakfast = dto.has_free_breakfast;
       if (dto.has_bar !== undefined) hostelUpdate.has_bar = dto.has_bar;
-      if (dto.has_laundry !== undefined) hostelUpdate.has_laundry = dto.has_laundry;
-      if (dto.has_luggage_storage !== undefined) hostelUpdate.has_luggage_storage = dto.has_luggage_storage;
-      if (dto.has_24h_reception !== undefined) hostelUpdate.has_24h_reception = dto.has_24h_reception;
-      if (dto.organizes_tours !== undefined) hostelUpdate.organizes_tours = dto.organizes_tours;
-      if (dto.has_24h_security !== undefined) hostelUpdate.has_24h_security = dto.has_24h_security;
+      if (dto.has_laundry !== undefined)
+        hostelUpdate.has_laundry = dto.has_laundry;
+      if (dto.has_luggage_storage !== undefined)
+        hostelUpdate.has_luggage_storage = dto.has_luggage_storage;
+      if (dto.has_24h_reception !== undefined)
+        hostelUpdate.has_24h_reception = dto.has_24h_reception;
+      if (dto.organizes_tours !== undefined)
+        hostelUpdate.organizes_tours = dto.organizes_tours;
+      if (dto.has_24h_security !== undefined)
+        hostelUpdate.has_24h_security = dto.has_24h_security;
       if (dto.has_cctv !== undefined) hostelUpdate.has_cctv = dto.has_cctv;
-      if (dto.has_keycard_access !== undefined) hostelUpdate.has_keycard_access = dto.has_keycard_access;
-      if (dto.social_events !== undefined) hostelUpdate.social_events = dto.social_events;
-      if (dto.hostel_vibe !== undefined) hostelUpdate.hostel_vibe = dto.hostel_vibe;
+      if (dto.has_keycard_access !== undefined)
+        hostelUpdate.has_keycard_access = dto.has_keycard_access;
+      if (dto.social_events !== undefined)
+        hostelUpdate.social_events = dto.social_events;
+      if (dto.hostel_vibe !== undefined)
+        hostelUpdate.hostel_vibe = dto.hostel_vibe;
 
       if (Object.keys(hostelUpdate).length > 0) {
         await manager.update(Hostel, hostel.id, hostelUpdate);
@@ -175,10 +215,15 @@ export class HostelsService {
     await this.placeRepo.remove(hostel.place);
   }
 
-  async uploadImages(id: string, files: Express.Multer.File[]): Promise<Hostel> {
+  async uploadImages(
+    id: string,
+    files: Express.Multer.File[],
+  ): Promise<Hostel> {
     const hostel = await this.findOne(id);
     const placeImageRepo = this.dataSource.getRepository(PlaceImage);
-    const existingCount = await placeImageRepo.count({ where: { place_id: hostel.place_id } });
+    const existingCount = await placeImageRepo.count({
+      where: { place_id: hostel.place_id },
+    });
 
     if (files && files.length > 0) {
       const placeImages = files.map((file, index) => {

@@ -10,9 +10,12 @@ export const apiClient = axios.create({
 // ─── Request interceptor (auth token etc.) ────────────────────────────────────
 apiClient.interceptors.request.use(
   (config) => {
-    // TODO: attach bearer token when auth is implemented
-    // const token = localStorage.getItem('token');
-    // if (token) config.headers.Authorization = `Bearer ${token}`;
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
     return config;
   },
   (error) => Promise.reject(error)

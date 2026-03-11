@@ -21,7 +21,7 @@ import { UpdateHotelDto } from './dto/update-hotel.dto';
 
 @Controller('hotels')
 export class HotelsController {
-  constructor(private readonly hotelsService: HotelsService) { }
+  constructor(private readonly hotelsService: HotelsService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

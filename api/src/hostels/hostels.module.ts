@@ -11,4 +11,4 @@ import { Place } from '../places/entities/place.entity';
   providers: [HostelsService],
   exports: [HostelsService],
 })
-export class HostelsModule { }
+export class HostelsModule {}

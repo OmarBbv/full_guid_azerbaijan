@@ -41,7 +41,8 @@
     "explore": "Kəşf Et",
     "back": "Geri",
     "learn_more": "Daha çox öyrən",
-    "top": "TOP"
+    "top": "TOP",
+    "logout": "Çıxış"
   },
   "Footer": {
     "tours_entertainment": "Turlar & Əyləncə",
@@ -114,6 +115,7 @@
     "default_map_desc": "Xəritədə hər hansı bir bölgəni seçərək həmin yer haqqında qısa məlumat və maraqlı faktlarla tanış ola bilərsiniz.",
     "famous": "Məşhur",
     "default_famous": "Bütün bölgələr unikal mənzərəyə malikdir.",
+    "region": "Bölgəsi",
     "select_region": "Bölgə Seçin",
     "ready_to_discover": "Kəşfə Hazırsınız?",
     "map_title": "Xəritə",
@@ -201,5 +203,43 @@
         "text": "Unudulmaz bir təcrübə. Bakının memarlığı möhtəşəmdir."
       }
     ]
+  },
+  "HomeVenues": {
+    "food_and_rest": "🍽️ Yemək və İstirahət",
+    "title_part_1": "Restoran, Otel və",
+    "title_accent": "Hostellər",
+    "description": "Səyahətiniz üçün ən ləziz təamlar və ən rahat qalacaq yerləri kəşf edin. Gözəl xatirələr üçün doğru məkanı seçin.",
+    "pop_restaurants": "✨ Populyar Restoranlar",
+    "best_hotels": "🏨 Ən Yaxşı Otellər",
+    "budget_hostels": "🛌 Büdcə Dostu Hostellər",
+    "discover_all": "Bütün Rota və Məkanları Kəşf Et",
+    "more_btn": "Daha çox"
+  },
+  "HeroSearch": {
+    "what_placeholder": "Nə axtarırsınız? (restoran, taksi...)",
+    "where_placeholder": "Hansı şəhər?",
+    "search_btn": "Axtar",
+    "all_cities": "Bütün şəhərlər",
+    "city_baku": "Bakı",
+    "city_ganja": "Gəncə",
+    "city_sumgayit": "Sumqayıt",
+    "city_qabala": "Qəbələ",
+    "city_sheki": "Şəki",
+    "city_quba": "Quba",
+    "city_lankaran": "Lənkəran",
+    "city_shusha": "Şuşa",
+    "city_nakhchivan": "Naxçıvan",
+    "city_shamakhi": "Şamaxı"
+  },
+  "HeroDefault": {
+    "slide1_country": "AZƏRBAYCAN",
+    "slide1_subtitle": "Şərqin açarı, Qafqazın incisi",
+    "slide1_desc": "Qədim şəhər küçələrindən buzlaq dağ zirvələrinə, zəngin mədəniyyətdən Xəzərin sahillərinə — Azərbaycan sizi heyrətdə qoyacaq.",
+    "slide1_c1_sub": "Şərqin Paris'i",
+    "slide1_c1_desc": "Qədim İçərişəhər, Alov qüllələri və müasir arxitektura — Bakı hər gün yeni sirlər açır.",
+    "slide1_c2_sub": "Musiqi şəhəri",
+    "slide1_c2_desc": "Qarabağın döyünən ürəyi, musiqi və şeirin beşiyi olan bu şəhər zamana aparan bir gəzinti təklif edir.",
+    "slide1_c3_sub": "Dağların qucağı",
+    "slide1_c3_desc": "Böyük Qafqazın yaşıl qoynunda göllər, şəlalələr və Tufandağ ski mərkəzi — mövsümü olmayan cənnət."
   }
 }

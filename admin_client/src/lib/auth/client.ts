@@ -51,19 +51,13 @@ class AuthClient {
     return { error: 'Social authentication not implemented' };
   }
 
-  async signInWithPassword(params: SignInWithPasswordParams): Promise<{ error?: string }> {
-    const { email, password } = params;
-
-    // Make API request
-
-    // We do not handle the API, so we'll check if the credentials match with the hardcoded ones.
-    if (email !== 'sofia@devias.io' || password !== 'Secret1') {
-      return { error: 'Invalid credentials' };
+  async signInWithPassword(_: SignInWithPasswordParams): Promise<{ error?: string }> {
+    // Actual login is handled by the useAdminLogin hook in @/hooks/use-auth
+    // This stub exists for compatibility with legacy code that calls authClient.signInWithPassword
+    const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
+    if (!token) {
+      return { error: 'Giriş etməyiniz tələb olunur' };
     }
-
-    const token = generateToken();
-    localStorage.setItem('custom-auth-token', token);
-
     return {};
   }
 
@@ -90,7 +84,7 @@ class AuthClient {
 
   async signOut(): Promise<{ error?: string }> {
     localStorage.removeItem('custom-auth-token');
-
+    localStorage.removeItem('access_token');
     return {};
   }
 }

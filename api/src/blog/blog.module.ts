@@ -11,4 +11,3 @@ import { BlogPost } from './entities/blog-post.entity';
   exports: [TypeOrmModule, BlogService],
 })
 export class BlogModule {}
-

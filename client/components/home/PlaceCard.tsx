@@ -75,7 +75,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
       }}
     >
       {/* Image */}
-      <div className="relative w-full overflow-hidden h-[260px]">
+      <div className="relative w-full overflow-hidden h-[220px] rounded-t-3xl border-b border-border/50">
         <Image
           src={imgSrc || fallbackImage}
           alt={place.title || ""}
@@ -130,38 +130,43 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
       </div>
 
       {/* Content */}
-      <div className="p-5 bg-card h-full flex flex-col">
-        <div className="flex items-start justify-between mb-2">
-          <div className="flex-1">
-            <h3 className="font-bold text-lg leading-tight mb-1 text-foreground line-clamp-1">
+      <div className="p-5 bg-card flex-1 flex flex-col">
+        <div className="flex items-start justify-between mb-3">
+          <div className="flex-1 pr-3">
+            <h3 className="font-bold text-lg leading-tight mb-1.5 text-foreground line-clamp-1 group-hover:text-primary transition-colors">
               {place.title}
             </h3>
             <div className="flex items-center gap-1.5">
-              <MapPin size={12} className="text-muted-foreground" />
-              <span className="text-sm text-muted-foreground line-clamp-1">
-                {place.city}
+              <MapPin size={14} className="text-primary/70" />
+              <span className="text-sm font-medium text-muted-foreground line-clamp-1">
+                {place.city || (place as any).location || "Bakı"}
               </span>
             </div>
           </div>
           <div
-            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-sm font-bold shrink-0 ml-2"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-xl text-sm font-bold shrink-0 shadow-sm"
             style={{ background: `${accentColor}18`, color: accentColor }}
           >
-            <Star size={12} className="fill-current" />
+            <Star size={14} className="fill-current" />
             {Number(place.average_rating) || 0}
           </div>
         </div>
 
-        <div className="flex items-center justify-between mt-auto pt-3 border-t border-border">
-          <span className="text-xs text-muted-foreground">
+        {/* Added Description */}
+        <p className="text-sm text-muted-foreground line-clamp-2 mb-5 leading-relaxed">
+          {place.short_description || (place as any).description || place.subtitle || "Ətraflı məlumat üçün klikləyin və bu məkanın imkanları ilə tanış olun."}
+        </p>
+
+        <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">
+          <span className="text-xs font-medium bg-muted/60 px-2.5 py-1 rounded-md text-muted-foreground border border-border/50">
             {place.review_count || 0} {t('reviews')}
           </span>
           <div
-            className="flex items-center gap-1.5 text-xs font-bold transition-transform duration-200 group-hover:translate-x-1"
+            className="flex items-center gap-1.5 text-sm font-bold transition-transform duration-200 group-hover:translate-x-1"
             style={{ color: accentColor }}
           >
             {t('explore')}
-            <ArrowRight size={13} />
+            <ArrowRight size={16} />
           </div>
         </div>
       </div>

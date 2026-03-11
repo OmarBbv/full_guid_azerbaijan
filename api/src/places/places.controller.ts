@@ -18,7 +18,7 @@ import { UpdatePlaceDto } from './dto/update-place.dto';
 
 @Controller('places')
 export class PlacesController {
-  constructor(private readonly placesService: PlacesService) { }
+  constructor(private readonly placesService: PlacesService) {}
 
   @Post()
   create(@Body() createPlaceDto: CreatePlaceDto) {
@@ -33,7 +33,8 @@ export class PlacesController {
     @Query('language') language?: string,
   ) {
     const exclude = excludeTypes ? excludeTypes.split(',') : undefined;
-    const isHero = showInHero === 'true' ? true : showInHero === 'false' ? false : undefined;
+    const isHero =
+      showInHero === 'true' ? true : showInHero === 'false' ? false : undefined;
     return this.placesService.findAll(exclude, isHero, type, language);
   }
 

@@ -1,13 +1,14 @@
 "use client";
 
 import { useParams } from 'next/navigation';
-import { UtensilsCrossed, Clock, MapPin, Phone, MessageCircle, ChevronLeft, Star, Wifi, ParkingCircle, CreditCard, Music, Loader2 } from 'lucide-react';
+import { UtensilsCrossed, ChevronLeft, Star, Wifi, ParkingCircle, CreditCard, Music, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
-import { Place } from '@/types/place';
 import { getImageUrl } from '@/lib/utils';
+import PlaceDetailSidebar from '@/components/shared/PlaceDetailSidebar';
+import PlaceJsonLd from '@/components/shared/PlaceJsonLd';
 
 export default function RestaurantDetailPage() {
   const params = useParams();
@@ -36,6 +37,7 @@ export default function RestaurantDetailPage() {
 
   return (
     <div className="bg-background pb-20">
+      <PlaceJsonLd place={restaurant as any} type="Restaurant" />
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-12" style={{ height: "70dvh", minHeight: 500 }}>
         {/* Background Overlay */}
@@ -79,7 +81,7 @@ export default function RestaurantDetailPage() {
           <section>
             <h2 className="text-3xl font-black mb-6">Haqqında</h2>
             <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
-              {(restaurant as any).detailed_description || restaurant.short_description}
+              {restaurant.detailed_description || restaurant.short_description}
             </p>
           </section>
 
@@ -125,61 +127,8 @@ export default function RestaurantDetailPage() {
           </section>
         </div>
 
-        {/* Right Content - Sidebar / Actions */}
-        <div className="space-y-8">
-          <div className="bg-card border border-border/10 rounded-3xl p-8 shadow-xl sticky top-28">
-            <h3 className="text-2xl font-bold mb-6">Məkan Məlumatı</h3>
-
-            <div className="space-y-6 mb-8">
-              <div className="flex items-start gap-4">
-                <div className="bg-orange-50 dark:bg-orange-950/30 p-3 rounded-xl text-orange-600">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-1">Ünvan</p>
-                  <p className="font-bold leading-tight">{(restaurant as any).address || restaurant.city || 'Məlumat yoxdur'}</p>
-                </div>
-              </div>
-
-              {/* Working Hours (optional, backend dependent) */}
-              {((restaurant as any).working_hours || (restaurant as any).workingHours) && (
-                <div className="flex items-start gap-4">
-                  <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-xl text-blue-600">
-                    <Clock className="w-5 h-5" />
-                  </div>
-                  <div>
-                    <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-1">İş Saatları</p>
-                    <p className="font-bold">{(restaurant as any).working_hours || (restaurant as any).workingHours}</p>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex items-start gap-4">
-                <div className="bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-xl text-emerald-600">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-1">Telefon</p>
-                  <p className="font-bold">{(restaurant as any).phone_number || (restaurant as any).whatsapp_number || 'Məlumat yoxdur'}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <a
-                href={`https://wa.me/${((restaurant as any).whatsapp_number || (restaurant as any).phone_number || '').replace(/\D/g, '')}?text=Salam, ${restaurant.title} üçün rezervasiya etmək istəyirəm.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-4 bg-[#25D366] text-white rounded-2xl font-black text-lg shadow-lg hover:shadow-[#25D366]/20 hover:scale-[1.02] active:scale-95 transition-all"
-              >
-                <MessageCircle className="w-6 h-6 fill-white" />
-                WhatsApp ilə Sifariş
-              </a>
-              <button className="flex items-center justify-center gap-3 w-full py-4 bg-primary text-white rounded-2xl font-black text-lg shadow-lg hover:shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-                Zəng Et
-              </button>
-            </div>
-          </div>
+        <div>
+          <PlaceDetailSidebar place={restaurant} />
         </div>
       </div>
     </div>

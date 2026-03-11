@@ -22,12 +22,9 @@ export default function LandmarksPage() {
 
   return (
     <div className="bg-background pb-20">
-      {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-16" style={{ height: "100dvh", minHeight: 680 }}>
-        {/* Background Overlay */}
         <div className="absolute inset-0 z-10 bg-linear-to-b from-black/60 via-transparent to-black/30" />
 
-        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
             src={un_photo_1541746972996_4e0b0f43e02a_24bb943f.src}

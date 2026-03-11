@@ -41,7 +41,8 @@
     "explore": "Explore",
     "back": "Back",
     "learn_more": "Learn more",
-    "top": "TOP"
+    "top": "TOP",
+    "logout": "Logout"
   },
   "Footer": {
     "tours_entertainment": "Tours & Entertainment",
@@ -114,6 +115,7 @@
     "default_map_desc": "By selecting any region on the map, you can get acquainted with brief information and interesting facts about that place.",
     "famous": "Famous",
     "default_famous": "All regions have a unique landscape.",
+    "region": "Region",
     "select_region": "Select Region",
     "ready_to_discover": "Ready to Discover?",
     "map_title": "Map",
@@ -201,5 +203,43 @@
         "text": "An unforgettable experience. The architecture of Baku is magnificent."
       }
     ]
+  },
+  "HomeVenues": {
+    "food_and_rest": "🍽️ Food and Leisure",
+    "title_part_1": "Restaurants, Hotels and",
+    "title_accent": "Hostels",
+    "description": "Discover the most delicious foods and the most comfortable places to stay for your trip. Choose the right place for beautiful memories.",
+    "pop_restaurants": "✨ Popular Restaurants",
+    "best_hotels": "🏨 Best Hotels",
+    "budget_hostels": "🛌 Budget Friendly Hostels",
+    "discover_all": "Discover All Routes and Places",
+    "more_btn": "More"
+  },
+  "HeroSearch": {
+    "what_placeholder": "What are you looking for? (restaurant, taxi...)",
+    "where_placeholder": "Which city?",
+    "search_btn": "Search",
+    "all_cities": "All cities",
+    "city_baku": "Baku",
+    "city_ganja": "Ganja",
+    "city_sumgayit": "Sumgayit",
+    "city_qabala": "Gabala",
+    "city_sheki": "Sheki",
+    "city_quba": "Quba",
+    "city_lankaran": "Lankaran",
+    "city_shusha": "Shusha",
+    "city_nakhchivan": "Nakhchivan",
+    "city_shamakhi": "Shamakhi"
+  },
+  "HeroDefault": {
+    "slide1_country": "AZERBAIJAN",
+    "slide1_subtitle": "Key to the East, Pearl of the Caucasus",
+    "slide1_desc": "From ancient city streets to glacial mountain peaks, rich culture to the shores of the Caspian — Azerbaijan will amaze you.",
+    "slide1_c1_sub": "Paris of the East",
+    "slide1_c1_desc": "Ancient Inner City, Flame Towers and modern architecture — Baku reveals new secrets every day.",
+    "slide1_c2_sub": "City of Music",
+    "slide1_c2_desc": "The beating heart of Karabakh, cradle of music and poetry, offers a journey through time.",
+    "slide1_c3_sub": "Embrace of Mountains",
+    "slide1_c3_desc": "In the green lap of the Greater Caucasus: lakes, waterfalls, and Tufandag ski center — a paradise for all seasons."
   }
 }

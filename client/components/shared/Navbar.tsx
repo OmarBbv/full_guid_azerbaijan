@@ -57,7 +57,9 @@ export default function Navbar() {
     null,
   );
   const [langOpen, setLangOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const langRef = useRef<HTMLDivElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const locale = useLocale();
@@ -66,6 +68,9 @@ export default function Navbar() {
     { code: "az", label: "Azərbaycan", flag: "🇦🇿" },
     { code: "en", label: "English", flag: "🇬🇧" },
     { code: "ru", label: "Русский", flag: "🇷🇺" },
+    { code: "tr", label: "Türkçe", flag: "🇹🇷" },
+    { code: "ar", label: "العربية", flag: "🇸🇦" },
+    { code: "hi", label: "हिन्दी", flag: "🇮🇳" },
   ];
   const currentLang = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
 
@@ -122,7 +127,6 @@ export default function Navbar() {
 
   const authRoutes = ["/login", "/register"];
   const isAuthPage = authRoutes.some((r) => pathname?.includes(r));
-  if (isAuthPage) return null;
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 40);
@@ -135,10 +139,23 @@ export default function Navbar() {
       if (langRef.current && !langRef.current.contains(e.target as Node)) {
         setLangOpen(false);
       }
+      if (userRef.current && !userRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
+      }
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  useEffect(() => {
+    setIsLoggedIn(!!localStorage.getItem("access_token"));
+    const handleAuthChange = () => setIsLoggedIn(!!localStorage.getItem("access_token"));
+    window.addEventListener("auth_status_changed", handleAuthChange);
+    return () => window.removeEventListener("auth_status_changed", handleAuthChange);
+  }, []);
+
+  if (isAuthPage) return null;
 
   const navColor = "text-white";
   const navColorMuted = "text-white/70";
@@ -205,17 +222,15 @@ export default function Navbar() {
                     className="relative group/nav-item h-full flex items-center cursor-pointer"
                   >
                     <span
-                      className={`flex items-center gap-1 text-[14px] font-semibold transition-colors duration-200 ${
-                        isActive ? navColor : navColorMuted
-                      } group-hover/nav-item:text-white`}
+                      className={`flex items-center gap-1 text-[14px] font-semibold transition-colors duration-200 ${isActive ? navColor : navColorMuted
+                        } group-hover/nav-item:text-white`}
                     >
                       {link.label}
                       <ChevronDown className="w-3.5 h-3.5 opacity-70 group-hover/nav-item:rotate-180 transition-transform duration-300" />
                     </span>
                     <span
-                      className={`absolute bottom-0 left-0 h-[3px] transition-all duration-300 group-hover/nav-item:w-full ${
-                        isActive ? "w-full" : "w-0"
-                      }`}
+                      className={`absolute bottom-0 left-0 h-[3px] transition-all duration-300 group-hover/nav-item:w-full ${isActive ? "w-full" : "w-0"
+                        }`}
                       style={{
                         background: activeLinkColor,
                         borderRadius: "4px 4px 0 0",
@@ -223,18 +238,16 @@ export default function Navbar() {
                     />
 
                     <div
-                      className={`absolute top-full ${
-                        link.isMega
-                          ? "left-1/2 -translate-x-[45%] w-[980px]"
-                          : "left-0 w-[280px]"
-                      } pt-2 opacity-0 translate-y-2 pointer-events-none
+                      className={`absolute top-full ${link.isMega
+                        ? "left-1/2 -translate-x-[45%] w-[980px]"
+                        : "left-0 w-[280px]"
+                        } pt-2 opacity-0 translate-y-2 pointer-events-none
                         group-hover/nav-item:opacity-100 group-hover/nav-item:translate-y-0
                         group-hover/nav-item:pointer-events-auto transition-all duration-300`}
                     >
                       <div
-                        className={`rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] overflow-hidden ${
-                          link.isMega ? "p-12" : "py-2"
-                        }`}
+                        className={`rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] overflow-hidden ${link.isMega ? "p-12" : "py-2"
+                          }`}
                         style={{
                           background: "rgba(15, 18, 25, 0.98)",
                           border: "1px solid rgba(255,255,255,0.08)",
@@ -259,11 +272,10 @@ export default function Navbar() {
                                       setHoveredMapCity(sub.mapKey)
                                     }
                                     onMouseLeave={() => setHoveredMapCity(null)}
-                                    className={`text-[15px] font-medium transition-colors ${
-                                      hoveredMapCity === sub.mapKey
-                                        ? "text-blue-400"
-                                        : "text-white/70 hover:text-blue-400"
-                                    }`}
+                                    className={`text-[15px] font-medium transition-colors ${hoveredMapCity === sub.mapKey
+                                      ? "text-blue-400"
+                                      : "text-white/70 hover:text-blue-400"
+                                      }`}
                                   >
                                     {sub.label}
                                   </Link>
@@ -359,25 +371,22 @@ export default function Navbar() {
                                       }}
                                     >
                                       <div
-                                        className={`relative flex items-center justify-center transition-all duration-300 ${
-                                          hoveredMapCity === marker.name
-                                            ? "scale-[1.6]"
-                                            : "scale-100"
-                                        }`}
+                                        className={`relative flex items-center justify-center transition-all duration-300 ${hoveredMapCity === marker.name
+                                          ? "scale-[1.6]"
+                                          : "scale-100"
+                                          }`}
                                       >
                                         <div
-                                          className={`absolute w-3 h-3 rounded-full bg-red-500 animate-ping transition-opacity ${
-                                            hoveredMapCity === marker.name
-                                              ? "opacity-50"
-                                              : "opacity-20"
-                                          }`}
+                                          className={`absolute w-3 h-3 rounded-full bg-red-500 animate-ping transition-opacity ${hoveredMapCity === marker.name
+                                            ? "opacity-50"
+                                            : "opacity-20"
+                                            }`}
                                         />
                                         <div
-                                          className={`rounded-full bg-red-500 border border-white shadow-[0_0_8px_rgba(239,68,68,0.6)] transition-all ${
-                                            hoveredMapCity === marker.name
-                                              ? "w-2.5 h-2.5 bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.9)]"
-                                              : "w-2 h-2"
-                                          }`}
+                                          className={`rounded-full bg-red-500 border border-white shadow-[0_0_8px_rgba(239,68,68,0.6)] transition-all ${hoveredMapCity === marker.name
+                                            ? "w-2.5 h-2.5 bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.9)]"
+                                            : "w-2 h-2"
+                                            }`}
                                         />
                                       </div>
                                     </div>
@@ -392,11 +401,10 @@ export default function Navbar() {
                             <Link
                               key={sub.href}
                               href={sub.href}
-                              className={`block px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 hover:text-white hover:bg-white/5 ${
-                                pathname === sub.href
-                                  ? "text-white bg-white/10"
-                                  : ""
-                              }`}
+                              className={`block px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 hover:text-white hover:bg-white/5 ${pathname === sub.href
+                                ? "text-white bg-white/10"
+                                : ""
+                                }`}
                             >
                               {sub.label}
                             </Link>
@@ -409,15 +417,13 @@ export default function Navbar() {
                   <Link
                     key={link.id}
                     href={link.href as any}
-                    className={`relative h-full flex items-center text-[14px] font-semibold transition-colors duration-200 group ${
-                      pathname === link.href ? navColor : navColorMuted
-                    } hover:text-white`}
+                    className={`relative h-full flex items-center text-[14px] font-semibold transition-colors duration-200 group ${pathname === link.href ? navColor : navColorMuted
+                      } hover:text-white`}
                   >
                     <span>{link.label}</span>
                     <span
-                      className={`absolute bottom-0 left-0 h-[3px] transition-all duration-300 group-hover:w-full ${
-                        pathname === link.href ? "w-full" : "w-0"
-                      }`}
+                      className={`absolute bottom-0 left-0 h-[3px] transition-all duration-300 group-hover:w-full ${pathname === link.href ? "w-full" : "w-0"
+                        }`}
                       style={{
                         background: activeLinkColor,
                         borderRadius: "4px 4px 0 0",
@@ -428,20 +434,12 @@ export default function Navbar() {
               })}
             </div>
 
-            {/* ── Desktop right actions ── */}
             <div className="hidden lg:flex items-center gap-5">
               <button
                 className="text-white/60 hover:text-white transition-colors duration-200"
                 aria-label={t("search")}
               >
                 <Search className="w-[18px] h-[18px]" />
-              </button>
-
-              <button
-                className="text-white/60 hover:text-white transition-colors duration-200"
-                aria-label={t("map")}
-              >
-                <Map className="w-[18px] h-[18px]" />
               </button>
 
               <Link
@@ -463,9 +461,8 @@ export default function Navbar() {
                     {currentLang.flag} {currentLang.code.toUpperCase()}
                   </span>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 transition-transform duration-300 ${
-                      langOpen ? "rotate-180" : ""
-                    }`}
+                    className={`w-3.5 h-3.5 transition-transform duration-300 ${langOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -483,15 +480,14 @@ export default function Navbar() {
                         key={lang.code}
                         onClick={() => {
                           router.replace(pathname, {
-                            locale: lang.code as "az" | "en" | "ru",
+                            locale: lang.code as "az" | "en" | "ru" | "tr" | "ar" | "hi",
                           });
                           setLangOpen(false);
                         }}
-                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors ${
-                          locale === lang.code
-                            ? "text-white bg-white/10"
-                            : "text-white/70 hover:text-white hover:bg-white/5"
-                        }`}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors ${locale === lang.code
+                          ? "text-white bg-white/10"
+                          : "text-white/70 hover:text-white hover:bg-white/5"
+                          }`}
                       >
                         <span className="text-base">{lang.flag}</span>
                         <span>{lang.label}</span>
@@ -504,16 +500,65 @@ export default function Navbar() {
                 )}
               </div>
 
-              <Link
-                href="/login"
-                className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 hover:scale-110 active:scale-95"
-                style={{
-                  background: "linear-gradient(135deg, #3b9cf5, #6f5cf6)",
-                  boxShadow: "0 0 0 2px rgba(59,156,245,0.35)",
-                }}
-              >
-                <User className="w-4 h-4 text-white" />
-              </Link>
+              {isLoggedIn ? (
+                <div className="relative" ref={userRef}>
+                  <button
+                    onClick={() => setUserMenuOpen(!userMenuOpen)}
+                    className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95"
+                    style={{
+                      background: "linear-gradient(135deg, #10b981, #059669)",
+                      boxShadow: "0 0 0 2px rgba(16,185,129,0.35)",
+                    }}
+                    title="Profile"
+                  >
+                    <User className="w-4 h-4 text-white" />
+                  </button>
+
+                  {userMenuOpen && (
+                    <div
+                      className="absolute top-[calc(100%+12px)] right-0 w-48 rounded-2xl overflow-hidden shadow-2xl py-2 flex flex-col z-50 animate-in fade-in slide-in-from-top-4 duration-300"
+                      style={{
+                        background: "rgba(10, 12, 22, 0.95)",
+                        border: "1px solid rgba(255,255,255,0.08)",
+                        backdropFilter: "blur(20px)",
+                      }}
+                    >
+                      <Link
+                        href="/profile"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors text-white/70 hover:text-white hover:bg-white/5"
+                      >
+                        <User className="w-4 h-4" />
+                        <span>{t("my_profile") || "Profilim"}</span>
+                      </Link>
+                      <button
+                        onClick={() => {
+                          localStorage.removeItem('access_token');
+                          window.dispatchEvent(new Event("auth_status_changed"));
+                          router.push("/login");
+                          setUserMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-3 px-4 py-2.5 text-[13.5px] font-medium transition-colors text-red-400 hover:text-red-300 hover:bg-white/5"
+                      >
+                        <X className="w-4 h-4" />
+                        <span>{t("logout") || "Çıxış"}</span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <Link
+                  href="/login"
+                  className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-95"
+                  style={{
+                    background: "linear-gradient(135deg, #3b9cf5, #6f5cf6)",
+                    boxShadow: "0 0 0 2px rgba(59,156,245,0.35)",
+                  }}
+                  title={t("login")}
+                >
+                  <User className="w-4 h-4 text-white" />
+                </Link>
+              )}
             </div>
 
             <button
@@ -570,9 +615,8 @@ export default function Navbar() {
                     >
                       {link.label}
                       <ChevronRight
-                        className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${
-                          openMobileDropdown === link.id ? "rotate-90" : ""
-                        }`}
+                        className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${openMobileDropdown === link.id ? "rotate-90" : ""
+                          }`}
                       />
                     </button>
                     {openMobileDropdown === link.id && (
@@ -615,19 +659,39 @@ export default function Navbar() {
                 {t("map")}
               </span>
             </button>
-            <Link
-              href="/login"
-              onClick={() => setMobileOpen(false)}
-              className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
-            >
-              <User
-                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
-                strokeWidth={1.5}
-              />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
-                {t("login")}
-              </span>
-            </Link>
+            {isLoggedIn ? (
+              <button
+                onClick={() => {
+                  localStorage.removeItem('access_token');
+                  window.dispatchEvent(new Event("auth_status_changed"));
+                  setMobileOpen(false);
+                  router.push("/login");
+                }}
+                className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+              >
+                <X
+                  className="w-7 h-7 text-red-500 group-hover:scale-110 transition-transform"
+                  strokeWidth={1.5}
+                />
+                <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                  {t("logout") || "Çıxış"}
+                </span>
+              </button>
+            ) : (
+              <Link
+                href="/login"
+                onClick={() => setMobileOpen(false)}
+                className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+              >
+                <User
+                  className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                  strokeWidth={1.5}
+                />
+                <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                  {t("login")}
+                </span>
+              </Link>
+            )}
             <Link
               href="/secilmisler"
               onClick={() => setMobileOpen(false)}
@@ -659,15 +723,14 @@ export default function Navbar() {
                 key={lang.code}
                 onClick={() => {
                   router.replace(pathname, {
-                    locale: lang.code as "az" | "en" | "ru",
+                    locale: lang.code as "az" | "en" | "ru" | "tr" | "ar" | "hi",
                   });
                   setMobileOpen(false);
                 }}
-                className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${
-                  locale === lang.code
-                    ? "bg-blue-500/10 text-blue-400"
-                    : "text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5"
-                }`}
+                className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${locale === lang.code
+                  ? "bg-blue-500/10 text-blue-400"
+                  : "text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5"
+                  }`}
               >
                 <div className="flex items-center gap-3">
                   <span className="text-lg">{lang.flag}</span>

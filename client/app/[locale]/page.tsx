@@ -7,6 +7,7 @@ import BlogSection from '@/components/home/BlogSection';
 import TestimonialsSection from '@/components/home/TestimonialsSection';
 import NewsletterSection from '@/components/home/NewsletterSection';
 import HomeVenues from '@/components/home/HomeVenues';
+import AdBannerComponent from '@/components/shared/AdBanner';
 
 export default function Home() {
   return (
@@ -19,8 +20,18 @@ export default function Home() {
         {/* Stats / Statistikalar */}
         <StatsSection />
 
+        {/* 📢 homepage_top Reklam */}
+        <div className="max-w-7xl mx-auto px-6 w-full">
+          <AdBannerComponent position="hero_alti" />
+        </div>
+
         {/* Məkanlar: Restoran, Otel, Hostel */}
         <HomeVenues />
+
+        {/* 📢 homepage_side Reklam */}
+        <div className="max-w-7xl mx-auto px-6 w-full">
+          <AdBannerComponent position="orta_banner" />
+        </div>
 
         {/* Interactive Map */}
         <InteractiveMap />

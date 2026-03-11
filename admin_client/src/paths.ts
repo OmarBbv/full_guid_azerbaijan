@@ -19,6 +19,8 @@ export const paths = {
     restaurantsCreate: '/dashboard/restaurants/create',
     blog: '/dashboard/blog',
     blogCreate: '/dashboard/blog/create',
+    ads: '/dashboard/ads',
+    adsCreate: '/dashboard/ads/create',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

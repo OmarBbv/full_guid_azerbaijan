@@ -34,10 +34,10 @@ export enum DiningStyle {
 }
 
 export enum PriceRange {
-  BUDGET = 'BUDGET',    // $   — 5–15 AZN/nəfər
-  MID = 'MID',       // $$  — 15–40 AZN/nəfər
-  UPSCALE = 'UPSCALE',   // $$$ — 40–100 AZN/nəfər
-  LUXURY = 'LUXURY',    // $$$$ — 100+ AZN/nəfər
+  BUDGET = 'BUDGET', // $   — 5–15 AZN/nəfər
+  MID = 'MID', // $$  — 15–40 AZN/nəfər
+  UPSCALE = 'UPSCALE', // $$$ — 40–100 AZN/nəfər
+  LUXURY = 'LUXURY', // $$$$ — 100+ AZN/nəfər
 }
 
 // ─── Entity ───────────────────────────────────────────────────────────────────

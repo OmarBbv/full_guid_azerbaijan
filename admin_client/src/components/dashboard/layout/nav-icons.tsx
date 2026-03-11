@@ -8,6 +8,7 @@ import { BedIcon } from '@phosphor-icons/react/dist/ssr/Bed';
 import { MapPinIcon } from '@phosphor-icons/react/dist/ssr/MapPin';
 import { ForkKnifeIcon } from '@phosphor-icons/react/dist/ssr/ForkKnife';
 import { NotebookIcon } from '@phosphor-icons/react/dist/ssr/Notebook';
+import { MegaphoneSimpleIcon } from '@phosphor-icons/react/dist/ssr/MegaphoneSimple';
 
 export const navIcons = {
   'chart-pie': ChartPieIcon,
@@ -19,4 +20,5 @@ export const navIcons = {
   'map-pin': MapPinIcon,
   'fork-knife': ForkKnifeIcon,
   notebook: NotebookIcon,
+  megaphone: MegaphoneSimpleIcon,
 } as Record<string, Icon>;

@@ -8,6 +8,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useHeroPlaces } from "@/hooks/use-places";
 import { Place } from "@/types/place";
 import { getImageUrl } from "@/lib/utils";
+import HeroSearchBar from "./HeroSearchBar";
+import AdBannerComponent from "../shared/AdBanner";
 import un_photo_1448375240586_882707db888b_1e93d564 from "@/assets/unsplash/photo-1448375240586-882707db888b_1e93d564.jpg";
 import un_photo_1448375240586_882707db888b_629753b7 from "@/assets/unsplash/photo-1448375240586-882707db888b_629753b7.jpg";
 import un_photo_1464822759023_fed622ff2c3b_629753b7 from "@/assets/unsplash/photo-1464822759023-fed622ff2c3b_629753b7.jpg";
@@ -23,20 +25,19 @@ import un_photo_1544735716_392fe2489ffa_629753b7 from "@/assets/unsplash/photo-1
 import un_photo_1570168007204_dfb528c6958f_1e93d564 from "@/assets/unsplash/photo-1570168007204-dfb528c6958f_1e93d564.jpg";
 import un_photo_1570168007204_dfb528c6958f_629753b7 from "@/assets/unsplash/photo-1570168007204-dfb528c6958f_629753b7.jpg";
 
-const defaultSlides = [
+const getDefaultSlides = (tHero: any) => [
   {
     bg: un_photo_1570168007204_dfb528c6958f_1e93d564,
-    country: "AZƏRBAYCAN",
-    subtitle: "Şərqin açarı, Qafqazın incisi",
-    description:
-      "Qədim şəhər küçələrindən buzlaq dağ zirvələrinə, zəngin mədəniyyətdən Xəzərin sahillərinə — Azərbaycan sizi heyrətdə qoyacaq.",
+    country: tHero ? tHero("slide1_country") : "AZƏRBAYCAN",
+    subtitle: tHero ? tHero("slide1_subtitle") : "Şərqin açarı, Qafqazın incisi",
+    description: tHero ? tHero("slide1_desc") : "Qədim şəhər küçələrindən buzlaq dağ zirvələrinə, zəngin mədəniyyətdən Xəzərin sahillərinə — Azərbaycan sizi heyrətdə qoyacaq.",
     accent: "#3b9cf5",
     cards: [
       {
         name: "Bakı",
         region: "Abşeron",
-        subtitle: "Şərqin Paris'i",
-        description: "Qədim İçərişəhər, Alov qüllələri və müasir arxitektura — Bakı hər gün yeni sirlər açır.",
+        subtitle: tHero ? tHero("slide1_c1_sub") : "Şərqin Paris'i",
+        description: tHero ? tHero("slide1_c1_desc") : "Qədim İçərişəhər, Alov qüllələri və müasir arxitektura — Bakı hər gün yeni sirlər açır.",
         img: un_photo_1570168007204_dfb528c6958f_629753b7,
         rating: 4.9,
         reviews: "12.4k",
@@ -44,8 +45,8 @@ const defaultSlides = [
       {
         name: "Şuşa",
         region: "Qarabağ",
-        subtitle: "Musiqi şəhəri",
-        description: "Qarabağın döyünən ürəyi, musiqi və şeirin beşiyi olan bu şəhər zamana aparan bir gəzinti təklif edir.",
+        subtitle: tHero ? tHero("slide1_c2_sub") : "Musiqi şəhəri",
+        description: tHero ? tHero("slide1_c2_desc") : "Qarabağın döyünən ürəyi, musiqi və şeirin beşiyi olan bu şəhər zamana aparan bir gəzinti təklif edir.",
         img: un_photo_1506905925346_21bda4d32df4_629753b7,
         rating: 4.9,
         reviews: "5.1k",
@@ -53,8 +54,8 @@ const defaultSlides = [
       {
         name: "Qəbələ",
         region: "Şimal",
-        subtitle: "Dağların qucağı",
-        description: "Böyük Qafqazın yaşıl qoynunda göllər, şəlalələr və Tufandağ ski mərkəzi — mövsümü olmayan cənnət.",
+        subtitle: tHero ? tHero("slide1_c3_sub") : "Dağların qucağı",
+        description: tHero ? tHero("slide1_c3_desc") : "Böyük Qafqazın yaşıl qoynunda göllər, şəlalələr və Tufandağ ski mərkəzi — mövsümü olmayan cənnət.",
         img: un_photo_1464822759023_fed622ff2c3b_629753b7,
         rating: 4.8,
         reviews: "8.2k",
@@ -175,6 +176,8 @@ const defaultSlides = [
 ];
 
 export default function Hero() {
+  const tHero = useTranslations("HeroDefault");
+  const defaultSlides = useMemo(() => getDefaultSlides(tHero), [tHero]);
   const locale = useLocale();
   const t = useTranslations('Navbar');
   const { data: heroPlaces, isLoading } = useHeroPlaces(locale);
@@ -644,15 +647,21 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ── Bottom Thumbnail Strip ── */}
+      {/* ── Bottom: Search bar + Thumbnail Strip ── */}
       <div
-        className="absolute bottom-0 left-0 right-0 z-20 px-16 pb-6"
+        className="absolute bottom-0 left-0 right-0 z-20 px-8 md:px-16 pb-6"
         style={{
           background:
-            "linear-gradient(0deg, rgba(0,0,0,0.7) 0%, transparent 100%)",
-          paddingTop: "48px",
+            "linear-gradient(0deg, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.35) 60%, transparent 100%)",
+          paddingTop: "56px",
         }}
       >
+        {/* Search Bar */}
+        <div className="mb-5">
+          <HeroSearchBar />
+        </div>
+
+        {/* Thumbnail strip */}
         <div className="flex items-center gap-4">
           <p className="text-white/30 text-[11px] font-bold uppercase tracking-[0.25em] mr-2 shrink-0">
             {t('explore')}
@@ -736,6 +745,11 @@ export default function Hero() {
           transform-origin: left;
         }
       `}</style>
+
+      {/* ── Ad Banner Component ── */}
+      <div className="absolute top-[80px] left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-4xl opacity-90 hover:opacity-100 transition-opacity drop-shadow-2xl">
+        <AdBannerComponent position="homepage_top" />
+      </div>
     </section>
   );
 }

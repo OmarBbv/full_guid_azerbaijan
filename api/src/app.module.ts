@@ -10,6 +10,13 @@ import { HostelsModule } from './hostels/hostels.module';
 import { HotelsModule } from './hotels/hotels.module';
 import { RestaurantsModule } from './restaurants/restaurants.module';
 import { BlogModule } from './blog/blog.module';
+import { RegionsModule } from './regions/regions.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { AdsModule } from './ads/ads.module';
+import { UploadController } from './upload/upload.controller';
+import { UploadService } from './upload/upload.service';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -33,9 +40,12 @@ import { BlogModule } from './blog/blog.module';
         autoLoadEntities: true,
         synchronize: configService.get<string>('NODE_ENV') !== 'production',
         logging: configService.get<string>('NODE_ENV') === 'development',
-        ssl: configService.get<string>('NODE_ENV') === 'production' ? {
-          rejectUnauthorized: false
-        } : false,
+        ssl:
+          configService.get<string>('NODE_ENV') === 'production'
+            ? {
+                rejectUnauthorized: false,
+              }
+            : false,
       }),
       inject: [ConfigService],
     }),
@@ -44,8 +54,13 @@ import { BlogModule } from './blog/blog.module';
     HotelsModule,
     RestaurantsModule,
     BlogModule,
+    RegionsModule,
+    AuthModule,
+    UsersModule,
+    AdsModule,
+    UploadModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, UploadController],
+  providers: [AppService, UploadService],
 })
-export class AppModule { }
+export class AppModule {}

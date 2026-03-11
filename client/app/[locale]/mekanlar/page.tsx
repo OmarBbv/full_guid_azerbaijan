@@ -5,6 +5,7 @@ import { Search, Star, Map, SlidersHorizontal, Loader2 } from "lucide-react";
 import { PlaceCard } from "@/components/home/PlaceCard";
 import { usePlaces } from "@/hooks/use-places";
 import { useLocale } from "next-intl";
+import AdBannerComponent from "@/components/shared/AdBanner";
 
 const categories = [
   { id: "hamısı", label: "Bütün Məkanlar", icon: "✨" },
@@ -84,7 +85,7 @@ export default function PlacesPage() {
             <div className="hidden lg:block relative w-full max-w-[450px]">
               <div className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl shadow-primary/20 border-4 border-white rotate-3 hover:rotate-0 transition-transform duration-700">
                 <img
-                  src="https://images.unsplash.com/photo-1527067829737-40299c5895bb?q=80&w=1000&auto=format&fit=crop"
+                  src="/assets/azerbaijan_nature.png"
                   alt="Azerbaijan Nature"
                   className="w-full h-[500px] object-cover scale-110 hover:scale-100 transition-transform duration-700"
                 />
@@ -137,6 +138,8 @@ export default function PlacesPage() {
             </button>
           </div>
 
+          <AdBannerComponent position="kateqoriya_ust" className="mb-8" />
+
           {/* Results Info */}
           <div className="mb-8 flex items-center justify-between text-muted-foreground">
             <p className="font-medium">
@@ -156,7 +159,7 @@ export default function PlacesPage() {
           {isLoading ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
               {Array.from({ length: 6 }).map((_, i) => (
-                <div key={i} className="aspect-[4/5] bg-muted animate-pulse rounded-[40px]" />
+                <div key={i} className="aspect-4/5 bg-muted animate-pulse rounded-[40px]" />
               ))}
             </div>
           ) : filteredPlaces.length > 0 ? (

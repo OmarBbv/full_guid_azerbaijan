@@ -13,15 +13,22 @@ export class PlacesService {
     private readonly placeRepository: Repository<Place>,
     @InjectRepository(PlaceImage)
     private readonly placeImageRepository: Repository<PlaceImage>,
-  ) { }
+  ) {}
 
   async create(createPlaceDto: CreatePlaceDto): Promise<Place> {
-    const { images: _images, ...rest } = createPlaceDto as CreatePlaceDto & { images?: unknown };
+    const { images: _images, ...rest } = createPlaceDto as CreatePlaceDto & {
+      images?: unknown;
+    };
     const place = this.placeRepository.create(rest as Partial<Place>);
     return await this.placeRepository.save(place);
   }
 
-  async findAll(excludeTypes?: string[], showInHero?: boolean, type?: string, language?: string): Promise<Place[]> {
+  async findAll(
+    excludeTypes?: string[],
+    showInHero?: boolean,
+    type?: string,
+    language?: string,
+  ): Promise<Place[]> {
     const where: any = {};
     if (excludeTypes && excludeTypes.length > 0) {
       where.type = Not(In(excludeTypes));
@@ -67,7 +74,9 @@ export class PlacesService {
 
   async update(id: string, updatePlaceDto: UpdatePlaceDto): Promise<Place> {
     const place = await this.findOne(id);
-    const { images: _images, ...rest } = updatePlaceDto as UpdatePlaceDto & { images?: unknown };
+    const { images: _images, ...rest } = updatePlaceDto as UpdatePlaceDto & {
+      images?: unknown;
+    };
     this.placeRepository.merge(place, rest as Partial<Place>);
     return await this.placeRepository.save(place);
   }
@@ -79,7 +88,9 @@ export class PlacesService {
 
   async uploadImages(id: string, files: Express.Multer.File[]): Promise<Place> {
     const place = await this.findOne(id);
-    const existingCount = await this.placeImageRepository.count({ where: { place_id: place.id } });
+    const existingCount = await this.placeImageRepository.count({
+      where: { place_id: place.id },
+    });
 
     if (files && files.length > 0) {
       const placeImages = files.map((file, index) => {
@@ -95,7 +106,7 @@ export class PlacesService {
     // refetch place with images
     const updatedPlace = await this.placeRepository.findOne({
       where: { id: place.id },
-      relations: ['images', 'reviews']
+      relations: ['images', 'reviews'],
     });
 
     if (!updatedPlace) {

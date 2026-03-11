@@ -70,4 +70,3 @@ export class BlogPost {
   @UpdateDateColumn()
   updated_at: Date;
 }
-

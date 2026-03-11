@@ -217,10 +217,6 @@ export default function PlaceDetailPage() {
                     <Calendar size={18} />
                     İndi Rezerv Et
                   </button>
-                  <button className="w-full py-4 bg-card border border-border hover:bg-muted rounded-2xl font-black text-sm transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <MapPin size={18} className="text-primary" />
-                    Xəritədə Bax
-                  </button>
                 </div>
 
                 <div className="mt-10 pt-10 border-t border-border/50">

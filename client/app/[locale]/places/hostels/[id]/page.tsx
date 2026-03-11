@@ -2,13 +2,15 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Backpack, MapPin, Phone, MessageCircle, ChevronLeft, Wifi, Users, Shield, Coffee, Zap, Info, Star, Loader2, Camera } from 'lucide-react';
+import { Backpack, MapPin, ChevronLeft, Wifi, Zap, Shield, Loader2, Camera, Star } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
 import ImageLightbox from '@/components/shared/ImageLightbox';
+import PlaceDetailSidebar from '@/components/shared/PlaceDetailSidebar';
+import PlaceJsonLd from '@/components/shared/PlaceJsonLd';
 import un_photo_1596394516093_501ba68a0ba6_629067c0 from "@/assets/unsplash/photo-1596394516093-501ba68a0ba6_629067c0.jpg";
 
 export default function HostelDetailPage() {
@@ -44,6 +46,7 @@ export default function HostelDetailPage() {
 
   return (
     <div className="bg-background pb-20">
+      <PlaceJsonLd place={hostel as any} type="Hostel" />
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-12" style={{ height: "70dvh", minHeight: 500 }}>
         {/* Background Overlay */}
@@ -87,7 +90,7 @@ export default function HostelDetailPage() {
           <section>
             <h2 className="text-3xl font-black mb-6">Məlumat</h2>
             <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
-              {(hostel as any).detailed_description || hostel.short_description}
+              {hostel.detailed_description || hostel.short_description}
             </p>
           </section>
 
@@ -162,39 +165,8 @@ export default function HostelDetailPage() {
         </div>
 
         {/* Right Sidebar */}
-        <div className="space-y-8">
-          <div className="bg-card border border-border/10 rounded-[2rem] p-8 shadow-xl sticky top-28">
-            <div className="mb-8">
-              <p className="text-sm font-bold text-emerald-600 uppercase tracking-widest mb-1">Bir Gecəlik</p>
-              <p className="text-4xl font-black">{((hostel as any).price_range || (hostel as any).priceRange || 'Münasib').split(' - ')[0]}<span className="text-lg text-muted-foreground font-normal">{((hostel as any).price_range || (hostel as any).priceRange) ? '/dan başlayaraq' : ''}</span></p>
-            </div>
-
-            <div className="space-y-5 mb-8">
-              <div className="flex items-center gap-4">
-                <MapPin className="text-muted-foreground w-5 h-5" />
-                <p className="font-bold text-sm">{(hostel as any).address || hostel.city || 'Məlumat yoxdur'}</p>
-              </div>
-              <div className="flex items-center gap-4">
-                <Users className="text-muted-foreground w-5 h-5" />
-                <p className="font-bold text-sm">Gənclər və Solo Səyyahlar</p>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <a
-                href={`https://wa.me/${((hostel as any).whatsapp_number || (hostel as any).phone_number || '').replace(/\D/g, '')}?text=Salam, ${hostel.title} hosteli üçün qiymət və boş yerlərlə maraqlanıram.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-5 bg-emerald-600 text-white rounded-2xl font-black text-lg hover:bg-emerald-700 transition-all shadow-lg active:scale-95"
-              >
-                <MessageCircle className="w-6 h-6 fill-white" />
-                WhatsApp ilə Yaz
-              </a>
-              <button className="flex items-center justify-center gap-3 w-full py-4 border border-border rounded-2xl font-bold hover:bg-secondary transition-all">
-                Xəritədə Bax
-              </button>
-            </div>
-          </div>
+        <div>
+          <PlaceDetailSidebar place={hostel} />
         </div>
       </div>
     </div>

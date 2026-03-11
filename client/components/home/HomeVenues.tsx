@@ -1,13 +1,13 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { usePlacesByType } from "@/hooks/use-places";
 import { MOCK_HOTELS, MOCK_RESTAURANTS, MOCK_HOSTELS } from "@/constants/places";
 import { PlaceCard } from "./PlaceCard";
 import { ArrowRight } from "lucide-react";
 import { Link } from "@/i18n/routing";
 
-function VenueSection({ title, typeStr, loading, data, mock }: { title: string, typeStr: string, loading: boolean, data: any, mock: any }) {
+function VenueSection({ title, typeStr, loading, data, mock, moreText }: { title: string, typeStr: string, loading: boolean, data: any, mock: any, moreText: string }) {
   const displayPlaces = (data && data.length > 0) ? data : mock;
 
   return (
@@ -18,7 +18,7 @@ function VenueSection({ title, typeStr, loading, data, mock }: { title: string, 
           href={`/mekanlar?type=${typeStr}`}
           className="text-sm font-semibold text-primary hover:text-primary/80 flex items-center gap-1 transition-colors"
         >
-          Daha çox <ArrowRight size={16} />
+          {moreText} <ArrowRight size={16} />
         </Link>
       </div>
 
@@ -38,8 +38,8 @@ function VenueSection({ title, typeStr, loading, data, mock }: { title: string, 
 }
 
 export default function HomeVenues() {
+  const t = useTranslations("HomeVenues");
   const locale = useLocale();
-
   const { data: restaurants, isLoading: isR } = usePlacesByType("restaurant", locale);
   const { data: hotels, isLoading: isH } = usePlacesByType("hotel", locale);
   const { data: hostels, isLoading: isHo } = usePlacesByType("hostel", locale);
@@ -51,44 +51,46 @@ export default function HomeVenues() {
 
       <div className="relative max-w-7xl mx-auto px-6">
         <div className="mb-16 max-w-2xl">
-          <span className="section-pill">🍽️ Yemək və İstirahət</span>
+          <span className="section-pill">{t('food_and_rest')}</span>
           <h2 className="section-title mt-4">
-            Restoran, Otel və <br />
-            <span className="section-title-accent">Hostellər</span>
+            {t('title_part_1')} <br />
+            <span className="section-title-accent">{t('title_accent')}</span>
           </h2>
           <p className="section-desc mt-4 text-lg">
-            Səyahətiniz üçün ən ləziz təamlar və ən rahat qalacaq yerləri kəşf edin.
-            Gözəl xatirələr üçün doğru məkanı seçin.
+            {t('description')}
           </p>
         </div>
 
         <div className="flex flex-col gap-8">
           <VenueSection
-            title="✨ Populyar Restoranlar"
+            title={t('pop_restaurants')}
             typeStr="restaurant"
             loading={isR}
             data={restaurants}
             mock={MOCK_RESTAURANTS}
+            moreText={t('more_btn')}
           />
           <VenueSection
-            title="🏨 Ən Yaxşı Otellər"
+            title={t('best_hotels')}
             typeStr="hotel"
             loading={isH}
             data={hotels}
             mock={MOCK_HOTELS}
+            moreText={t('more_btn')}
           />
           <VenueSection
-            title="🛌 Büdcə Dostu Hostellər"
+            title={t('budget_hostels')}
             typeStr="hostel"
             loading={isHo}
             data={hostels}
             mock={MOCK_HOSTELS}
+            moreText={t('more_btn')}
           />
         </div>
 
         <div className="mt-16 text-center flex justify-center">
           <Link href="/mekanlar" className="inline-flex items-center gap-2 px-8 py-4 rounded-full bg-primary text-primary-foreground font-bold hover:bg-primary/90 transition-all shadow-lg hover:shadow-primary/25 active:scale-95 group">
-            Bütün Rota və Məkanları Kəşf Et <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            {t('discover_all')} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
       </div>

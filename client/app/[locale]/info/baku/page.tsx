@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Info, Map as MapIcon, Compass, Star } from 'lucide-react';
 import Image from 'next/image';
+import bakuImage from '@/assets/unsplash/baku_fixed.jpg';
 
 export default function BakuInfoPage() {
   return (
@@ -16,7 +17,7 @@ export default function BakuInfoPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1606775791264-b333a5cf05cc?q=80&w=2070&auto=format&fit=crop"
+            src={bakuImage}
             alt="Bakı"
             fill
             className="object-cover"

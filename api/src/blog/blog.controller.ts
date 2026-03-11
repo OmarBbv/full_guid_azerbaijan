@@ -21,7 +21,7 @@ import { UpdateBlogPostDto } from './dto/update-blog-post.dto';
 
 @Controller('blog')
 export class BlogController {
-  constructor(private readonly blogService: BlogService) { }
+  constructor(private readonly blogService: BlogService) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -82,4 +82,3 @@ export class BlogController {
     return this.blogService.uploadCover(id, files[0]);
   }
 }
-

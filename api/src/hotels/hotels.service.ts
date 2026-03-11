@@ -21,12 +21,17 @@ export class HotelsService {
     private readonly hotelRepo: Repository<Hotel>,
 
     private readonly dataSource: DataSource,
-  ) { }
+  ) {}
 
   async create(dto: CreateHotelDto): Promise<Hotel> {
     const language = dto.language ?? 'az';
-    const existing = await this.placeRepo.findOne({ where: { slug: dto.slug, language } });
-    if (existing) throw new ConflictException(`Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`);
+    const existing = await this.placeRepo.findOne({
+      where: { slug: dto.slug, language },
+    });
+    if (existing)
+      throw new ConflictException(
+        `Bu dildə (${language}) "${dto.slug}" slug artıq istifadəlidir.`,
+      );
 
     return this.dataSource.transaction(async (manager) => {
       const placeData: Partial<Place> = {
@@ -52,7 +57,10 @@ export class HotelsService {
         meta_description: dto.meta_description ?? null,
         is_featured: dto.is_featured ?? false,
       };
-      const savedPlace = await manager.save(Place, Object.assign(new Place(), placeData));
+      const savedPlace = await manager.save(
+        Place,
+        Object.assign(new Place(), placeData),
+      );
 
       const hotelData: Partial<Hotel> = {
         place_id: savedPlace.id,
@@ -102,13 +110,17 @@ export class HotelsService {
   }
 
   async findBySlug(slug: string): Promise<Hotel> {
-    const place = await this.placeRepo.findOne({ where: { slug, type: PlaceType.HOTEL } });
-    if (!place) throw new NotFoundException(`Hotel with slug "${slug}" not found.`);
+    const place = await this.placeRepo.findOne({
+      where: { slug, type: PlaceType.HOTEL },
+    });
+    if (!place)
+      throw new NotFoundException(`Hotel with slug "${slug}" not found.`);
     const hotel = await this.hotelRepo.findOne({
       where: { place_id: place.id },
       relations: ['place', 'place.images', 'place.reviews'],
     });
-    if (!hotel) throw new NotFoundException(`Hotel data for slug "${slug}" not found.`);
+    if (!hotel)
+      throw new NotFoundException(`Hotel data for slug "${slug}" not found.`);
     return hotel;
   }
 
@@ -118,48 +130,72 @@ export class HotelsService {
     return this.dataSource.transaction(async (manager) => {
       const placeUpdate: Partial<Place> = {};
       if (dto.title !== undefined) placeUpdate.title = dto.title;
-      if (dto.short_description !== undefined) placeUpdate.short_description = dto.short_description;
-      if (dto.detailed_description !== undefined) placeUpdate.detailed_description = dto.detailed_description;
-      if (dto.whatsapp_number !== undefined) placeUpdate.whatsapp_number = dto.whatsapp_number;
-      if (dto.phone_number !== undefined) placeUpdate.phone_number = dto.phone_number;
+      if (dto.short_description !== undefined)
+        placeUpdate.short_description = dto.short_description;
+      if (dto.detailed_description !== undefined)
+        placeUpdate.detailed_description = dto.detailed_description;
+      if (dto.whatsapp_number !== undefined)
+        placeUpdate.whatsapp_number = dto.whatsapp_number;
+      if (dto.phone_number !== undefined)
+        placeUpdate.phone_number = dto.phone_number;
       if (dto.email !== undefined) placeUpdate.email = dto.email;
-      if (dto.website_url !== undefined) placeUpdate.website_url = dto.website_url;
+      if (dto.website_url !== undefined)
+        placeUpdate.website_url = dto.website_url;
       if (dto.address !== undefined) placeUpdate.address = dto.address;
       if (dto.city !== undefined) placeUpdate.city = dto.city;
       if (dto.latitude !== undefined) placeUpdate.latitude = dto.latitude;
       if (dto.longitude !== undefined) placeUpdate.longitude = dto.longitude;
       if (dto.thumbnail !== undefined) placeUpdate.thumbnail = dto.thumbnail;
-      if (dto.working_hours !== undefined) placeUpdate.working_hours = dto.working_hours;
+      if (dto.working_hours !== undefined)
+        placeUpdate.working_hours = dto.working_hours;
       if (dto.features !== undefined) placeUpdate.features = dto.features;
-      if (dto.is_featured !== undefined) placeUpdate.is_featured = dto.is_featured;
+      if (dto.is_featured !== undefined)
+        placeUpdate.is_featured = dto.is_featured;
 
       if (Object.keys(placeUpdate).length > 0) {
         await manager.update(Place, hotel.place_id, placeUpdate);
       }
 
       const hotelUpdate: Partial<Hotel> = {};
-      if (dto.star_rating !== undefined) hotelUpdate.star_rating = dto.star_rating;
+      if (dto.star_rating !== undefined)
+        hotelUpdate.star_rating = dto.star_rating;
       if (dto.hotel_type !== undefined) hotelUpdate.hotel_type = dto.hotel_type;
-      if (dto.price_from_azn !== undefined) hotelUpdate.price_from_azn = dto.price_from_azn;
-      if (dto.price_to_azn !== undefined) hotelUpdate.price_to_azn = dto.price_to_azn;
-      if (dto.available_board_types !== undefined) hotelUpdate.available_board_types = dto.available_board_types;
-      if (dto.total_rooms !== undefined) hotelUpdate.total_rooms = dto.total_rooms;
-      if (dto.total_floors !== undefined) hotelUpdate.total_floors = dto.total_floors;
-      if (dto.check_in_time !== undefined) hotelUpdate.check_in_time = dto.check_in_time;
-      if (dto.check_out_time !== undefined) hotelUpdate.check_out_time = dto.check_out_time;
-      if (dto.free_cancellation_days !== undefined) hotelUpdate.free_cancellation_days = dto.free_cancellation_days;
+      if (dto.price_from_azn !== undefined)
+        hotelUpdate.price_from_azn = dto.price_from_azn;
+      if (dto.price_to_azn !== undefined)
+        hotelUpdate.price_to_azn = dto.price_to_azn;
+      if (dto.available_board_types !== undefined)
+        hotelUpdate.available_board_types = dto.available_board_types;
+      if (dto.total_rooms !== undefined)
+        hotelUpdate.total_rooms = dto.total_rooms;
+      if (dto.total_floors !== undefined)
+        hotelUpdate.total_floors = dto.total_floors;
+      if (dto.check_in_time !== undefined)
+        hotelUpdate.check_in_time = dto.check_in_time;
+      if (dto.check_out_time !== undefined)
+        hotelUpdate.check_out_time = dto.check_out_time;
+      if (dto.free_cancellation_days !== undefined)
+        hotelUpdate.free_cancellation_days = dto.free_cancellation_days;
       if (dto.has_wifi !== undefined) hotelUpdate.has_wifi = dto.has_wifi;
-      if (dto.has_parking !== undefined) hotelUpdate.has_parking = dto.has_parking;
+      if (dto.has_parking !== undefined)
+        hotelUpdate.has_parking = dto.has_parking;
       if (dto.has_pool !== undefined) hotelUpdate.has_pool = dto.has_pool;
       if (dto.has_spa !== undefined) hotelUpdate.has_spa = dto.has_spa;
       if (dto.has_gym !== undefined) hotelUpdate.has_gym = dto.has_gym;
-      if (dto.has_restaurant !== undefined) hotelUpdate.has_restaurant = dto.has_restaurant;
-      if (dto.has_room_service !== undefined) hotelUpdate.has_room_service = dto.has_room_service;
-      if (dto.has_airport_transfer !== undefined) hotelUpdate.has_airport_transfer = dto.has_airport_transfer;
-      if (dto.has_butler_service !== undefined) hotelUpdate.has_butler_service = dto.has_butler_service;
-      if (dto.has_concierge !== undefined) hotelUpdate.has_concierge = dto.has_concierge;
-      if (dto.pets_allowed !== undefined) hotelUpdate.pets_allowed = dto.pets_allowed;
-      if (dto.accepts_cards !== undefined) hotelUpdate.accepts_cards = dto.accepts_cards;
+      if (dto.has_restaurant !== undefined)
+        hotelUpdate.has_restaurant = dto.has_restaurant;
+      if (dto.has_room_service !== undefined)
+        hotelUpdate.has_room_service = dto.has_room_service;
+      if (dto.has_airport_transfer !== undefined)
+        hotelUpdate.has_airport_transfer = dto.has_airport_transfer;
+      if (dto.has_butler_service !== undefined)
+        hotelUpdate.has_butler_service = dto.has_butler_service;
+      if (dto.has_concierge !== undefined)
+        hotelUpdate.has_concierge = dto.has_concierge;
+      if (dto.pets_allowed !== undefined)
+        hotelUpdate.pets_allowed = dto.pets_allowed;
+      if (dto.accepts_cards !== undefined)
+        hotelUpdate.accepts_cards = dto.accepts_cards;
       if (dto.views !== undefined) hotelUpdate.views = dto.views;
 
       if (Object.keys(hotelUpdate).length > 0) {
@@ -178,7 +214,9 @@ export class HotelsService {
   async uploadImages(id: string, files: Express.Multer.File[]): Promise<Hotel> {
     const hotel = await this.findOne(id);
     const placeImageRepo = this.dataSource.getRepository(PlaceImage);
-    const existingCount = await placeImageRepo.count({ where: { place_id: hotel.place_id } });
+    const existingCount = await placeImageRepo.count({
+      where: { place_id: hotel.place_id },
+    });
 
     if (files && files.length > 0) {
       const placeImages = files.map((file, index) => {

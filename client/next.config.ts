@@ -30,6 +30,18 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/auth/:path*",
+        destination: "http://localhost:5555/auth/:path*",
+      },
+      {
+        source: "/api/:path*",
+        destination: "http://localhost:5555/:path*",
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

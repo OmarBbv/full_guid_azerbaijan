@@ -2,14 +2,15 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Bed, Star, MapPin, Phone, MessageCircle, ChevronLeft, Wifi, Coffee, Utensils, Waves, Globe, ShieldCheck, Loader2, Camera } from 'lucide-react';
+import { Bed, Star, ChevronLeft, Wifi, Waves, Globe, ShieldCheck, Loader2, Camera } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
-import { Place } from '@/types/place';
 import { getImageUrl } from '@/lib/utils';
 import ImageLightbox from '@/components/shared/ImageLightbox';
+import PlaceDetailSidebar from '@/components/shared/PlaceDetailSidebar';
+import PlaceJsonLd from '@/components/shared/PlaceJsonLd';
 
 export default function HotelDetailPage() {
   const params = useParams();
@@ -44,6 +45,7 @@ export default function HotelDetailPage() {
 
   return (
     <div className="bg-background pb-20">
+      <PlaceJsonLd place={hotel as any} type="Hotel" />
       {/* Hero Header */}
       <section className="relative w-full overflow-hidden mb-12" style={{ height: "70dvh", minHeight: 500 }}>
         {/* Background Overlay */}
@@ -87,7 +89,7 @@ export default function HotelDetailPage() {
           <section>
             <h2 className="text-3xl font-black mb-6">Haqqında</h2>
             <p className="text-muted-foreground text-lg leading-relaxed italic whitespace-pre-line">
-              {(hotel as any).detailed_description || hotel.short_description}
+              {hotel.detailed_description || hotel.short_description}
             </p>
           </section>
 
@@ -168,53 +170,8 @@ export default function HotelDetailPage() {
           </section>
         </div>
 
-        {/* Right Content - Sidebar */}
-        <div className="space-y-8">
-          <div className="bg-card border border-border/10 rounded-[2.5rem] p-8 shadow-2xl sticky top-28">
-            <div className="mb-8">
-              <p className="text-sm font-bold text-primary uppercase tracking-widest mb-2">Başlayan Qiymətlər</p>
-              <p className="text-4xl font-black">{((hotel as any).price_range || (hotel as any).priceRange || 'Razılaşma yolu ilə').split(' - ')[0]} <span className="text-sm text-muted-foreground font-normal">{((hotel as any).price_range || (hotel as any).priceRange) ? '/ gecə' : ''}</span></p>
-            </div>
-
-            <div className="space-y-6 mb-8">
-              <div className="flex items-start gap-4">
-                <div className="bg-secondary p-3 rounded-2xl">
-                  <MapPin className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Ünvan</p>
-                  <p className="font-bold">{(hotel as any).address || hotel.city || 'Məlumat yoxdur'}</p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-4">
-                <div className="bg-secondary p-3 rounded-2xl">
-                  <Phone className="w-5 h-5" />
-                </div>
-                <div>
-                  <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Əlaqə</p>
-                  <p className="font-bold">{(hotel as any).phone_number || (hotel as any).whatsapp_number || 'Məlumat yoxdur'}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <a
-                href={`https://wa.me/${((hotel as any).whatsapp_number || (hotel as any).phone_number || '').replace(/\D/g, '')}?text=Salam, ${hotel.title} otelində rezervasiya etmək istəyirəm.`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 w-full py-5 bg-black text-white dark:bg-white dark:text-black rounded-2xl font-black text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-xl"
-              >
-                İndi Rezerv Et
-              </a>
-              <Link
-                href="/contact"
-                className="flex items-center justify-center gap-3 w-full py-5 border border-border rounded-2xl font-bold hover:bg-secondary transition-all"
-              >
-                <MessageCircle className="w-5 h-5" /> Sualım Var
-              </Link>
-            </div>
-          </div>
+        <div>
+          <PlaceDetailSidebar place={hotel} />
         </div>
       </div>
     </div>
