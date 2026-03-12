@@ -55,7 +55,7 @@ export default function InteractiveMap() {
   const currentData = activeRegion ? (regionDetails[activeRegion] || defaultData) : defaultData;
 
   return (
-    <section className="py-24 relative overflow-hidden bg-background">
+    <section className="hidden md:block py-24 relative overflow-hidden bg-background">
       {/* Decorative BG */}
       <div className="absolute top-0 left-0 w-full h-full bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
 

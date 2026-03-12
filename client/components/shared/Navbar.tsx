@@ -590,13 +590,16 @@ export default function Navbar() {
         />
 
         <div
-          className="absolute top-0 right-0 h-full w-full max-w-md flex flex-col pt-20 pb-8 px-6 overflow-y-auto transition-transform duration-400"
+          className="absolute top-0 right-0 h-full w-full max-w-md flex flex-col overflow-y-auto transition-transform duration-400"
           style={{
             background: "rgba(10, 12, 22, 1)",
             borderLeft: "1px solid rgba(255,255,255,0.07)",
             transform: mobileOpen ? "translateX(0)" : "translateX(100%)",
           }}
         >
+          {/* Spacer for navbar height */}
+          <div className="shrink-0 h-20" />
+          <div className="flex flex-col px-6 pb-8">
           <div className="flex flex-col">
             {navLinks.map((link) => (
               <div
@@ -741,6 +744,7 @@ export default function Navbar() {
                 )}
               </button>
             ))}
+          </div>
           </div>
         </div>
       </div>
