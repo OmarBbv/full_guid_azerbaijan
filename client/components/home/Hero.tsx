@@ -748,7 +748,7 @@ export default function Hero() {
 
       {/* ── Ad Banner Component ── */}
       <div className="absolute top-[80px] left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-4xl opacity-90 hover:opacity-100 transition-opacity drop-shadow-2xl">
-        <AdBannerComponent position="homepage_top" />
+        <AdBannerComponent position="hero_alti" />
       </div>
     </section>
   );

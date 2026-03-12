@@ -20,7 +20,7 @@ export default function Home() {
         {/* Stats / Statistikalar */}
         <StatsSection />
 
-        {/* 📢 homepage_top Reklam */}
+        {/* 📢 hero_alti Reklam */}
         <div className="max-w-7xl mx-auto px-6 w-full">
           <AdBannerComponent position="hero_alti" />
         </div>
@@ -28,7 +28,7 @@ export default function Home() {
         {/* Məkanlar: Restoran, Otel, Hostel */}
         <HomeVenues />
 
-        {/* 📢 homepage_side Reklam */}
+        {/* 📢 orta_banner Reklam */}
         <div className="max-w-7xl mx-auto px-6 w-full">
           <AdBannerComponent position="orta_banner" />
         </div>
