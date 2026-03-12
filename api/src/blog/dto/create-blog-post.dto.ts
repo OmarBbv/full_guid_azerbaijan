@@ -19,7 +19,7 @@ export class CreateBlogPostDto {
   @IsString()
   @MaxLength(10)
   @IsOptional()
-  language?: string; // 'az' | 'en' | 'ru'
+  language?: string; // 'az' | 'en' | 'ru' | 'tr' | 'ar' | 'hi'
 
   @IsString()
   excerpt: string;

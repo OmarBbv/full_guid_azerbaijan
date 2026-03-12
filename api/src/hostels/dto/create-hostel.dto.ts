@@ -185,5 +185,5 @@ export class CreateHostelDto {
 
   @IsString()
   @IsOptional()
-  language?: string; // 'az' | 'en' | 'ru'
+  language?: string; // 'az' | 'en' | 'ru' | 'tr' | 'ar' | 'hi'
 }

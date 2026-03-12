@@ -3,7 +3,7 @@ import { z } from 'zod';
 export const blogPostSchema = z.object({
   title: z.string().min(1, 'Başlıq mütləqdir').max(255, 'Başlıq çox uzundur'),
   slug: z.string().min(1, 'Slug mütləqdir').max(255, 'Slug çox uzundur'),
-  language: z.enum(['az', 'en', 'ru']).default('az'),
+  language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
   excerpt: z.string().min(1, 'Qısa təsvir mütləqdir'),
   content_html: z.string().optional(),
   category: z.string().max(100).optional(),

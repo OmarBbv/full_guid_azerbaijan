@@ -71,6 +71,9 @@ export function HostelsView(): React.JSX.Element {
             <MenuItem value="az">🇦🇿 Azərbaycan</MenuItem>
             <MenuItem value="en">🇬🇧 English</MenuItem>
             <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+            <MenuItem value="tr">🇹🇷 Türkçe</MenuItem>
+            <MenuItem value="ar">🇸🇦 العربية</MenuItem>
+            <MenuItem value="hi">🇮🇳 हिन्दी</MenuItem>
           </Select>
         </FormControl>
 

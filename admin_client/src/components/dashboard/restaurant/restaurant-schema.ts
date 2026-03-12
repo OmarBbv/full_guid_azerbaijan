@@ -22,7 +22,7 @@ export const createRestaurantSchema = z.object({
   city: z.string().optional(),
   thumbnail: z.string().url('Düzgün URL daxil edin').optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
-  language: z.enum(['az', 'en', 'ru']).default('az'),
+  language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
 
   // ─── Restaurant-specific fields ──────────────────────────────────────────
   cuisine_type: z.nativeEnum(CuisineType).default(CuisineType.AZERBAIJANI),

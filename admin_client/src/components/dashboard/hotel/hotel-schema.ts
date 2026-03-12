@@ -20,7 +20,7 @@ export const createHotelSchema = z.object({
   city: z.string().optional(),
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
-  language: z.enum(['az', 'en', 'ru']).default('az'),
+  language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
 
   // ─── Hotel fields ─────────────────────────────────────────────────────────
   hotel_type: z.nativeEnum(HotelType).default(HotelType.HOTEL),

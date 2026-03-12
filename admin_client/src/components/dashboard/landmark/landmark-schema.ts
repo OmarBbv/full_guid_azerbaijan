@@ -19,7 +19,7 @@ export const createLandmarkSchema = z.object({
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   show_in_hero: z.boolean().default(false),
-  language: z.enum(['az', 'en', 'ru']).default('az'),
+  language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
 });
 
 export type CreateLandmarkFormValues = z.infer<typeof createLandmarkSchema>;

@@ -267,6 +267,9 @@ export function PlaceCreateForm(): React.JSX.Element {
                         <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
                         <MenuItem value="en">🇬🇧 English</MenuItem>
                         <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                        <MenuItem value="tr">🇹🇷 Türkçe</MenuItem>
+                        <MenuItem value="ar">🇸🇦 العربية</MenuItem>
+                        <MenuItem value="hi">🇮🇳 हिन्दी</MenuItem>
                       </Select>
                     </FormControl>
                   )}

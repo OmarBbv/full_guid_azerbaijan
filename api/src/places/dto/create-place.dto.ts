@@ -124,5 +124,5 @@ export class CreatePlaceDto {
 
   @IsString()
   @IsOptional()
-  language?: string; // 'az' | 'en' | 'ru'  (default: 'az')
+  language?: string; // 'az' | 'en' | 'ru' | 'tr' | 'ar' | 'hi'  (default: 'az')
 }

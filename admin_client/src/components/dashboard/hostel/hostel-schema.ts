@@ -19,7 +19,7 @@ export const createHostelSchema = z.object({
   city: z.string().optional(),
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
-  language: z.enum(['az', 'en', 'ru']).default('az'),
+  language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
 
   hostel_type: z.nativeEnum(HostelType).default(HostelType.BACKPACKER),
   dorm_beds_count: z.coerce.number().min(1).optional(),

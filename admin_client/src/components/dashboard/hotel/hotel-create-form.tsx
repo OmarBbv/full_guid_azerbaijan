@@ -84,7 +84,7 @@ export function HotelCreateForm(): React.JSX.Element {
   }, [titleValue, setValue]);
 
   function fillTestData() {
-    const langs = ['az', 'en', 'ru'] as const;
+    const langs = ['az', 'en', 'ru', 'tr', 'ar', 'hi'] as const;
     const lang = langs[Math.floor(Math.random() * langs.length)];
     const names = [
       'Baku Palace Hotel', 'Caspian Grand Resort', 'Old City Boutique Hotel',
@@ -183,6 +183,9 @@ export function HotelCreateForm(): React.JSX.Element {
                         <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
                         <MenuItem value="en">🇬🇧 English</MenuItem>
                         <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                        <MenuItem value="tr">🇹🇷 Türkçe</MenuItem>
+                        <MenuItem value="ar">🇸🇦 العربية</MenuItem>
+                        <MenuItem value="hi">🇮🇳 हिन्दी</MenuItem>
                       </Select>
                     </FormControl>
                   )}
