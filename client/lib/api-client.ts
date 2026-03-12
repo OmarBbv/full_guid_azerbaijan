@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://52.186.174.0:5555';
+const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5555';
 
 export const apiClient = axios.create({
   baseURL: baseURL,
