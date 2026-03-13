@@ -63,7 +63,8 @@ export class SearchService {
       }
 
       if (type && !isVenueOnly) {
-        qb.andWhere('LOWER(place.type) = :type', { type: type.toLowerCase() });
+        // Cast enum to TEXT before LOWER() — PostgreSQL can't call LOWER on enum directly
+        qb.andWhere('LOWER(place.type::TEXT) = :type', { type: type.toLowerCase() });
       }
 
       qb.orderBy('place.average_rating', 'DESC').take(limit);
