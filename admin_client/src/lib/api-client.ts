@@ -1,13 +1,12 @@
 import axios from 'axios';
 
 export const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://52.186.174.0:5555',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5555',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// ─── Request interceptor (auth token etc.) ────────────────────────────────────
 apiClient.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {

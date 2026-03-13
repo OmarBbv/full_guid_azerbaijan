@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { CuisineType, DiningStyle, PriceRange } from '@/types/restaurant';
+import { CuisineType, DiningStyle, PriceRange, PlaceStatus } from '@/types/restaurant';
 
 export const createRestaurantSchema = z.object({
   // ─── Place (base) fields ─────────────────────────────────────────────────
@@ -23,6 +23,7 @@ export const createRestaurantSchema = z.object({
   thumbnail: z.string().url('Düzgün URL daxil edin').optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
+  status: z.nativeEnum(PlaceStatus).default(PlaceStatus.ACTIVE),
 
   // ─── Restaurant-specific fields ──────────────────────────────────────────
   cuisine_type: z.nativeEnum(CuisineType).default(CuisineType.AZERBAIJANI),

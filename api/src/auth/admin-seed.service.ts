@@ -11,7 +11,7 @@ export class AdminSeedService implements OnApplicationBootstrap {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   async onApplicationBootstrap() {
     const adminEmail = process.env.ADMIN_EMAIL ?? 'admin@fullguide.az';
@@ -22,7 +22,6 @@ export class AdminSeedService implements OnApplicationBootstrap {
     });
 
     if (existing) {
-      // Ensure the existing user is an admin
       if (existing.role !== UserRole.ADMIN) {
         await this.userRepository.update(existing.id, { role: UserRole.ADMIN });
         this.logger.log(`Admin rolu verildi: ${adminEmail}`);

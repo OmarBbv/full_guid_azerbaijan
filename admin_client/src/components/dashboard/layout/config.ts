@@ -9,6 +9,8 @@ export const navItems = [
   { key: 'hostels', title: 'Hostels', href: paths.dashboard.hostels, icon: 'bed' },
   { key: 'landmarks', title: 'Landmarks', href: paths.dashboard.landmarks, icon: 'map-pin' },
   { key: 'restaurants', title: 'Restaurants', href: paths.dashboard.restaurants, icon: 'fork-knife' },
+  { key: 'categories', title: 'Categories', href: paths.dashboard.categories, icon: 'list' },
+  { key: 'venues', title: 'Venues', href: paths.dashboard.venues, icon: 'map-pin' },
   { key: 'blog', title: 'Blog', href: paths.dashboard.blog, icon: 'notebook' },
   { key: 'ads', title: 'Ads', href: paths.dashboard.ads, icon: 'megaphone' },
   { key: 'settings', title: 'Settings', href: paths.dashboard.settings, icon: 'gear-six' },

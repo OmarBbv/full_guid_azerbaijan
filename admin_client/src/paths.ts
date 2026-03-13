@@ -21,6 +21,9 @@ export const paths = {
     blogCreate: '/dashboard/blog/create',
     ads: '/dashboard/ads',
     adsCreate: '/dashboard/ads/create',
+    categories: '/dashboard/categories',
+    venues: '/dashboard/venues',
+    venuesCreate: '/dashboard/venues/create',
   },
   errors: { notFound: '/errors/not-found' },
 } as const;

@@ -4,10 +4,13 @@ import { useState } from "react";
 import { Search, Star, Map, SlidersHorizontal, Loader2 } from "lucide-react";
 import { PlaceCard } from "@/components/home/PlaceCard";
 import { usePlaces } from "@/hooks/use-places";
+import { useCategories } from "@/hooks/use-categories";
+import { useVenues } from "@/hooks/use-venues";
 import { useLocale } from "next-intl";
+import { useSearchParams } from "next/navigation";
 import AdBannerComponent from "@/components/shared/AdBanner";
 
-const categories = [
+const STATIC_CATEGORIES = [
   { id: "hamısı", label: "Bütün Məkanlar", icon: "✨" },
   { id: "landmark", label: "Tarixi Yerlər", icon: "🏛️" },
   { id: "hotel", label: "Otellər", icon: "🏨" },
@@ -18,21 +21,68 @@ const categories = [
 
 export default function PlacesPage() {
   const locale = useLocale();
-  const [activeCategory, setActiveCategory] = useState("hamısı");
+  const searchParams = useSearchParams();
+  const categoryParam = searchParams.get("category");
+  
+  const [activeCategory, setActiveCategory] = useState(categoryParam || "hamısı");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: allPlaces, isLoading } = usePlaces({
+  const { data: dynamicCategories = [] } = useCategories(locale);
+  const { data: allPlaces, isLoading: isLoadingPlaces } = usePlaces({
     language: locale
   });
+  
+  const { data: venuesData, isLoading: isLoadingVenues } = useVenues();
+  const allVenues = venuesData?.data || [];
 
-  const filteredPlaces = (allPlaces || []).filter(place => {
-    const matchesCategory = activeCategory === "hamısı" ||
-      (place.type?.toLowerCase() === activeCategory.toLowerCase());
+  const isLoading = isLoadingPlaces || isLoadingVenues;
+
+  const categories = [
+    ...STATIC_CATEGORIES,
+    ...dynamicCategories.map(cat => ({
+      id: cat.slug,
+      label: cat.name,
+      icon: "📍"
+    }))
+  ];
+
+  // Normalize both types into a consistent shape for PlaceCard
+  const normalizedPlaces = [
+    ...(allPlaces || []).map(p => ({
+      ...p,
+      displayTitle: p.title,
+      displayDescription: p.short_description,
+      isPlaceEntity: true
+    })),
+    ...allVenues.map(v => ({
+      ...v,
+      id: v.id.toString(), // Place ID is UUID string, Venue is number
+      title: v.name,
+      short_description: v.description || '',
+      displayTitle: v.name,
+      displayDescription: v.description || '',
+      type: v.category?.slug || 'other',
+      isPlaceEntity: false
+    }))
+  ];
+
+  const filteredItems = normalizedPlaces.filter(item => {
+    const isStaticCategory = STATIC_CATEGORIES.some(c => c.id === activeCategory);
+    
+    let matchesCategory = false;
+    if (activeCategory === "hamısı") {
+      matchesCategory = true;
+    } else if (isStaticCategory) {
+      matchesCategory = item.type?.toLowerCase() === activeCategory.toLowerCase();
+    } else {
+      // It's a dynamic category
+      matchesCategory = (item as any).category?.slug === activeCategory;
+    }
 
     const matchesSearch =
-      place.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      place.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      place.short_description?.toLowerCase().includes(searchQuery.toLowerCase());
+      item.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.short_description?.toLowerCase().includes(searchQuery.toLowerCase());
 
     return matchesCategory && matchesSearch;
   });
@@ -146,7 +196,7 @@ export default function PlacesPage() {
               {isLoading ? (
                 <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Yüklənir...</span>
               ) : (
-                <><span className="text-foreground font-bold">{filteredPlaces.length}</span> məkan tapıldı</>
+                <><span className="text-foreground font-bold">{filteredItems.length}</span> məkan tapıldı</>
               )}
             </p>
             {/* Sort Dropdown Placeholder */}
@@ -162,10 +212,10 @@ export default function PlacesPage() {
                 <div key={i} className="aspect-4/5 bg-muted animate-pulse rounded-[40px]" />
               ))}
             </div>
-          ) : filteredPlaces.length > 0 ? (
+          ) : filteredItems.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {filteredPlaces.map((place, i) => (
-                <PlaceCard key={place.id} place={place} index={i} />
+              {filteredItems.map((item, i) => (
+                <PlaceCard key={item.id} place={item as any} index={i} />
               ))}
             </div>
           ) : (
@@ -185,7 +235,7 @@ export default function PlacesPage() {
           )}
 
           {/* Load More Button */}
-          {!isLoading && filteredPlaces.length > 10 && (
+          {!isLoading && filteredItems.length > 10 && (
             <div className="mt-16 flex justify-center">
               <button className="px-8 py-3.5 bg-card border border-border rounded-xl text-foreground font-bold hover:bg-muted transition-colors shadow-sm flex items-center gap-2">
                 Daha çox yüklə

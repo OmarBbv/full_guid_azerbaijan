@@ -1,7 +1,8 @@
 import { z } from 'zod';
-import { PlaceType } from '@/types/restaurant';
+import { PlaceType, PlaceStatus } from '@/types/restaurant';
 
 export const createPlaceSchema = z.object({
+  status: z.nativeEnum(PlaceStatus).default(PlaceStatus.ACTIVE),
   title: z.string().min(1, 'Ad mütləqdir'),
   slug: z.string().min(1, 'Slug mütləqdir'),
   short_description: z.string().min(1, 'Qısa təsvir mütləqdir'),

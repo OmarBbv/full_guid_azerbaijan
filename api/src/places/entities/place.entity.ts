@@ -94,7 +94,7 @@ export class Place {
   @Column({ type: 'enum', enum: PlaceType, default: PlaceType.OTHER })
   type: PlaceType;
 
-  @Column({ type: 'enum', enum: PlaceStatus, default: PlaceStatus.PENDING })
+  @Column({ type: 'enum', enum: PlaceStatus, default: PlaceStatus.ACTIVE })
   status: PlaceStatus;
 
   // ─── WhatsApp CTA (primary contact — no reservation system) ──────────────

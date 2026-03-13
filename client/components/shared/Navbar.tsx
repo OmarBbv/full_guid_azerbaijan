@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useCategories } from "@/hooks/use-categories";
 
 const CITY_MARKERS = [
   { name: "Bakı", pctX: 90.5, pctY: 42.6 },
@@ -50,6 +51,8 @@ type NavLink = {
 
 export default function Navbar() {
   const t = useTranslations("Navbar");
+  const locale = useLocale();
+  const { data: dynamicCategories = [] } = useCategories(locale);
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredMapCity, setHoveredMapCity] = useState<string | null>(null);
@@ -62,7 +65,6 @@ export default function Navbar() {
   const userRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
-  const locale = useLocale();
 
   const LANGUAGES = [
     { code: "az", label: "Azərbaycan", flag: "🇦🇿" },
@@ -111,6 +113,10 @@ export default function Navbar() {
         { label: t("restaurants"), href: "/places/restaurants" },
         { label: t("hotels"), href: "/places/hotels" },
         { label: t("hostels"), href: "/places/hostels" },
+        ...dynamicCategories.map((cat) => ({
+          label: cat.name,
+          href: `/mekanlar?category=${cat.slug}`,
+        })),
       ],
     },
     {

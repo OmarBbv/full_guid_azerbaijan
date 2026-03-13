@@ -1,9 +1,9 @@
 {
-  "name": "material-kit-react",
+  "name": "full-guide-azerbaijan-admin",
   "version": "4.1.0",
-  "author": "Devias",
+  "author": "Full Guide Azerbaijan",
   "licence": "MIT",
-  "homepage": "https://devias.io",
+  "homepage": "https://fullguide.az",
   "private": false,
   "scripts": {
     "dev": "next dev --turbopack",

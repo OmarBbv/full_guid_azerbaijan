@@ -6,6 +6,8 @@ import { useColorScheme } from '@mui/material/styles';
 
 import { NoSsr } from '@/components/core/no-ssr';
 
+import Typography from '@mui/material/Typography';
+
 const HEIGHT = 60;
 const WIDTH = 60;
 
@@ -19,15 +21,28 @@ export interface LogoProps {
 }
 
 export function Logo({ color = 'dark', emblem, height = HEIGHT, width = WIDTH }: LogoProps): React.JSX.Element {
-  let url: string;
+  const url = color === 'light' ? '/admin/assets/logo-emblem.svg' : '/admin/assets/logo-emblem--dark.svg';
 
   if (emblem) {
-    url = color === 'light' ? '/admin/assets/logo-emblem.svg' : '/admin/assets/logo-emblem--dark.svg';
-  } else {
-    url = color === 'light' ? '/admin/assets/logo.svg' : '/admin/assets/logo--dark.svg';
+    return <Box alt="logo" component="img" height={height} src={url} width={height} />;
   }
 
-  return <Box alt="logo" component="img" height={height} src={url} width={width} />;
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+      <Box alt="logo" component="img" height={height} src={url} width={height} />
+      <Typography
+        variant="h5"
+        sx={{
+          fontWeight: 700,
+          letterSpacing: '-0.5px',
+          color: color === 'light' ? 'white' : 'black',
+          whiteSpace: 'nowrap'
+        }}
+      >
+        Full Guide
+      </Typography>
+    </Box>
+  );
 }
 
 export interface DynamicLogoProps {

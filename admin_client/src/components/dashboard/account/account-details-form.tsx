@@ -15,10 +15,10 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import Select from '@mui/material/Select';
 
 const states = [
-  { value: 'alabama', label: 'Alabama' },
-  { value: 'new-york', label: 'New York' },
-  { value: 'san-francisco', label: 'San Francisco' },
-  { value: 'los-angeles', label: 'Los Angeles' },
+  { value: 'baku', label: 'Bakı' },
+  { value: 'ganja', label: 'Gəncə' },
+  { value: 'sumqayit', label: 'Sumqayıt' },
+  { value: 'lankaran', label: 'Lənkəran' },
 ] as const;
 
 export function AccountDetailsForm(): React.JSX.Element {
@@ -29,7 +29,7 @@ export function AccountDetailsForm(): React.JSX.Element {
       }}
     >
       <Card>
-        <CardHeader subheader="The information can be edited" title="Profile" />
+        <CardHeader subheader="Məlumatlar düzəliş edilə bilər" title="Profil" />
         <Divider />
         <CardContent>
           <Grid container spacing={3}>
@@ -40,8 +40,8 @@ export function AccountDetailsForm(): React.JSX.Element {
               }}
             >
               <FormControl fullWidth required>
-                <InputLabel>First name</InputLabel>
-                <OutlinedInput defaultValue="Sofia" label="First name" name="firstName" />
+                <InputLabel>Ad</InputLabel>
+                <OutlinedInput defaultValue="Admin" label="Ad" name="firstName" />
               </FormControl>
             </Grid>
             <Grid
@@ -51,8 +51,8 @@ export function AccountDetailsForm(): React.JSX.Element {
               }}
             >
               <FormControl fullWidth required>
-                <InputLabel>Last name</InputLabel>
-                <OutlinedInput defaultValue="Rivers" label="Last name" name="lastName" />
+                <InputLabel>Soyad</InputLabel>
+                <OutlinedInput defaultValue="" label="Soyad" name="lastName" />
               </FormControl>
             </Grid>
             <Grid
@@ -62,8 +62,8 @@ export function AccountDetailsForm(): React.JSX.Element {
               }}
             >
               <FormControl fullWidth required>
-                <InputLabel>Email address</InputLabel>
-                <OutlinedInput defaultValue="sofia@devias.io" label="Email address" name="email" />
+                <InputLabel>E-poçt ünvanı</InputLabel>
+                <OutlinedInput defaultValue="admin@fullguide.az" label="E-poçt ünvanı" name="email" />
               </FormControl>
             </Grid>
             <Grid
@@ -73,8 +73,8 @@ export function AccountDetailsForm(): React.JSX.Element {
               }}
             >
               <FormControl fullWidth>
-                <InputLabel>Phone number</InputLabel>
-                <OutlinedInput label="Phone number" name="phone" type="tel" />
+                <InputLabel>Telefon nömrəsi</InputLabel>
+                <OutlinedInput label="Telefon nömrəsi" name="phone" type="tel" />
               </FormControl>
             </Grid>
             <Grid
@@ -84,8 +84,8 @@ export function AccountDetailsForm(): React.JSX.Element {
               }}
             >
               <FormControl fullWidth>
-                <InputLabel>State</InputLabel>
-                <Select defaultValue="New York" label="State" name="state" variant="outlined">
+                <InputLabel>Region</InputLabel>
+                <Select defaultValue="Bakı" label="Region" name="state" variant="outlined">
                   {states.map((option) => (
                     <MenuItem key={option.value} value={option.value}>
                       {option.label}
@@ -101,15 +101,15 @@ export function AccountDetailsForm(): React.JSX.Element {
               }}
             >
               <FormControl fullWidth>
-                <InputLabel>City</InputLabel>
-                <OutlinedInput label="City" />
+                <InputLabel>Şəhər</InputLabel>
+                <OutlinedInput label="Şəhər" />
               </FormControl>
             </Grid>
           </Grid>
         </CardContent>
         <Divider />
         <CardActions sx={{ justifyContent: 'flex-end' }}>
-          <Button variant="contained">Save details</Button>
+          <Button variant="contained">Yadda saxla</Button>
         </CardActions>
       </Card>
     </form>

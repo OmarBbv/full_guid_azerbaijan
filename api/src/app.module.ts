@@ -17,6 +17,9 @@ import { AdsModule } from './ads/ads.module';
 import { UploadController } from './upload/upload.controller';
 import { UploadService } from './upload/upload.service';
 import { UploadModule } from './upload/upload.module';
+import { CategoryModule } from './category/category.module';
+import { VenueModule } from './venue/venue.module';
+import { VenueImageModule } from './venue-image/venue-image.module';
 
 @Module({
   imports: [
@@ -59,8 +62,11 @@ import { UploadModule } from './upload/upload.module';
     UsersModule,
     AdsModule,
     UploadModule,
+    CategoryModule,
+    VenueModule,
+    VenueImageModule,
   ],
-  controllers: [AppController, UploadController],
-  providers: [AppService, UploadService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
