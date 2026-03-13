@@ -15,7 +15,9 @@ import {
   X,
 } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { useSearch } from "@/hooks/use-search";
+import { useDebounce } from "@/hooks/use-debounce";
 import { useCategories } from "@/hooks/use-categories";
 
 const CITY_MARKERS = [
@@ -61,10 +63,23 @@ export default function Navbar() {
   );
   const [langOpen, setLangOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const langRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
   const pathname = usePathname();
   const router = useRouter();
+
+  const debouncedQuery = useDebounce(searchQuery, 300);
+  const { data: searchData, isLoading: searchLoading } = useSearch({
+    q: debouncedQuery || undefined,
+    language: locale,
+    limit: 6,
+    enabled: searchOpen && debouncedQuery.length > 0,
+  });
+  const searchResults = searchData?.results ?? [];
 
   const LANGUAGES = [
     { code: "az", label: "Azərbaycan", flag: "🇦🇿" },
@@ -152,6 +167,61 @@ export default function Navbar() {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  // Search popup keyboard handling
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); }
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        setSearchOpen(true);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Focus input when popup opens
+  useEffect(() => {
+    if (searchOpen) {
+      setTimeout(() => searchInputRef.current?.focus(), 80);
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+  }, [searchOpen]);
+
+  const openSearch = useCallback(() => {
+    setSearchQuery("");
+    setSearchOpen(true);
+  }, []);
+
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false);
+    setSearchQuery("");
+  }, []);
+
+  const handleSearchSubmit = (q: string) => {
+    if (!q.trim()) return;
+    closeSearch();
+    router.push(`/search?q=${encodeURIComponent(q.trim())}` as any);
+  };
+
+  const handleResultClick = (item: { kind: string; slug: string; type: string }) => {
+    closeSearch();
+    if (item.kind === "venue") {
+      router.push(`/mekanlar/${item.slug}` as any);
+    } else {
+      const baseMap: Record<string, string> = {
+        restaurant: "/places/restaurants",
+        hotel: "/places/hotels",
+        hostel: "/places/hostels",
+        landmark: "/places/landmarks",
+      };
+      const base = baseMap[item.type] || "/mekanlar";
+      router.push(`${base}/${item.slug}` as any);
+    }
+  };
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   useEffect(() => {
@@ -442,10 +512,14 @@ export default function Navbar() {
 
             <div className="hidden lg:flex items-center gap-5">
               <button
-                className="text-white/60 hover:text-white transition-colors duration-200"
+                onClick={openSearch}
+                className="flex items-center gap-1.5 text-white/60 hover:text-white transition-colors duration-200 group"
                 aria-label={t("search")}
               >
                 <Search className="w-[18px] h-[18px]" />
+                <span className="hidden xl:flex items-center gap-1 text-[11px] font-semibold border border-white/15 rounded-md px-1.5 py-0.5 text-white/40 group-hover:text-white/60 transition-colors">
+                  ⌘K
+                </span>
               </button>
 
               <Link
@@ -582,6 +656,118 @@ export default function Navbar() {
         </div>
       </nav>
 
+      {/* ── Search Popup Overlay ── */}
+      {searchOpen && (
+        <div
+          className="fixed inset-0 z-[200] flex items-start justify-center pt-[80px] px-4"
+          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+          onClick={(e) => { if (e.target === e.currentTarget) closeSearch(); }}
+        >
+          <div
+            ref={searchRef}
+            className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl"
+            style={{
+              background: "rgba(10,12,22,0.98)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              backdropFilter: "blur(30px)",
+              animation: "searchPopIn 0.18s cubic-bezier(0.16,1,0.3,1)",
+            }}
+          >
+            {/* Input row */}
+            <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10">
+              <Search size={18} className="text-white/40 shrink-0" />
+              <input
+                ref={searchInputRef}
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearchSubmit(searchQuery);
+                }}
+                placeholder="Restoran, otel, məkan, şəhər..."
+                className="flex-1 bg-transparent text-white placeholder-white/35 text-base outline-none font-medium"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery("")} className="text-white/30 hover:text-white/70 transition-colors">
+                  <X size={16} />
+                </button>
+              )}
+              <button
+                onClick={closeSearch}
+                className="ml-1 text-[11px] font-bold text-white/30 border border-white/15 rounded-md px-2 py-1 hover:text-white/60 hover:border-white/30 transition-colors"
+              >
+                ESC
+              </button>
+            </div>
+
+            {/* Results */}
+            <div className="max-h-[420px] overflow-y-auto">
+              {searchQuery.length === 0 ? (
+                <div className="px-4 py-8 text-center text-white/30 text-sm">
+                  Axtar düyməsini basın və ya nəyisə yazın…
+                </div>
+              ) : searchLoading ? (
+                <div className="px-4 py-6 flex items-center justify-center gap-2 text-white/40 text-sm">
+                  <span className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                  Axtarılır...
+                </div>
+              ) : searchResults.length === 0 ? (
+                <div className="px-4 py-8 text-center text-white/30 text-sm">
+                  Heç bir nəticə tapılmadı
+                </div>
+              ) : (
+                <div>
+                  {searchResults.map((item, i) => {
+                    const typeIcon: Record<string, string> = {
+                      restaurant: "🍴", hotel: "🏨", hostel: "🛌",
+                      landmark: "🏛️", nature: "🌿", museum: "🏛️",
+                      entertainment: "🎭", venue: "📍", other: "📍",
+                    };
+                    const icon = typeIcon[item.type] || typeIcon[item.kind] || "📍";
+                    return (
+                      <button
+                        key={`${item.kind}-${item.id}`}
+                        onClick={() => handleResultClick(item)}
+                        className="w-full flex items-center gap-4 px-4 py-3.5 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 group"
+                      >
+                        <span className="text-xl w-8 text-center shrink-0">{icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[14px] font-semibold text-white/90 group-hover:text-white truncate">
+                            {item.title}
+                          </div>
+                          {item.city && (
+                            <div className="text-[12px] text-white/40 flex items-center gap-1 mt-0.5">
+                              <MapPin size={10} />{item.city}
+                            </div>
+                          )}
+                        </div>
+                        <ChevronRight size={14} className="text-white/20 group-hover:text-white/50 shrink-0 transition-colors" />
+                      </button>
+                    );
+                  })}
+
+                  {/* Full search link */}
+                  <button
+                    onClick={() => handleSearchSubmit(searchQuery)}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors"
+                  >
+                    <Search size={13} />
+                    &ldquo;{searchQuery}&rdquo; üçün bütün nəticələrə bax
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes searchPopIn {
+          from { opacity: 0; transform: scale(0.97) translateY(-8px); }
+          to   { opacity: 1; transform: scale(1)   translateY(0); }
+        }
+      `}</style>
+
       <div
         className="fixed inset-0 z-40 lg:hidden transition-all duration-400"
         style={{
@@ -714,7 +900,10 @@ export default function Navbar() {
                 {t("favorites")}
               </span>
             </Link>
-            <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
+            <button
+              onClick={() => { setMobileOpen(false); openSearch(); }}
+              className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+            >
               <Search
                 className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
                 strokeWidth={1.5}
