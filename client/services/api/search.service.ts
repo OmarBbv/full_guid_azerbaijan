@@ -18,8 +18,6 @@ export interface SearchResponse {
   total: number;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5555';
-
 export const searchService = {
   async search(params: {
     q?: string;
@@ -35,8 +33,9 @@ export const searchService = {
     if (params.language) query.set('language', params.language);
     if (params.limit)    query.set('limit', String(params.limit));
 
+    // Uses Next.js rewrite: /api/* -> http://localhost:5555/*
     const { data } = await axios.get<SearchResponse>(
-      `${API_BASE}/search?${query.toString()}`
+      `/api/search?${query.toString()}`
     );
     return data;
   },

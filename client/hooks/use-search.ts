@@ -12,12 +12,11 @@ export interface UseSearchParams {
 
 export function useSearch(params: UseSearchParams) {
   const { enabled = true, ...searchParams } = params;
-  const hasQuery = Boolean(searchParams.q || searchParams.city || searchParams.type);
 
   return useQuery({
     queryKey: ['search', searchParams],
     queryFn: () => searchService.search(searchParams),
-    enabled: enabled && hasQuery,
-    staleTime: 1000 * 30, // 30s
+    enabled,
+    staleTime: 1000 * 30,
   });
 }

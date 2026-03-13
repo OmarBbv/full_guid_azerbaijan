@@ -1,30 +1,29 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useLocale } from "next-intl";
-import { Search, MapPin, Star, ArrowRight, Loader2, SlidersHorizontal, X } from "lucide-react";
+import { Search, MapPin, Star, ArrowRight, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "@/hooks/use-debounce";
 
 const TYPE_OPTIONS = [
-  { value: "",            label: "Hamısı",    icon: "✨" },
-  { value: "restaurant",  label: "Restoranlar", icon: "🍴" },
-  { value: "hotel",       label: "Otellər",   icon: "🏨" },
-  { value: "hostel",      label: "Hostellər", icon: "🛌" },
-  { value: "venue",       label: "Məkanlar",  icon: "📍" },
-  { value: "landmark",    label: "Tarixi",    icon: "🏛️" },
-  { value: "nature",      label: "Təbiət",    icon: "🌿" },
+  { value: "", label: "Hamısı", icon: "✨" },
+  { value: "restaurant", label: "Restoranlar", icon: "🍴" },
+  { value: "hotel", label: "Otellər", icon: "🏨" },
+  { value: "hostel", label: "Hostellər", icon: "🛌" },
+  { value: "venue", label: "Məkanlar", icon: "📍" },
+  { value: "landmark", label: "Tarixi", icon: "🏛️" },
+  { value: "nature", label: "Təbiət", icon: "🌿" },
 ];
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5555";
 
 function getThumbnail(thumb: string | null): string | null {
   if (!thumb) return null;
   if (thumb.startsWith("http")) return thumb;
-  return `${API_BASE}${thumb}`;
+  return `/api${thumb}`;
 }
 
 export default function SearchResultsContent() {
@@ -32,32 +31,32 @@ export default function SearchResultsContent() {
   const router = useRouter();
   const locale = useLocale();
 
-  const initialQ    = searchParams.get("q")    ?? "";
+  const initialQ = searchParams.get("q") ?? "";
   const initialCity = searchParams.get("city") ?? "";
   const initialType = searchParams.get("type") ?? "";
 
-  const [q,    setQ]    = useState(initialQ);
+  const [q, setQ] = useState(initialQ);
   const [city, setCity] = useState(initialCity);
   const [type, setType] = useState(initialType);
 
-  const debouncedQ    = useDebounce(q,    350);
+  const debouncedQ = useDebounce(q, 350);
   const debouncedCity = useDebounce(city, 350);
 
   const { data, isLoading, isFetching } = useSearch({
-    q:        debouncedQ    || undefined,
-    city:     debouncedCity || undefined,
-    type:     type          || undefined,
+    q: debouncedQ || undefined,
+    city: debouncedCity || undefined,
+    type: type || undefined,
     language: locale,
-    limit:    50,
+    limit: 50,
   });
 
   const results = data?.results ?? [];
-  const total   = data?.total   ?? 0;
+  const total = data?.total ?? 0;
 
   // Sync URL on search change
   useEffect(() => {
     const p = new URLSearchParams();
-    if (q)    p.set("q",    q);
+    if (q) p.set("q", q);
     if (city) p.set("city", city);
     if (type) p.set("type", type);
     router.replace(`/search?${p.toString()}` as any, { scroll: false });
@@ -69,9 +68,9 @@ export default function SearchResultsContent() {
     } else {
       const baseMap: Record<string, string> = {
         restaurant: "/places/restaurants",
-        hotel:      "/places/hotels",
-        hostel:     "/places/hostels",
-        landmark:   "/places/landmarks",
+        hotel: "/places/hotels",
+        hostel: "/places/hostels",
+        landmark: "/places/landmarks",
       };
       const base = baseMap[item.type] || "/mekanlar";
       router.push(`${base}/${item.slug}` as any);
@@ -98,8 +97,8 @@ export default function SearchResultsContent() {
           {isLoading || isFetching
             ? "Axtarılır..."
             : total > 0
-            ? `${total} nəticə tapıldı`
-            : q || city ? "Nəticə tapılmadı" : "Axtar düyməsini basın"}
+              ? `${total} nəticə tapıldı`
+              : "Heç bir nəticə tapılmadı"}
         </p>
 
         {/* ── Big Search Bar ── */}
@@ -187,7 +186,9 @@ export default function SearchResultsContent() {
             <div className="text-6xl mb-4">🔍</div>
             <h2 className="text-2xl font-bold text-foreground mb-2">Nəticə tapılmadı</h2>
             <p className="text-muted-foreground max-w-sm">
-              Başqa açar söz ilə yenidən cəhd edin.
+              {q || city || type
+                ? "Bu axtarışa uyğun nəticə yoxdur. Başqa söz sınayın."
+                : "DB-də hələ heç bir məlumat yoxdur."}
             </p>
           </div>
         ) : (

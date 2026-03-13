@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike } from 'typeorm';
-import { Place, PlaceStatus } from '../places/entities/place.entity';
+import { Place } from '../places/entities/place.entity';
 import { Venue, VenueStatus } from '../venue/entities/venue.entity';
 
 export interface SearchResultItem {
   id: string;
   kind: 'place' | 'venue';
-  type: string;       // RESTAURANT | HOTEL | HOSTEL | venue-category-slug ...
+  type: string;
   title: string;
   description: string;
   city: string | null;
@@ -25,49 +25,53 @@ export class SearchService {
 
     @InjectRepository(Venue)
     private readonly venueRepo: Repository<Venue>,
-  ) {}
+  ) { }
 
   async search(params: {
     q?: string;
     city?: string;
-    type?: string;   // restaurant | hotel | hostel | venue
+    type?: string;
     language?: string;
     limit?: number;
   }): Promise<{ results: SearchResultItem[]; total: number }> {
-    const { q, city, type, language, limit = 30 } = params;
+    const { q, city, type, language, limit = 50 } = params;
 
     const results: SearchResultItem[] = [];
 
-    const searchPlaces = !type || ['restaurant', 'hotel', 'hostel', 'landmark', 'nature', 'entertainment', 'museum', 'other'].includes(type.toLowerCase());
-    const searchVenues = !type || type.toLowerCase() === 'venue';
+    const isVenueOnly = type?.toLowerCase() === 'venue';
+    const searchPlaces = !isVenueOnly;
+    const searchVenues = !type || isVenueOnly;
 
-    // ── Places (restaurants, hotels, hostels, landmarks…) ──
     if (searchPlaces) {
-      const where: any[] = [];
+      const qb = this.placeRepo
+        .createQueryBuilder('place')
+        .leftJoinAndSelect('place.images', 'images');
 
-      // Build OR conditions: name matches OR city matches
-      const terms = q ? [
-        { title: ILike(`%${q}%`), status: PlaceStatus.ACTIVE, ...(language ? { language } : {}) },
-        { short_description: ILike(`%${q}%`), status: PlaceStatus.ACTIVE, ...(language ? { language } : {}) },
-        { city: ILike(`%${q}%`), status: PlaceStatus.ACTIVE, ...(language ? { language } : {}) },
-      ] : [
-        { status: PlaceStatus.ACTIVE, ...(language ? { language } : {}) }
-      ];
-
-      for (const cond of terms) {
-        if (city) (cond as any).city = ILike(`%${city}%`);
-        if (type && type.toLowerCase() !== 'venue') (cond as any).type = type.toUpperCase();
-        where.push(cond);
+      if (q) {
+        qb.andWhere(
+          '(place.title ILIKE :q OR place.short_description ILIKE :q OR place.city ILIKE :q OR place.address ILIKE :q)',
+          { q: `%${q}%` },
+        );
       }
 
-      const places = await this.placeRepo.find({
-        where,
-        relations: ['images'],
-        take: limit,
-        order: { average_rating: 'DESC' },
-      });
+      if (city) {
+        qb.andWhere('place.city ILIKE :city', { city: `%${city}%` });
+      }
+
+      if (language) {
+        qb.andWhere('place.language = :language', { language });
+      }
+
+      if (type && !isVenueOnly) {
+        qb.andWhere('LOWER(place.type) = :type', { type: type.toLowerCase() });
+      }
+
+      qb.orderBy('place.average_rating', 'DESC').take(limit);
+
+      const places = await qb.getMany();
 
       for (const p of places) {
+        const thumbUrl = p.thumbnail || p.images?.[0]?.url || null;
         results.push({
           id: p.id,
           kind: 'place',
@@ -75,7 +79,7 @@ export class SearchService {
           title: p.title,
           description: p.short_description,
           city: p.city,
-          thumbnail: p.thumbnail || p.images?.[0]?.url || null,
+          thumbnail: thumbUrl,
           rating: Number(p.average_rating) || 0,
           slug: p.slug,
           language: p.language,
@@ -83,28 +87,34 @@ export class SearchService {
       }
     }
 
-    // ── Venues ──
+    // ── Venues ──────────────────────────────────────────────────────────
     if (searchVenues) {
       const qb = this.venueRepo
         .createQueryBuilder('venue')
         .leftJoinAndSelect('venue.category', 'category')
-        .leftJoinAndSelect('venue.images', 'images')
-        .where('venue.status = :status', { status: VenueStatus.ACTIVE });
+        .leftJoinAndSelect('venue.images', 'images');
 
       if (q) {
         qb.andWhere(
-          '(venue.name ILIKE :q OR venue.description ILIKE :q OR venue.city ILIKE :q)',
+          '(venue.name ILIKE :q OR venue.description ILIKE :q OR venue.city ILIKE :q OR venue.address ILIKE :q)',
           { q: `%${q}%` },
         );
       }
-      if (city) qb.andWhere('venue.city ILIKE :city', { city: `%${city}%` });
-      if (language) qb.andWhere('venue.language = :language', { language });
+
+      if (city) {
+        qb.andWhere('venue.city ILIKE :city', { city: `%${city}%` });
+      }
+
+      if (language) {
+        qb.andWhere('venue.language = :language', { language });
+      }
 
       qb.orderBy('venue.rating', 'DESC').take(limit);
 
       const venues = await qb.getMany();
 
       for (const v of venues) {
+        const thumbUrl = v.thumbnail || v.images?.[0]?.url || null;
         results.push({
           id: v.id.toString(),
           kind: 'venue',
@@ -112,7 +122,7 @@ export class SearchService {
           title: v.name,
           description: v.description || '',
           city: v.city,
-          thumbnail: v.thumbnail || v.images?.[0]?.url || null,
+          thumbnail: thumbUrl,
           rating: Number(v.rating) || 0,
           slug: v.slug,
           language: v.language,
@@ -120,12 +130,10 @@ export class SearchService {
       }
     }
 
-    // Sort combined results by rating desc
+    // Sort by rating desc
     results.sort((a, b) => b.rating - a.rating);
+    const sliced = results.slice(0, limit);
 
-    return {
-      results: results.slice(0, limit),
-      total: results.length,
-    };
+    return { results: sliced, total: sliced.length };
   }
 }
