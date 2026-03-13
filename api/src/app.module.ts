@@ -20,6 +20,7 @@ import { UploadModule } from './upload/upload.module';
 import { CategoryModule } from './category/category.module';
 import { VenueModule } from './venue/venue.module';
 import { VenueImageModule } from './venue-image/venue-image.module';
+import { SearchModule } from './search/search.module';
 
 @Module({
   imports: [
@@ -65,6 +66,7 @@ import { VenueImageModule } from './venue-image/venue-image.module';
     CategoryModule,
     VenueModule,
     VenueImageModule,
+    SearchModule,
   ],
   controllers: [AppController],
   providers: [AppService],
