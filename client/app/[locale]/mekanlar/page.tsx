@@ -23,7 +23,7 @@ export default function PlacesPage() {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
-  
+
   const [activeCategory, setActiveCategory] = useState(categoryParam || "hamısı");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -31,7 +31,7 @@ export default function PlacesPage() {
   const { data: allPlaces, isLoading: isLoadingPlaces } = usePlaces({
     language: locale
   });
-  
+
   const { data: venuesData, isLoading: isLoadingVenues } = useVenues();
   const allVenues = venuesData?.data || [];
 
@@ -68,7 +68,7 @@ export default function PlacesPage() {
 
   const filteredItems = normalizedPlaces.filter(item => {
     const isStaticCategory = STATIC_CATEGORIES.some(c => c.id === activeCategory);
-    
+
     let matchesCategory = false;
     if (activeCategory === "hamısı") {
       matchesCategory = true;
@@ -180,12 +180,6 @@ export default function PlacesPage() {
                 </button>
               ))}
             </div>
-
-            {/* Filter Button */}
-            <button className="hidden lg:flex items-center gap-2 px-6 py-3 bg-card border border-border rounded-2xl text-sm font-semibold text-foreground hover:bg-muted transition-colors shadow-sm">
-              <SlidersHorizontal size={18} />
-              Filtrlər
-            </button>
           </div>
 
           <AdBannerComponent position="kateqoriya_ust" className="mb-8" />

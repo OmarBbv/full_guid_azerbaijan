@@ -656,10 +656,6 @@ export default function Hero() {
           paddingTop: "56px",
         }}
       >
-        {/* Search Bar */}
-        <div className="mb-5">
-          <HeroSearchBar />
-        </div>
 
         {/* Thumbnail strip */}
         <div className="flex items-center gap-4">

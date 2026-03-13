@@ -65,7 +65,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
 
   return (
     <Link
-      href={`/mekanlar/${place.id}`}
+      href={`/mekanlar/${(place as any).slug || place.id}`}
       ref={ref}
       className="group block relative rounded-3xl overflow-hidden cursor-pointer bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.13)] h-full"
       style={{

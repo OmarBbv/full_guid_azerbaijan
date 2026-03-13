@@ -23,6 +23,11 @@ class VenueService {
     const { data } = await apiClient.get(this.endpoint, { params });
     return data;
   }
+
+  async getBySlug(slug: string): Promise<Venue> {
+    const { data } = await apiClient.get(`${this.endpoint}/${slug}`);
+    return data;
+  }
 }
 
 export const venueService = new VenueService();

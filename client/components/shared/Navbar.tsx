@@ -19,6 +19,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useCategories } from "@/hooks/use-categories";
+import { NavSearchPill } from "./NavSearchPill";
 
 const CITY_MARKERS = [
   { name: "Bakı", pctX: 90.5, pctY: 42.6 },
@@ -659,112 +660,95 @@ export default function Navbar() {
       {/* ── Search Popup Overlay ── */}
       {searchOpen && (
         <div
-          className="fixed inset-0 z-[200] flex items-start justify-center pt-[80px] px-4"
-          style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(8px)" }}
+          className="fixed inset-0 z-200 flex items-start justify-center pt-[68px] px-4"
+          style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)" }}
           onClick={(e) => { if (e.target === e.currentTarget) closeSearch(); }}
         >
           <div
             ref={searchRef}
-            className="w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl"
-            style={{
-              background: "rgba(10,12,22,0.98)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              backdropFilter: "blur(30px)",
-              animation: "searchPopIn 0.18s cubic-bezier(0.16,1,0.3,1)",
-            }}
+            className="w-full max-w-3xl flex flex-col gap-2"
+            style={{ animation: "searchPopIn 0.18s cubic-bezier(0.16,1,0.3,1)" }}
           >
-            {/* Input row */}
-            <div className="flex items-center gap-3 px-4 py-4 border-b border-white/10">
-              <Search size={18} className="text-white/40 shrink-0" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleSearchSubmit(searchQuery);
+            {/* ── Pill bar (exactly like hero) ── */}
+            <NavSearchPill
+              inputRef={searchInputRef}
+              query={searchQuery}
+              setQuery={setSearchQuery}
+              onSubmit={handleSearchSubmit}
+              onClose={closeSearch}
+              locale={locale}
+            />
+
+            {/* ── Live results ── */}
+            {searchQuery.length > 0 && (
+              <div
+                className="w-full rounded-2xl overflow-hidden shadow-2xl"
+                style={{
+                  background: "rgba(10,12,22,0.97)",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  backdropFilter: "blur(30px)",
                 }}
-                placeholder="Restoran, otel, məkan, şəhər..."
-                className="flex-1 bg-transparent text-white placeholder-white/35 text-base outline-none font-medium"
-              />
-              {searchQuery && (
-                <button onClick={() => setSearchQuery("")} className="text-white/30 hover:text-white/70 transition-colors">
-                  <X size={16} />
-                </button>
-              )}
-              <button
-                onClick={closeSearch}
-                className="ml-1 text-[11px] font-bold text-white/30 border border-white/15 rounded-md px-2 py-1 hover:text-white/60 hover:border-white/30 transition-colors"
               >
-                ESC
-              </button>
-            </div>
-
-            {/* Results */}
-            <div className="max-h-[420px] overflow-y-auto">
-              {searchQuery.length === 0 ? (
-                <div className="px-4 py-8 text-center text-white/30 text-sm">
-                  Axtar düyməsini basın və ya nəyisə yazın…
-                </div>
-              ) : searchLoading ? (
-                <div className="px-4 py-6 flex items-center justify-center gap-2 text-white/40 text-sm">
-                  <span className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
-                  Axtarılır...
-                </div>
-              ) : searchResults.length === 0 ? (
-                <div className="px-4 py-8 text-center text-white/30 text-sm">
-                  Heç bir nəticə tapılmadı
-                </div>
-              ) : (
-                <div>
-                  {searchResults.map((item, i) => {
-                    const typeIcon: Record<string, string> = {
-                      restaurant: "🍴", hotel: "🏨", hostel: "🛌",
-                      landmark: "🏛️", nature: "🌿", museum: "🏛️",
-                      entertainment: "🎭", venue: "📍", other: "📍",
-                    };
-                    const icon = typeIcon[item.type] || typeIcon[item.kind] || "📍";
-                    return (
-                      <button
-                        key={`${item.kind}-${item.id}`}
-                        onClick={() => handleResultClick(item)}
-                        className="w-full flex items-center gap-4 px-4 py-3.5 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 group"
-                      >
-                        <span className="text-xl w-8 text-center shrink-0">{icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[14px] font-semibold text-white/90 group-hover:text-white truncate">
-                            {item.title}
-                          </div>
-                          {item.city && (
-                            <div className="text-[12px] text-white/40 flex items-center gap-1 mt-0.5">
-                              <MapPin size={10} />{item.city}
+                <div className="max-h-[380px] overflow-y-auto">
+                  {searchLoading ? (
+                    <div className="px-4 py-6 flex items-center justify-center gap-2 text-white/40 text-sm">
+                      <span className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
+                      Axtarılır...
+                    </div>
+                  ) : searchResults.length === 0 ? (
+                    <div className="px-4 py-8 text-center text-white/30 text-sm">
+                      Heç bir nəticə tapılmadı
+                    </div>
+                  ) : (
+                    <div>
+                      {searchResults.map((item) => {
+                        const typeIcon: Record<string, string> = {
+                          restaurant: "🍴", hotel: "🏨", hostel: "🛌",
+                          landmark: "🏛️", nature: "🌿", museum: "🏛️",
+                          entertainment: "🎭", venue: "📍", other: "📍",
+                        };
+                        const icon = typeIcon[item.type] ?? "📍";
+                        return (
+                          <button
+                            key={`${item.kind}-${item.id}`}
+                            onClick={() => handleResultClick(item)}
+                            className="w-full flex items-center gap-4 px-5 py-3.5 text-left hover:bg-white/5 transition-colors border-b border-white/5 last:border-0 group"
+                          >
+                            <span className="text-xl w-8 text-center shrink-0">{icon}</span>
+                            <div className="flex-1 min-w-0">
+                              <div className="text-[14px] font-semibold text-white/90 group-hover:text-white truncate">
+                                {item.title}
+                              </div>
+                              {item.city && (
+                                <div className="text-[12px] text-white/40 flex items-center gap-1 mt-0.5">
+                                  <MapPin size={10} />{item.city}
+                                </div>
+                              )}
                             </div>
-                          )}
-                        </div>
-                        <ChevronRight size={14} className="text-white/20 group-hover:text-white/50 shrink-0 transition-colors" />
+                            <ChevronRight size={14} className="text-white/20 group-hover:text-white/50 shrink-0 transition-colors" />
+                          </button>
+                        );
+                      })}
+                      <button
+                        onClick={() => handleSearchSubmit(searchQuery)}
+                        className="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors"
+                      >
+                        <Search size={13} />
+                        &ldquo;{searchQuery}&rdquo; üçün bütün nəticələrə bax
                       </button>
-                    );
-                  })}
-
-                  {/* Full search link */}
-                  <button
-                    onClick={() => handleSearchSubmit(searchQuery)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors"
-                  >
-                    <Search size={13} />
-                    &ldquo;{searchQuery}&rdquo; üçün bütün nəticələrə bax
-                  </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       )}
 
       <style>{`
         @keyframes searchPopIn {
-          from { opacity: 0; transform: scale(0.97) translateY(-8px); }
-          to   { opacity: 1; transform: scale(1)   translateY(0); }
+          from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
         }
       `}</style>
 

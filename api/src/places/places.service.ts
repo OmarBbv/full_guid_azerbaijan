@@ -49,13 +49,16 @@ export class PlacesService {
   }
 
   async findOne(id: string, language?: string): Promise<Place> {
+    const isIdUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(id);
+    const whereClause: any = isIdUuid ? { id } : { slug: id };
+
     const place = await this.placeRepository.findOne({
-      where: { id },
+      where: whereClause,
       relations: ['images', 'reviews'],
     });
 
     if (!place) {
-      throw new NotFoundException(`Place with ID ${id} not found`);
+      throw new NotFoundException(`Place with ID or slug ${id} not found`);
     }
 
     // Try to find the translation if a specific language is requested
