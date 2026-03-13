@@ -1,4 +1,4 @@
-import axios from 'axios';
+import { apiClient } from '@/lib/api-client';
 
 export interface SearchResultItem {
   id: string;
@@ -33,9 +33,8 @@ export const searchService = {
     if (params.language) query.set('language', params.language);
     if (params.limit)    query.set('limit', String(params.limit));
 
-    // Uses Next.js rewrite: /api/* -> http://localhost:5555/*
-    const { data } = await axios.get<SearchResponse>(
-      `/api/search?${query.toString()}`
+    const { data } = await apiClient.get<SearchResponse>(
+      `/search?${query.toString()}`
     );
     return data;
   },

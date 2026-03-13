@@ -20,11 +20,6 @@ const TYPE_OPTIONS = [
 ];
 
 
-function getThumbnail(thumb: string | null): string | null {
-  if (!thumb) return null;
-  if (thumb.startsWith("http")) return thumb;
-  return `/api${thumb}`;
-}
 
 export default function SearchResultsContent() {
   const searchParams = useSearchParams();
@@ -194,7 +189,6 @@ export default function SearchResultsContent() {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {results.map((item) => {
-              const thumb = getThumbnail(item.thumbnail);
               const typeMeta = TYPE_OPTIONS.find(t => t.value === item.type) || { icon: "📍", label: item.type };
               return (
                 <div
@@ -204,9 +198,9 @@ export default function SearchResultsContent() {
                 >
                   {/* Thumbnail */}
                   <div className="relative h-52 overflow-hidden bg-muted">
-                    {thumb ? (
+                    {item.thumbnail ? (
                       <Image
-                        src={thumb}
+                        src={item.thumbnail}
                         alt={item.title}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
