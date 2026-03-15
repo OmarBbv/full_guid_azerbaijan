@@ -3,6 +3,7 @@
 import { Bed, Star, MapPin, Wifi, Coffee, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 import { usePlacesByType } from '@/hooks/use-places';
 import { Place } from '@/types/place';
@@ -11,6 +12,7 @@ import { useParams } from 'next/navigation';
 import un_photo_1566073771259_6a8506099945_24bb943f from "@/assets/unsplash/photo-1566073771259-6a8506099945_24bb943f.jpg";
 
 export default function HotelsPage() {
+  const t = useTranslations("PlacesPage");
   const { locale } = useParams<{ locale: string }>();
   const { data: hotelsData, isLoading } = usePlacesByType('hotel', locale);
   const hotels = hotelsData || [];
@@ -46,10 +48,10 @@ export default function HotelsPage() {
             <Bed className="w-8 h-8" />
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-2xl">
-            Lüks Otellər & Rezortlar
+            {t("hotels_title")}
           </h1>
           <p className="text-xl md:text-2xl text-white/90 font-medium drop-shadow-md">
-            Xəzərin sahilində, şəhərin qəlbində və əsrarəngiz dağların ətəyində yerləşən ən premium qonaqlama imkanları
+            {t("hotels_subtitle")}
           </p>
         </div>
       </section>
@@ -57,36 +59,36 @@ export default function HotelsPage() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-8">
         {!hotels || hotels.length === 0 ? (
           <div className="col-span-full text-center py-20">
-            <p className="text-muted-foreground text-xl">Hələ ki heç bir otel əlavə edilməyib.</p>
+            <p className="text-muted-foreground text-xl">{t("no_items")}</p>
           </div>
         ) : (
-          hotels.map((t: any, i: number) => (
+          hotels.map((hotel: any, i: number) => (
             <Link
               key={i}
-              href={`/places/hotels/${t.id}`}
+              href={`/places/hotels/${hotel.id}`}
               className="flex flex-col lg:flex-row bg-card border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 group"
             >
               <div className="lg:w-1/2 h-64 lg:h-auto relative overflow-hidden">
-                <Image src={getImageUrl(t, un_photo_1566073771259_6a8506099945_24bb943f)} alt={t.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
+                <Image src={getImageUrl(hotel, un_photo_1566073771259_6a8506099945_24bb943f)} alt={hotel.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" unoptimized />
               </div>
               <div className="p-8 lg:w-1/2 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-1 mb-3">
                     {/* Simplified static stars for now, or dynamic if data has stars / average_rating */}
-                    {Array.from({ length: Math.round(Number(t.average_rating || 5)) }).map((_, idx) => (
+                    {Array.from({ length: Math.round(Number(hotel.average_rating || 5)) }).map((_, idx) => (
                       <Star key={idx} className="w-4 h-4 text-yellow-500 fill-yellow-500" />
                     ))}
                   </div>
-                  <h3 className="text-2xl font-bold mb-3">{t.title}</h3>
-                  <p className="text-muted-foreground mb-6 line-clamp-3">{t.short_description || t.subtitle || ''}</p>
+                  <h3 className="text-2xl font-bold mb-3">{hotel.title}</h3>
+                  <p className="text-muted-foreground mb-6 line-clamp-3">{hotel.short_description || hotel.subtitle || ''}</p>
                 </div>
                 <div className="flex items-center gap-4 text-muted-foreground">
                   <div className="flex items-center gap-2">
-                    {t.has_wifi && <Wifi className="w-4 h-4 text-blue-500" />}
-                    {t.has_outdoor_seating && <Coffee className="w-4 h-4 text-blue-500" />}
+                    {hotel.has_wifi && <Wifi className="w-4 h-4 text-blue-500" />}
+                    {hotel.has_outdoor_seating && <Coffee className="w-4 h-4 text-blue-500" />}
                   </div>
                   <div className="ml-auto font-black text-foreground flex items-center gap-2">
-                    Ətraflı <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
+                    {t("learn_more")} <ArrowRight className="w-4 h-4 text-primary transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>
               </div>

@@ -241,5 +241,51 @@
     "slide1_c2_desc": "Qarabağın döyünən ürəyi, musiqi və şeirin beşiyi olan bu şəhər zamana aparan bir gəzinti təklif edir.",
     "slide1_c3_sub": "Dağların qucağı",
     "slide1_c3_desc": "Böyük Qafqazın yaşıl qoynunda göllər, şəlalələr və Tufandağ ski mərkəzi — mövsümü olmayan cənnət."
+  },
+  "Categories": {
+    "all": "Bütün Məkanlar",
+    "landmark": "Tarixi Yerlər",
+    "hotel": "Otellər",
+    "hostel": "Hostellər",
+    "restaurant": "Restoranlar",
+    "nature": "Təbiət"
+  },
+  "PlacesPage": {
+    "restaurants_title": "Əsl Azərbaycan Ləzzətləri",
+    "restaurants_subtitle": "Milli mətbəximizin şah əsərlərini təqdim edən ən populyar və keyfiyyətli restoranlar",
+    "hotels_title": "Rahat Qonaklama",
+    "hotels_subtitle": "Azərbaycanda rahat və unudulmaz qalmaq üçün ən yaxşı otellər",
+    "hostels_title": "Büdcə Dostu Hostellər",
+    "hostels_subtitle": "Səyahətçilər üçün rahat və əlçatan hostellər",
+    "landmarks_title": "Tarixi və Turistik Məkanlar",
+    "landmarks_subtitle": "Azərbaycanın zəngin tarixini və unikal memarlığını kəşf edin",
+    "no_items": "Hələ ki heç bir məkan əlavə edilməyib.",
+    "learn_more": "Ətraflı Bax",
+    "reviews": "rəy",
+    "all_venues": "Gəzməli və Görməli Yerlər",
+    "all_venues_subtitle": "Azərbaycanın hər qarışı bir tarix, hər guşəsi bir möcüzədir. Öz növbəti səyahətini bizimlə fərqləndir.",
+    "search_placeholder": "Məkan və ya region axtar...",
+    "search_btn": "Axtar",
+    "found_count": "məkan tapıldı"
+  },
+  "VenueDetail": {
+    "contact_us": "Bizimlə Əlaqə",
+    "whatsapp_action": "WhatsApp İlə Yaz",
+    "call_action": "Zəng Et",
+    "social_media": "Sosial Şəbəkələr",
+    "location": "Ünvan",
+    "rating": "Qiymətləndirmə",
+    "about_venue": "Məkan Haqqında",
+    "photo_gallery": "Foto Qalereya",
+    "tab_about": "haqqında",
+    "tab_gallery": "qalereya",
+    "tab_reviews": "rəylər",
+    "not_found": "Məkan tapılmadı",
+    "not_found_desc": "Axtardığınız məkan bazamızda mövcud deyil və ya silinmiş ola bilər.",
+    "back_to_venues": "Məkanlara qayıt",
+    "no_description": "Bu məkan haqqında geniş məlumat hazırlanır.",
+    "default_type": "Məkan",
+    "website": "Vebsayt",
+    "no_contact_info": "Əlaqə məlumatı tapılmadı"
   }
 }

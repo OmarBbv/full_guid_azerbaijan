@@ -19,30 +19,21 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useCategories } from "@/hooks/use-categories";
+import { useCities } from "@/hooks/use-cities";
+import { useAboutPages } from "@/hooks/use-about-pages";
+import { useGuidePages } from "@/hooks/use-guide-pages";
 import { NavSearchPill } from "./NavSearchPill";
 
-const CITY_MARKERS = [
-  { name: "Bakı", pctX: 90.5, pctY: 42.6 },
-  { name: "Şəki", pctX: 42.3, pctY: 20.2 },
-  { name: "Qəbələ", pctX: 54.4, pctY: 26.3 },
-  { name: "Quba", pctX: 66.3, pctY: 15.4 },
-  { name: "Şamaxı", pctX: 66.7, pctY: 36.3 },
-  { name: "Lənkəran", pctX: 70.3, pctY: 89.9 },
-  { name: "Gəncə", pctX: 27.9, pctY: 34.8 },
-  { name: "Naxçıvan", pctX: 10.9, pctY: 76.9 },
-] as const;
-
-const CITY_ROUTES: { from: string; to: string }[] = [
-  // Bakıdan şimal-qərb turu
-  { from: "Bakı", to: "Şamaxı" },
-  { from: "Şamaxı", to: "Qəbələ" },
-  { from: "Qəbələ", to: "Şəki" },
-  { from: "Şəki", to: "Quba" },
-  // Bakıdan cənub və qərb xətləri
-  { from: "Bakı", to: "Lənkəran" },
-  { from: "Bakı", to: "Gəncə" },
-  { from: "Gəncə", to: "Naxçıvan" },
-];
+const SLUG_TO_MAP_KEY: Record<string, string> = {
+  baku: "Bakı",
+  sheki: "Şəki",
+  qabala: "Qəbələ",
+  quba: "Quba",
+  shamakhi: "Şamaxı",
+  lankaran: "Lənkəran",
+  ganja: "Gəncə",
+  nakhchivan: "Naxçıvan",
+};
 
 type NavLink = {
   id: string;
@@ -56,6 +47,9 @@ export default function Navbar() {
   const t = useTranslations("Navbar");
   const locale = useLocale();
   const { data: dynamicCategories = [] } = useCategories(locale);
+  const { data: cities = [] } = useCities({ language: locale, active: true });
+  const { data: aboutPages = [] } = useAboutPages({ language: locale, active: true });
+  const { data: guidePages = [] } = useGuidePages({ language: locale, active: true });
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [hoveredMapCity, setHoveredMapCity] = useState<string | null>(null);
@@ -97,29 +91,20 @@ export default function Navbar() {
     {
       id: "getting-started",
       label: t("getting_started"),
-      subLinks: [
-        { label: t("about_baku"), href: "/info/baku" },
-        { label: t("airport_info"), href: "/info/airport" },
-      ],
+      subLinks: guidePages.map((page) => ({
+        label: page.title,
+        href: `/guide/${page.slug}`,
+      })),
     },
     {
       id: "where-to-go",
       label: t("where_to_go"),
       isMega: true,
-      subLinks: [
-        { label: t("baku"), href: "/regions/baku", mapKey: "Bakı" },
-        { label: t("sheki"), href: "/regions/sheki", mapKey: "Şəki" },
-        { label: t("qabala"), href: "/regions/qabala", mapKey: "Qəbələ" },
-        { label: t("quba"), href: "/regions/quba", mapKey: "Quba" },
-        { label: t("shamakhi"), href: "/regions/shamakhi", mapKey: "Şamaxı" },
-        { label: t("lankaran"), href: "/regions/lankaran", mapKey: "Lənkəran" },
-        { label: t("ganja"), href: "/regions/ganja", mapKey: "Gəncə" },
-        {
-          label: t("nakhchivan"),
-          href: "/regions/nakhchivan",
-          mapKey: "Naxçıvan",
-        },
-      ],
+      subLinks: cities.map((city) => ({
+        label: city.name,
+        href: `/regions/${city.slug}`,
+        mapKey: SLUG_TO_MAP_KEY[city.slug] || city.name,
+      })),
     },
     {
       id: "destinations",
@@ -138,11 +123,10 @@ export default function Navbar() {
     {
       id: "about",
       label: t("about"),
-      subLinks: [
-        { label: t("about_fga"), href: "/about/fga" },
-        { label: t("platform_principles"), href: "/about/principles" },
-        { label: t("transparency"), href: "/about/transparency" },
-      ],
+      subLinks: aboutPages.map((page) => ({
+        label: page.title,
+        href: `/about/${page.slug}`,
+      })),
     },
     { id: "contact", label: t("contact"), href: "/contact" },
   ];
@@ -238,21 +222,9 @@ export default function Navbar() {
   const navColorMuted = "text-white/70";
   const activeLinkColor = "#3b9cf5";
 
-  const routeMap: Record<string, string> = {
-    Bakı: "/regions/baku",
-    Şəki: "/regions/sheki",
-    Qəbələ: "/regions/qabala",
-    Quba: "/regions/quba",
-    Şamaxı: "/regions/shamakhi",
-    Lənkəran: "/regions/lankaran",
-    Gəncə: "/regions/ganja",
-    Naxçıvan: "/regions/nakhchivan",
-  };
-
-  const markerLookup = CITY_MARKERS.reduce<
-    Record<string, { pctX: number; pctY: number }>
-  >((acc, m) => {
-    acc[m.name] = { pctX: m.pctX, pctY: m.pctY };
+  const routeMap = cities.reduce<Record<string, string>>((acc, city) => {
+    const mapKey = SLUG_TO_MAP_KEY[city.slug] || city.name;
+    acc[mapKey] = `/regions/${city.slug}`;
     return acc;
   }, {});
 
@@ -293,7 +265,9 @@ export default function Navbar() {
                   (link.subLinks?.some((sub) => pathname === sub.href) ??
                     false);
 
-                return link.subLinks ? (
+                const hasSubLinks = link.subLinks && link.subLinks.length > 0;
+
+                return hasSubLinks ? (
                   <div
                     key={link.id}
                     className="relative group/nav-item h-full flex items-center cursor-pointer"
@@ -388,86 +362,7 @@ export default function Navbar() {
                                 />
 
                                 <div className="absolute inset-0 pointer-events-none">
-                                  <svg
-                                    className="w-full h-full"
-                                    viewBox="0 0 100 100"
-                                    preserveAspectRatio="none"
-                                  >
-                                    <defs>
-                                      <marker
-                                        id="city-arrow"
-                                        markerWidth="4"
-                                        markerHeight="4"
-                                        refX="3.5"
-                                        refY="2"
-                                        orient="auto"
-                                        markerUnits="strokeWidth"
-                                      >
-                                        <path
-                                          d="M0,0 L0,4 L4,2 z"
-                                          fill="#7dd3fc"
-                                        />
-                                      </marker>
-                                    </defs>
-                                    {CITY_ROUTES.map((route) => {
-                                      const from = markerLookup[route.from];
-                                      const to = markerLookup[route.to];
-                                      if (!from || !to) return null;
-                                      const isActive =
-                                        hoveredMapCity === route.from ||
-                                        hoveredMapCity === route.to;
-
-                                      return (
-                                        <line
-                                          key={`${route.from}-${route.to}`}
-                                          x1={from.pctX}
-                                          y1={from.pctY}
-                                          x2={to.pctX}
-                                          y2={to.pctY}
-                                          stroke={
-                                            isActive
-                                              ? "rgba(125,211,252,0.9)"
-                                              : "rgba(125,211,252,0.45)"
-                                          }
-                                          strokeWidth={isActive ? 1.2 : 0.85}
-                                          strokeDasharray="3 3"
-                                          markerEnd="url(#city-arrow)"
-                                        />
-                                      );
-                                    })}
-                                  </svg>
-
-                                  {CITY_MARKERS.map((marker) => (
-                                    <div
-                                      key={marker.name}
-                                      className="absolute"
-                                      style={{
-                                        left: `${marker.pctX}%`,
-                                        top: `${marker.pctY}%`,
-                                        transform: "translate(-50%, -50%)",
-                                      }}
-                                    >
-                                      <div
-                                        className={`relative flex items-center justify-center transition-all duration-300 ${hoveredMapCity === marker.name
-                                          ? "scale-[1.6]"
-                                          : "scale-100"
-                                          }`}
-                                      >
-                                        <div
-                                          className={`absolute w-3 h-3 rounded-full bg-red-500 animate-ping transition-opacity ${hoveredMapCity === marker.name
-                                            ? "opacity-50"
-                                            : "opacity-20"
-                                            }`}
-                                        />
-                                        <div
-                                          className={`rounded-full bg-red-500 border border-white shadow-[0_0_8px_rgba(239,68,68,0.6)] transition-all ${hoveredMapCity === marker.name
-                                            ? "w-2.5 h-2.5 bg-red-500 shadow-[0_0_14px_rgba(239,68,68,0.9)]"
-                                            : "w-2 h-2"
-                                            }`}
-                                        />
-                                      </div>
-                                    </div>
-                                  ))}
+                                  {/* Map over SVG routes and markers was removed here */}
                                 </div>
                               </div>
                             </div>
@@ -782,7 +677,7 @@ export default function Navbar() {
                 key={link.id}
                 className="flex flex-col border-b border-white/10 last:border-0"
               >
-                {link.subLinks ? (
+                {link.subLinks && link.subLinks.length > 0 ? (
                   <>
                     <button
                       className="flex items-center justify-between w-full text-left text-white/90 hover:text-white text-[14px] tracking-wider uppercase font-bold py-4 transition-colors"

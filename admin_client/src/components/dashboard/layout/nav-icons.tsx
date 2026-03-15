@@ -10,6 +10,9 @@ import { ForkKnifeIcon } from '@phosphor-icons/react/dist/ssr/ForkKnife';
 import { NotebookIcon } from '@phosphor-icons/react/dist/ssr/Notebook';
 import { MegaphoneSimpleIcon } from '@phosphor-icons/react/dist/ssr/MegaphoneSimple';
 import { ListIcon } from '@phosphor-icons/react/dist/ssr/List';
+import { CityIcon } from '@phosphor-icons/react/dist/ssr/City';
+import { InfoIcon } from '@phosphor-icons/react/dist/ssr/Info';
+import { BookOpenIcon } from '@phosphor-icons/react/dist/ssr/BookOpen';
 
 export const navIcons = {
   'chart-pie': ChartPieIcon,
@@ -23,4 +26,7 @@ export const navIcons = {
   notebook: NotebookIcon,
   megaphone: MegaphoneSimpleIcon,
   list: ListIcon,
+  city: CityIcon,
+  info: InfoIcon,
+  'book-open': BookOpenIcon,
 } as Record<string, Icon>;

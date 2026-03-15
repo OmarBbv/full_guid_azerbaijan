@@ -4,13 +4,16 @@ export interface Region {
   id: string;
   slug: string;
   name: string;
-  azName: string;
-  description: string;
-  azDescription: string;
-  imageUrl: string;
-  highlights: string[];
-  attractions: Array<{ name: string; type: string }>;
-  coordinates?: { lat: number; lng: number };
+  language: string;
+  description: string | null;
+  image_url: string | null;
+  cover_image_url: string | null;
+  gallery_urls: string[] | null;
+  latitude: number | null;
+  longitude: number | null;
+  region: string | null;
+  highlights: string[] | null;
+  attractions: Array<{ name: string; type: string }> | null;
 }
 
 export interface IRegionService {

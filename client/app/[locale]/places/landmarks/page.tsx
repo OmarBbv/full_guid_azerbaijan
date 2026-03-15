@@ -2,6 +2,7 @@
 
 import { Castle, Camera, Eye, MapPin, Loader2 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { usePlacesByType } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
@@ -9,6 +10,7 @@ import { useParams } from 'next/navigation';
 import un_photo_1541746972996_4e0b0f43e02a_24bb943f from "@/assets/unsplash/photo-1541746972996-4e0b0f43e02a_24bb943f.jpg";
 
 export default function LandmarksPage() {
+  const t = useTranslations("PlacesPage");
   const { locale } = useParams<{ locale: string }>();
   const { data: landmarks, isLoading } = usePlacesByType('landmark', locale);
 
@@ -40,10 +42,10 @@ export default function LandmarksPage() {
             <Castle className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-2xl">
-            Tarixi və Turistik Məkanlar
+            {t("landmarks_title")}
           </h1>
           <p className="text-xl md:text-2xl text-white/90 font-medium drop-shadow-md max-w-3xl">
-            Azərbaycanın qızıl keçmişini kəşf edin. Bakının qədimliyi, Mərdəkan qalaları, Qobustan petroqlifləri...
+            {t("landmarks_subtitle")}
           </p>
         </div>
       </section>
@@ -52,15 +54,19 @@ export default function LandmarksPage() {
         <div className="flex items-center justify-between border-b pb-6 mb-10">
           <h2 className="text-3xl font-bold flex items-center gap-3">
             <Camera className="w-8 h-8 text-primary" />
-            Seçilmiş Məkanlar
+            {t("restaurants_title").replace("Ləzzətləri", "Məkanlar") /* Generic fallback or specific key */}
+            {/* Actually, let's use a generic title like 'Selected Landmarks' */}
+            {t("reviews").includes("rəy") ? "Seçilmiş Məkanlar" : "Selected Places"}
           </h2>
-          <Link href="/mekanlar" className="text-primary font-semibold hover:underline">Hamısına bax &rarr;</Link>
+          <Link href="/mekanlar" className="text-primary font-semibold hover:underline">
+            {t("reviews").includes("rəy") ? "Hamısına bax" : "See all"} &rarr;
+          </Link>
         </div>
 
         {(!landmarks || landmarks.length === 0) ? (
           <div className="text-center py-20 text-muted-foreground">
             <MapPin className="w-12 h-12 mx-auto mb-4 opacity-20" />
-            <p className="text-lg">Hələ ki, heç bir tarixi məkan əlavə edilməyib.</p>
+            <p className="text-lg">{t("no_items")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -81,7 +87,7 @@ export default function LandmarksPage() {
                 <div className="p-6 flex-1 flex flex-col justify-between">
                   <p className="text-muted-foreground line-clamp-3">{item.short_description}</p>
                   <div className="mt-6 flex items-center justify-between text-sm font-semibold text-primary">
-                    <span>Ətraflı oxu</span>
+                    <span>{t("learn_more")}</span>
                     <Eye className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                   </div>
                 </div>

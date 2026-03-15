@@ -241,5 +241,51 @@
     "slide1_c2_desc": "The beating heart of Karabakh, cradle of music and poetry, offers a journey through time.",
     "slide1_c3_sub": "Embrace of Mountains",
     "slide1_c3_desc": "In the green lap of the Greater Caucasus: lakes, waterfalls, and Tufandag ski center — a paradise for all seasons."
+  },
+  "Categories": {
+    "all": "All Places",
+    "landmark": "Historical Places",
+    "hotel": "Hotels",
+    "hostel": "Hostels",
+    "restaurant": "Restaurants",
+    "nature": "Nature"
+  },
+  "PlacesPage": {
+    "restaurants_title": "Authentic Azerbaijan Flavors",
+    "restaurants_subtitle": "The most popular and quality restaurants presenting the masterpieces of our national cuisine",
+    "hotels_title": "Comfortable Stays",
+    "hotels_subtitle": "The best hotels for a comfortable and unforgettable stay in Azerbaijan",
+    "hostels_title": "Budget Friendly Hostels",
+    "hostels_subtitle": "Comfortable and affordable hostels for travelers",
+    "landmarks_title": "Historical & Tourist Sites",
+    "landmarks_subtitle": "Discover the rich history and unique architecture of Azerbaijan",
+    "no_items": "No items added yet.",
+    "learn_more": "Learn More",
+    "reviews": "reviews",
+    "all_venues": "Places to Visit and See",
+    "all_venues_subtitle": "Every inch of Azerbaijan is a history, every corner is a miracle. Make your next trip stand out with us.",
+    "search_placeholder": "Search places or regions...",
+    "search_btn": "Search",
+    "found_count": "places found"
+  },
+  "VenueDetail": {
+    "contact_us": "Contact Us",
+    "whatsapp_action": "Message on WhatsApp",
+    "call_action": "Call Now",
+    "social_media": "Social Media",
+    "location": "Address",
+    "rating": "Rating",
+    "about_venue": "About the Venue",
+    "photo_gallery": "Photo Gallery",
+    "tab_about": "about",
+    "tab_gallery": "gallery",
+    "tab_reviews": "reviews",
+    "not_found": "Venue not found",
+    "not_found_desc": "The venue you are looking for does not exist in our database or might have been deleted.",
+    "back_to_venues": "Back to Venues",
+    "no_description": "Detailed information about this venue is being prepared.",
+    "default_type": "Venue",
+    "website": "Website",
+    "no_contact_info": "No contact information found"
   }
 }

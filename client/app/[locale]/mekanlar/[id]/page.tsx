@@ -1,9 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { Star, MapPin, Heart, ArrowLeft, Share2, Info, Camera, CheckCircle2, ChevronRight, Calendar, Loader2 } from "lucide-react";
+import { Star, MapPin, Heart, ArrowLeft, Share2, Info, Camera, CheckCircle2, ChevronRight, Calendar, Loader2, MessageCircle, Phone, Globe, Instagram, Facebook, Youtube } from "lucide-react";
 import { Link } from "@/i18n/routing";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { useTranslations } from "next-intl";
 import { usePlaceById } from "@/hooks/use-places";
 import un_photo_1526779259212_939e64788e3c_8ece6282 from "@/assets/unsplash/photo-1526779259212-939e64788e3c_8ece6282.jpg";
 
@@ -11,10 +12,18 @@ export default function PlaceDetailPage() {
   const params = useParams();
   const id = params.id as string;
   const locale = params.locale as string;
+  const t = useTranslations("VenueDetail");
+  const tp = useTranslations("PlacesPage");
 
   const { data: place, isLoading, isError } = usePlaceById(id, locale);
   const [liked, setLiked] = useState<boolean>(false);
-  const [activeTab, setActiveTab] = useState("haqqında");
+  const [activeTab, setActiveTab] = useState("about");
+
+  const tabs = useMemo(() => [
+    { id: "about", label: t("tab_about") },
+    { id: "gallery", label: t("tab_gallery") },
+    { id: "reviews", label: t("tab_reviews") }
+  ], [t]);
 
   useEffect(() => {
     const saved = localStorage.getItem("favorites");
@@ -56,10 +65,10 @@ export default function PlaceDetailPage() {
         <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-6 text-4xl">
           🔍
         </div>
-        <h1 className="text-3xl font-black text-foreground mb-4">Məkan tapılmadı</h1>
-        <p className="text-muted-foreground mb-8 max-w-md">Axtardığınız məkan bazamızda mövcud deyil və ya silinmiş ola bilər.</p>
+        <h1 className="text-3xl font-black text-foreground mb-4">{t("not_found")}</h1>
+        <p className="text-muted-foreground mb-8 max-w-md">{t("not_found_desc")}</p>
         <Link href="/mekanlar" className="px-8 py-3 bg-primary text-primary-foreground rounded-2xl font-bold shadow-lg hover:bg-primary/90 transition-all active:scale-95">
-          Məkanlara qayıt
+          {t("back_to_venues")}
         </Link>
       </div>
     );
@@ -107,7 +116,7 @@ export default function PlaceDetailPage() {
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-wrap gap-3 mb-4">
               <span className="px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-xs font-bold uppercase tracking-widest shadow-lg">
-                {place.type || 'Məkan'}
+                {place.type || t("default_type")}
               </span>
               {place.subtitle && (
                 <span className="px-4 py-1.5 rounded-full bg-white/20 backdrop-blur-md border border-white/20 text-white text-xs font-bold uppercase tracking-widest">
@@ -126,7 +135,7 @@ export default function PlaceDetailPage() {
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10">
                 <Star size={18} className="text-yellow-400 fill-yellow-400" />
                 <span className="font-bold">{place.average_rating || 0}</span>
-                <span className="text-white/60 text-sm font-medium">({place.review_count || 0} rəy)</span>
+                <span className="text-white/60 text-sm font-medium">({place.review_count || 0} {tp("reviews")})</span>
               </div>
             </div>
           </div>
@@ -140,42 +149,42 @@ export default function PlaceDetailPage() {
           <div className="lg:col-span-2 space-y-10">
             {/* Tabs Navigation */}
             <div className="bg-card p-2 md:p-2.5 rounded-3xl border border-border/50 flex gap-2 shadow-2xl shadow-black/10 overflow-x-auto scrollbar-hide">
-              {["haqqında", "qalereya", "rəylər"].map((tab) => (
+              {tabs.map((tab) => (
                 <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`px-8 py-3 rounded-xl font-bold text-sm capitalize transition-all whitespace-nowrap ${activeTab === tab
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-8 py-3 rounded-xl font-bold text-sm capitalize transition-all whitespace-nowrap ${activeTab === tab.id
                     ? "bg-primary text-primary-foreground shadow-lg shadow-primary/20"
                     : "text-muted-foreground hover:bg-muted"
                     }`}
                 >
-                  {tab}
+                  {tab.label}
                 </button>
               ))}
             </div>
 
-            {/* Tab: Haqqında */}
-            {activeTab === "haqqında" && (
+            {/* Tab: About */}
+            {activeTab === "about" && (
               <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <section className="bg-card p-8 md:p-10 rounded-[40px] border border-border/50 shadow-xl shadow-black/5">
                   <h2 className="text-2xl font-black text-foreground mb-6 flex items-center gap-3">
                     <Info size={24} className="text-primary" />
-                    Məkan Haqqında
+                    {t("about_venue")}
                   </h2>
                   <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
-                    {place.short_description || "Bu məkan haqqında geniş məlumat hazırlanır."}
+                    {place.short_description || t("no_description")}
                   </p>
                 </section>
               </div>
             )}
 
-            {/* Tab: Qalereya */}
-            {activeTab === "qalereya" && (
+            {/* Tab: Gallery */}
+            {activeTab === "gallery" && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <section className="bg-card p-8 md:p-10 rounded-[40px] border border-border/50 shadow-xl shadow-black/5">
                   <h2 className="text-2xl font-black text-foreground mb-8 flex items-center gap-3">
                     <Camera size={24} className="text-primary" />
-                    Foto Qalereya
+                    {t("photo_gallery")}
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {(place.images && place.images.length > 0 ? place.images.map(img => img.url) : [mainImage]).map((img: string, i: number) => (
@@ -197,31 +206,82 @@ export default function PlaceDetailPage() {
           {/* Right Column: Sidebar */}
           <div className="lg:block">
             <div className="sticky top-32 space-y-6">
-              {/* Plan Box */}
+              {/* Contact Box */}
               <div className="bg-card p-8 rounded-[40px] border border-border/50 shadow-2xl shadow-primary/5">
-                <h3 className="text-xl font-black text-foreground mb-6">Ziyarəti Planla</h3>
+                <h3 className="text-xl font-black text-foreground mb-6">{t("contact_us")}</h3>
 
-                <div className="space-y-4 mb-8">
-                  <div className="p-4 bg-muted/40 rounded-2xl border border-border/50 flex flex-col gap-1">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">İş Vaxtı</span>
-                    <span className="font-bold text-foreground">09:00 - 18:00 (Hər gün)</span>
-                  </div>
-                  <div className="p-4 bg-muted/40 rounded-2xl border border-border/50 flex flex-col gap-1">
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Giriş Qiyməti</span>
-                    <span className="font-bold text-foreground">5 AZN - 15 AZN</span>
-                  </div>
+                <div className="space-y-3 mb-8">
+                  {place.whatsapp_number && (
+                    <a
+                      href={`https://wa.me/${place.whatsapp_number.replace(/\+/g, '')}?text=${encodeURIComponent(place.whatsapp_message_template || 'Salam, FullGuide vasitəsilə əlaqə saxlayıram.')}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-4 bg-[#25D366] text-white rounded-2xl font-black text-sm shadow-xl shadow-green-500/20 hover:shadow-green-500/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <MessageCircle size={20} fill="currentColor" />
+                      {t("whatsapp_action")}
+                    </a>
+                  )}
+
+                  {place.phone_number && (
+                    <a
+                      href={`tel:${place.phone_number}`}
+                      className="w-full py-4 bg-muted text-foreground rounded-2xl font-black text-sm border border-border/50 hover:bg-muted/80 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2"
+                    >
+                      <Phone size={18} />
+                      {t("call_action")}
+                    </a>
+                  )}
+
+                  {!place.whatsapp_number && !place.phone_number && (
+                    <div className="py-8 text-center text-muted-foreground bg-muted/30 rounded-3xl border border-dashed border-border">
+                      <p className="text-sm font-medium">{t("no_contact_info")}</p>
+                    </div>
+                  )}
                 </div>
 
-                <div className="space-y-3">
-                  <button className="w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-sm shadow-xl shadow-primary/25 hover:shadow-primary/40 hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2">
-                    <Calendar size={18} />
-                    İndi Rezerv Et
-                  </button>
-                </div>
+                {/* Social Media & Website */}
+                {(place.website_url || place.social_media) && (
+                  <div className="space-y-6 pt-6 border-t border-border/50">
+                    {place.website_url && (
+                      <a
+                        href={place.website_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-3 text-sm font-bold text-muted-foreground hover:text-primary transition-colors"
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
+                          <Globe size={16} />
+                        </div>
+                        {t("website")}
+                      </a>
+                    )}
+
+                    {place.social_media && (
+                      <div className="flex gap-3">
+                        {place.social_media.instagram && (
+                          <a href={place.social_media.instagram} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:text-white hover:bg-[#E1306C] transition-all">
+                            <Instagram size={20} />
+                          </a>
+                        )}
+                        {place.social_media.facebook && (
+                          <a href={place.social_media.facebook} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:text-white hover:bg-[#1877F2] transition-all">
+                            <Facebook size={20} />
+                          </a>
+                        )}
+                        {place.social_media.youtube && (
+                          <a href={place.social_media.youtube} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center text-muted-foreground hover:text-white hover:bg-[#FF0000] transition-all">
+                            <Youtube size={20} />
+                          </a>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 <div className="mt-10 pt-10 border-t border-border/50">
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-sm font-bold text-foreground">Qiymətləndirmə</span>
+                    <span className="text-sm font-bold text-foreground">{t("rating")}</span>
                     <div className="flex items-center gap-1 text-primary">
                       <Star size={14} className="fill-current" />
                       <span className="text-sm font-black">{place.average_rating || 0} / 5</span>

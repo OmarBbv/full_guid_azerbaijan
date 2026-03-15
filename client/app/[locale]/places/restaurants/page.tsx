@@ -3,11 +3,13 @@
 import { UtensilsCrossed, Star, MapPin, ChefHat, ArrowRight, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 import { usePlacesByType } from '@/hooks/use-places';
 import { useParams } from 'next/navigation';
 import un_photo_1555396273_367ea4eb4db5_3224055e from "@/assets/unsplash/photo-1555396273-367ea4eb4db5_3224055e.jpg";
 
 export default function RestaurantsPage() {
+  const t = useTranslations("PlacesPage");
   const { locale } = useParams<{ locale: string }>();
   const { data: restaurantsData, isLoading } = usePlacesByType('restaurant', locale);
   const restaurants = restaurantsData || [];
@@ -43,10 +45,10 @@ export default function RestaurantsPage() {
             <UtensilsCrossed className="w-8 h-8" />
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-2xl">
-            Əsl Azərbaycan Ləzzətləri
+            {t("restaurants_title")}
           </h1>
           <p className="text-xl md:text-2xl text-white/90 font-medium drop-shadow-md">
-            Milli mətbəximizin şah əsərlərini təqdim edən ən populyar və keyfiyyətli restoranlar
+            {t("restaurants_subtitle")}
           </p>
         </div>
       </section>
@@ -54,32 +56,32 @@ export default function RestaurantsPage() {
       <div className="max-w-7xl mx-auto px-6">
         {!restaurants || restaurants.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-muted-foreground text-xl">Hələ ki heç bir restoran əlavə edilməyib.</p>
+            <p className="text-muted-foreground text-xl">{t("no_items")}</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {restaurants.map((t: any, i: number) => (
+            {restaurants.map((restaurant: any, i: number) => (
               <Link
                 key={i}
-                href={`/places/restaurants/${t.id}`}
+                href={`/places/restaurants/${restaurant.id}`}
                 className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-300 flex flex-col"
               >
                 <div className="h-56 relative overflow-hidden">
                   <Image
-                    src={t.image || t.thumbnail || (t.images?.[0]?.url ?? '')}
-                    alt={t.title}
+                    src={restaurant.image || restaurant.thumbnail || (restaurant.images?.[0]?.url ?? '')}
+                    alt={restaurant.title}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     unoptimized
                   />
-                  {t.subtitle && (
+                  {restaurant.subtitle && (
                     <div className="absolute bottom-4 left-4 bg-white/90 dark:bg-black/90 px-3 py-1 rounded-full text-xs font-bold text-orange-600 border border-border">
-                      {t.subtitle}
+                      {restaurant.subtitle}
                     </div>
                   )}
                   <div className="absolute top-4 right-4 bg-black/50 backdrop-blur-md px-2 py-1 rounded-lg flex items-center gap-1 text-white text-xs font-bold">
                     <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                    {Number(t.average_rating).toFixed(1)}
+                    {Number(restaurant.average_rating).toFixed(1)}
                   </div>
                 </div>
                 <div className="p-8 flex-1 flex flex-col">
@@ -88,19 +90,19 @@ export default function RestaurantsPage() {
                       <ChefHat className="text-orange-500 w-6 h-6" />
                     </div>
                     <div className="flex flex-col">
-                      <h3 className="text-2xl font-bold line-clamp-1">{t.title}</h3>
+                      <h3 className="text-2xl font-bold line-clamp-1">{restaurant.title}</h3>
                       <div className="flex items-center gap-1 text-xs text-muted-foreground font-medium">
                         <MapPin className="w-3 h-3" />
-                        {t.city}
+                        {restaurant.city}
                       </div>
                     </div>
                   </div>
-                  <p className="text-muted-foreground flex-1 mb-6 line-clamp-3">{t.short_description}</p>
+                  <p className="text-muted-foreground flex-1 mb-6 line-clamp-3">{restaurant.short_description}</p>
                   <div className="flex items-center justify-between pt-4 border-t border-border/50">
                     <div className="flex items-center gap-1 text-orange-600 font-bold text-sm">
-                      Ətraflı Bax <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                      {t("learn_more")} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                     </div>
-                    <span className="text-xs text-muted-foreground">{t.review_count} rəy</span>
+                    <span className="text-xs text-muted-foreground">{restaurant.review_count} {t("reviews")}</span>
                   </div>
                 </div>
               </Link>

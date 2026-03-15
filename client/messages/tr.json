@@ -241,5 +241,51 @@
     "slide1_c2_desc": "Karabağ'ın atan kalbi, müzik ve şiirin beşiği olan bu şehir zamanda yolculuk sunuyor.",
     "slide1_c3_sub": "Dağların Kucağı",
     "slide1_c3_desc": "Büyük Kafkasların yeşil koynunda göller, şelaleler ve Tufandağ kayak merkezi — her mevsimin cenneti."
+  },
+  "Categories": {
+    "all": "Tüm Mekanlar",
+    "landmark": "Tarihi Yerler",
+    "hotel": "Oteller",
+    "hostel": "Hosteller",
+    "restaurant": "Restoranlar",
+    "nature": "Doğa"
+  },
+  "PlacesPage": {
+    "restaurants_title": "Gerçek Azerbaycan Lezzetleri",
+    "restaurants_subtitle": "Milli mutfağımızın şaheserlerini sunan en popüler ve kaliteli restoranlar",
+    "hotels_title": "Konforlu Konaklama",
+    "hotels_subtitle": "Azerbaycan'da konforlu ve unutulmaz bir konaklama için en iyi oteller",
+    "hostels_title": "Bütçe Dostu Hosteller",
+    "hostels_subtitle": "Gezginler için konforlu ve uygun fiyatlı hosteller",
+    "landmarks_title": "Tarihi ve Turistik Mekanlar",
+    "landmarks_subtitle": "Azerbaycan'ın zengin tarihini ve eşsiz mimarisini keşfedin",
+    "no_items": "Henüz herhangi bir mekan eklenmedi.",
+    "learn_more": "Detaylı Bak",
+    "reviews": "yorum",
+    "all_venues": "Gidilecek ve Görülecek Yerler",
+    "all_venues_subtitle": "Azerbaycan'ın her karışı bir tarih, her köşesi bir mucizedir. Bir sonraki seyahatinizi bizimle farklandırın.",
+    "search_placeholder": "Mekan veya bölge ara...",
+    "search_btn": "Ara",
+    "found_count": "mekan bulundu"
+  },
+  "VenueDetail": {
+    "contact_us": "Bize Ulaşın",
+    "whatsapp_action": "WhatsApp İle Yaz",
+    "call_action": "Ara",
+    "social_media": "Sosyal Medya",
+    "location": "Adres",
+    "rating": "Değerlendirme",
+    "about_venue": "Mekan Hakkında",
+    "photo_gallery": "Foto Galeri",
+    "tab_about": "hakkında",
+    "tab_gallery": "galeri",
+    "tab_reviews": "yorumlar",
+    "not_found": "Mekan bulunamadı",
+    "not_found_desc": "Aradığınız mekan veritabanımızda bulunmuyor veya silinmiş olabilir.",
+    "back_to_venues": "Mekanlara dön",
+    "no_description": "Bu mekan hakkında detaylı bilgi hazırlanmaktadır.",
+    "default_type": "Mekan",
+    "website": "Web sitesi",
+    "no_contact_info": "İletişim bilgisi bulunamadı"
   }
 }

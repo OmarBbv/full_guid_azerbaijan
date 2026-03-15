@@ -3,6 +3,7 @@
 import { Users, Backpack, MapPin, PiggyBank, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import { useTranslations } from 'next-intl';
 
 import { usePlacesByType } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
@@ -10,6 +11,7 @@ import { useParams } from 'next/navigation';
 import un_photo_1555854877_bab0e564b8d5_1934a6f6 from "@/assets/unsplash/photo-1555854877-bab0e564b8d5_1934a6f6.jpg";
 
 export default function HostelsPage() {
+  const t = useTranslations("PlacesPage");
   const { locale } = useParams<{ locale: string }>();
   const { data: hostelsData, isLoading } = usePlacesByType('hostel', locale);
   const hostels = hostelsData || [];
@@ -45,10 +47,10 @@ export default function HostelsPage() {
             <Backpack className="w-8 h-8" />
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-2xl">
-            Büdcə Yönümlü Hostellər
+            {t("hostels_title")}
           </h1>
           <p className="text-xl md:text-2xl text-white/90 font-medium drop-shadow-md">
-            Gənclər, səyyahlar və yeni dostluqlar axtaranlar üçün səmimi, təmiz və münasib qiymətli məkanlar
+            {t("hostels_subtitle")}
           </p>
         </div>
       </section>
@@ -56,25 +58,25 @@ export default function HostelsPage() {
       <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {!hostels || hostels.length === 0 ? (
           <div className="col-span-full text-center py-20">
-            <p className="text-muted-foreground text-xl">Hələ ki heç bir hostel əlavə edilməyib.</p>
+            <p className="text-muted-foreground text-xl">{t("no_items")}</p>
           </div>
         ) : (
-          hostels.map((t: any, i: number) => (
+          hostels.map((hostel: any, i: number) => (
             <Link
               key={i}
-              href={`/places/hostels/${t.id}`}
+              href={`/places/hostels/${hostel.id}`}
               className="bg-card group border border-border/10 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col"
             >
               <div className="h-48 relative overflow-hidden">
                 <Image
                   unoptimized
-                  src={getImageUrl(t, un_photo_1555854877_bab0e564b8d5_1934a6f6)}
-                  alt={t.title}
+                  src={getImageUrl(hostel, un_photo_1555854877_bab0e564b8d5_1934a6f6)}
+                  alt={hostel.title}
                   fill
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
                 <div className="absolute bottom-4 left-4 bg-emerald-600 px-3 py-1 rounded-full text-xs font-bold text-white shadow-lg">
-                  {t.price_range || t.priceRange || 'Gündəlik'}
+                  {hostel.price_range || hostel.priceRange || 'Gündəlik'}
                 </div>
               </div>
               <div className="p-8 flex-1 flex flex-col">
@@ -82,11 +84,11 @@ export default function HostelsPage() {
                   <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2 rounded-xl group-hover:bg-emerald-100 transition-colors">
                     <Backpack className="text-emerald-500 w-6 h-6" />
                   </div>
-                  <h3 className="text-2xl font-bold">{t.title}</h3>
+                  <h3 className="text-2xl font-bold">{hostel.title}</h3>
                 </div>
-                <p className="text-muted-foreground flex-1 mb-6 line-clamp-3">{t.short_description || t.subtitle || ''}</p>
+                <p className="text-muted-foreground flex-1 mb-6 line-clamp-3">{hostel.short_description || hostel.subtitle || ''}</p>
                 <div className="flex items-center gap-2 text-emerald-600 font-bold text-sm mt-auto">
-                  Ətraflı Bax <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                  {t("learn_more")} <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </div>
               </div>
             </Link>

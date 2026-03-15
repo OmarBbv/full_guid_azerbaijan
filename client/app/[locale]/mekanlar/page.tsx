@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search, Star, Map, SlidersHorizontal, Loader2 } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { PlaceCard } from "@/components/home/PlaceCard";
 import { usePlaces } from "@/hooks/use-places";
 import { useCategories } from "@/hooks/use-categories";
@@ -10,16 +11,18 @@ import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import AdBannerComponent from "@/components/shared/AdBanner";
 
-const STATIC_CATEGORIES = [
-  { id: "hamısı", label: "Bütün Məkanlar", icon: "✨" },
-  { id: "landmark", label: "Tarixi Yerlər", icon: "🏛️" },
-  { id: "hotel", label: "Otellər", icon: "🏨" },
-  { id: "hostel", label: "Hostellər", icon: "🛌" },
-  { id: "restaurant", label: "Restoranlar", icon: "🍴" },
-  { id: "nature", label: "Təbiət", icon: "🌿" },
+const STATIC_CATEGORIES = (t: any) => [
+  { id: "hamısı", label: t("all"), icon: "✨" },
+  { id: "landmark", label: t("landmark"), icon: "🏛️" },
+  { id: "hotel", label: t("hotel"), icon: "🏨" },
+  { id: "hostel", label: t("hostel"), icon: "🛌" },
+  { id: "restaurant", label: t("restaurant"), icon: "🍴" },
+  { id: "nature", label: t("nature"), icon: "🌿" },
 ];
 
 export default function PlacesPage() {
+  const t = useTranslations("PlacesPage");
+  const tc = useTranslations("Categories");
   const locale = useLocale();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
@@ -38,7 +41,7 @@ export default function PlacesPage() {
   const isLoading = isLoadingPlaces || isLoadingVenues;
 
   const categories = [
-    ...STATIC_CATEGORIES,
+    ...STATIC_CATEGORIES(tc),
     ...dynamicCategories.map(cat => ({
       id: cat.slug,
       label: cat.name,
@@ -67,7 +70,7 @@ export default function PlacesPage() {
   ];
 
   const filteredItems = normalizedPlaces.filter(item => {
-    const isStaticCategory = STATIC_CATEGORIES.some(c => c.id === activeCategory);
+    const isStaticCategory = STATIC_CATEGORIES(tc).some(c => c.id === activeCategory);
 
     let matchesCategory = false;
     if (activeCategory === "hamısı") {
@@ -102,13 +105,13 @@ export default function PlacesPage() {
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-10">
             <div className="w-full md:max-w-2xl">
               <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold uppercase tracking-wider shadow-sm">
-                <Map size={16} /> Kəşf Et
+                <Map size={16} /> {tc("all")}
               </div>
               <h1 className="text-4xl md:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight">
-                Gəzməli və <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-500">Görməli</span> Yerlər
+                {t("all_venues")}
               </h1>
               <p className="text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed">
-                Azərbaycanın hər qarışı bir tarix, hər guşəsi bir möcüzədir. Öz növbəti səyahətini bizimlə fərqləndir.
+                {t("all_venues_subtitle")}
               </p>
 
               {/* Search Box */}
@@ -118,14 +121,14 @@ export default function PlacesPage() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Məkan və ya region axtar..."
+                  placeholder={t("search_placeholder")}
                   className="w-full bg-transparent border-none outline-none py-4 px-2 text-foreground placeholder:text-muted-foreground/60 text-lg font-medium"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
                 <div className="pr-4 hidden sm:block">
                   <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg active:scale-95">
-                    Axtar
+                    {t("search_btn")}
                   </button>
                 </div>
               </div>
@@ -188,9 +191,9 @@ export default function PlacesPage() {
           <div className="mb-8 flex items-center justify-between text-muted-foreground">
             <p className="font-medium">
               {isLoading ? (
-                <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> Yüklənir...</span>
+                <span className="flex items-center gap-2"><Loader2 size={16} className="animate-spin" /> ...</span>
               ) : (
-                <><span className="text-foreground font-bold">{filteredItems.length}</span> məkan tapıldı</>
+                <><span className="text-foreground font-bold">{filteredItems.length}</span> {t("found_count")}</>
               )}
             </p>
             {/* Sort Dropdown Placeholder */}

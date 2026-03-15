@@ -21,6 +21,9 @@ import { CategoryModule } from './category/category.module';
 import { VenueModule } from './venue/venue.module';
 import { VenueImageModule } from './venue-image/venue-image.module';
 import { SearchModule } from './search/search.module';
+import { CityModule } from './city/city.module';
+import { AboutPageModule } from './about-page/about-page.module';
+import { GuidePageModule } from './guide-page/guide-page.module';
 
 @Module({
   imports: [
@@ -47,8 +50,8 @@ import { SearchModule } from './search/search.module';
         ssl:
           configService.get<string>('NODE_ENV') === 'production'
             ? {
-                rejectUnauthorized: false,
-              }
+              rejectUnauthorized: false,
+            }
             : false,
       }),
       inject: [ConfigService],
@@ -67,8 +70,11 @@ import { SearchModule } from './search/search.module';
     VenueModule,
     VenueImageModule,
     SearchModule,
+    CityModule,
+    AboutPageModule,
+    GuidePageModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
