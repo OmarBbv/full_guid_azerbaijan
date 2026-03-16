@@ -6,11 +6,16 @@ import { regionService } from "@/services/api/region.service";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string; locale: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { id } = await params;
   try {
-    const region = await regionService.getRegionBySlug(slug);
+    let region;
+    try {
+      region = await regionService.getRegionById(id);
+    } catch {
+      region = await regionService.getRegionBySlug(id);
+    }
     return {
       title: `${region.name} - Azərbaycanın Regionları | FullGuide`,
       description: region.description || `${region.name} haqqında ətraflı məlumat.`,
@@ -28,28 +33,34 @@ export async function generateMetadata({
 export default async function RegionPage({
   params,
 }: {
-  params: Promise<{ slug: string; locale: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
-  const { slug } = await params;
+  const { id } = await params;
   
   let region;
   try {
-    region = await regionService.getRegionBySlug(slug);
-  } catch (error) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-background px-4">
-        <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center">
-          <MapPin className="w-10 h-10 text-muted-foreground opacity-30" />
+    // Try ID first
+    region = await regionService.getRegionById(id);
+  } catch {
+    try {
+      // Fallback: try treating the param as a slug
+      region = await regionService.getRegionBySlug(id);
+    } catch {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-background px-4">
+          <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center">
+            <MapPin className="w-10 h-10 text-muted-foreground opacity-30" />
+          </div>
+          <div className="text-center">
+            <h1 className="text-3xl font-bold mb-2">Bölgə tapılmadı</h1>
+            <p className="text-muted-foreground mb-8">Axtardığınız məlumat bazada mövcud deyildir.</p>
+          </div>
+          <Link href="/regions" className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-bold hover:shadow-lg transition-all">
+            Bütün bölgələrə qayıt
+          </Link>
         </div>
-        <div className="text-center">
-          <h1 className="text-3xl font-bold mb-2">Bölgə tapılmadı</h1>
-          <p className="text-muted-foreground mb-8">Axtardığınız məlumat bazada mövcud deyildir.</p>
-        </div>
-        <Link href="/regions" className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-bold hover:shadow-lg transition-all">
-          Bütün bölgələrə qayıt
-        </Link>
-      </div>
-    );
+      );
+    }
   }
 
   const heroImage = region.cover_image_url || region.image_url || "https://images.unsplash.com/photo-1606775791264-b333a5cf05cc?q=80&w=2070&auto=format&fit=crop";
@@ -154,7 +165,7 @@ export default async function RegionPage({
                 </div>
 
                 <Link
-                  href={`/mekanlar?region=${slug}`}
+                  href={`/mekanlar?region=${region.id}`}
                   className="mt-10 w-full flex items-center justify-center gap-3 py-5 bg-foreground text-background rounded-full font-bold hover:scale-[1.02] transition-all"
                 >
                   Bütün Məkanları Gör <Compass className="w-5 h-5" />
@@ -223,7 +234,7 @@ export default async function RegionPage({
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
-                    href={`/mekanlar?region=${slug}`}
+                    href={`/mekanlar?region=${region.id}`}
                     className="px-10 py-5 bg-white text-primary rounded-full font-black text-lg hover:shadow-2xl hover:-translate-y-1 transition-all"
                   >
                     Hemen Kəşf Et

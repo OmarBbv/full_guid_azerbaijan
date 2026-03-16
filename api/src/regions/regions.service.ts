@@ -13,4 +13,8 @@ export class RegionsService {
   async findBySlug(slug: string): Promise<City> {
     return this.cityService.findBySlug(slug);
   }
+
+  async findById(id: string): Promise<City> {
+    return this.cityService.findOne(id);
+  }
 }

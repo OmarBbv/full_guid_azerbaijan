@@ -102,7 +102,7 @@ export default function Navbar() {
       isMega: true,
       subLinks: cities.map((city) => ({
         label: city.name,
-        href: `/regions/${city.slug}`,
+        href: `/regions/${city.id}`,
         mapKey: SLUG_TO_MAP_KEY[city.slug] || city.name,
       })),
     },
@@ -153,7 +153,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Search popup keyboard handling
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") { setSearchOpen(false); setSearchQuery(""); }
@@ -166,7 +165,6 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Focus input when popup opens
   useEffect(() => {
     if (searchOpen) {
       setTimeout(() => searchInputRef.current?.focus(), 80);
@@ -224,7 +222,7 @@ export default function Navbar() {
 
   const routeMap = cities.reduce<Record<string, string>>((acc, city) => {
     const mapKey = SLUG_TO_MAP_KEY[city.slug] || city.name;
-    acc[mapKey] = `/regions/${city.slug}`;
+    acc[mapKey] = `/regions/${city.id}`;
     return acc;
   }, {});
 
@@ -246,7 +244,7 @@ export default function Navbar() {
           >
             <Link href="/" className="flex items-center gap-2 group">
               <div
-                className="w-8 h-8 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110"
+                className="w-8 h-8 rounded-xl flex items-center justify-center"
                 style={{
                   background: "linear-gradient(135deg, #3b9cf5, #6f5cf6)",
                 }}
@@ -671,154 +669,154 @@ export default function Navbar() {
           {/* Spacer for navbar height */}
           <div className="shrink-0 h-20" />
           <div className="flex flex-col px-6 pb-8">
-          <div className="flex flex-col">
-            {navLinks.map((link) => (
-              <div
-                key={link.id}
-                className="flex flex-col border-b border-white/10 last:border-0"
-              >
-                {link.subLinks && link.subLinks.length > 0 ? (
-                  <>
-                    <button
+            <div className="flex flex-col">
+              {navLinks.map((link) => (
+                <div
+                  key={link.id}
+                  className="flex flex-col border-b border-white/10 last:border-0"
+                >
+                  {link.subLinks && link.subLinks.length > 0 ? (
+                    <>
+                      <button
+                        className="flex items-center justify-between w-full text-left text-white/90 hover:text-white text-[14px] tracking-wider uppercase font-bold py-4 transition-colors"
+                        onClick={() =>
+                          setOpenMobileDropdown(
+                            openMobileDropdown === link.id ? null : link.id,
+                          )
+                        }
+                      >
+                        {link.label}
+                        <ChevronRight
+                          className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${openMobileDropdown === link.id ? "rotate-90" : ""
+                            }`}
+                        />
+                      </button>
+                      {openMobileDropdown === link.id && (
+                        <div className="flex flex-col gap-0 bg-black/20 rounded-xl mb-4 overflow-hidden border border-white/5">
+                          {link.subLinks.map((sub) => (
+                            <Link
+                              key={sub.href}
+                              href={sub.href}
+                              onClick={() => setMobileOpen(false)}
+                              className="text-[13px] py-3 px-5 transition-colors border-b border-white/5 last:border-0 text-white/70 hover:text-white bg-white/5 hover:bg-white/10"
+                            >
+                              {sub.label}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <Link
+                      href={link.href as any}
                       className="flex items-center justify-between w-full text-left text-white/90 hover:text-white text-[14px] tracking-wider uppercase font-bold py-4 transition-colors"
-                      onClick={() =>
-                        setOpenMobileDropdown(
-                          openMobileDropdown === link.id ? null : link.id,
-                        )
-                      }
+                      onClick={() => setMobileOpen(false)}
                     >
                       {link.label}
-                      <ChevronRight
-                        className={`w-4 h-4 text-blue-500 transition-transform duration-300 ${openMobileDropdown === link.id ? "rotate-90" : ""
-                          }`}
-                      />
-                    </button>
-                    {openMobileDropdown === link.id && (
-                      <div className="flex flex-col gap-0 bg-black/20 rounded-xl mb-4 overflow-hidden border border-white/5">
-                        {link.subLinks.map((sub) => (
-                          <Link
-                            key={sub.href}
-                            href={sub.href}
-                            onClick={() => setMobileOpen(false)}
-                            className="text-[13px] py-3 px-5 transition-colors border-b border-white/5 last:border-0 text-white/70 hover:text-white bg-white/5 hover:bg-white/10"
-                          >
-                            {sub.label}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    href={link.href as any}
-                    className="flex items-center justify-between w-full text-left text-white/90 hover:text-white text-[14px] tracking-wider uppercase font-bold py-4 transition-colors"
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    {link.label}
-                    <ChevronRight className="w-4 h-4 text-blue-500" />
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
+                      <ChevronRight className="w-4 h-4 text-blue-500" />
+                    </Link>
+                  )}
+                </div>
+              ))}
+            </div>
 
-          {/* Quick actions grid */}
-          <div className="mt-8 grid grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-sm">
-            <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
-              <Map
-                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
-                strokeWidth={1.5}
-              />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
-                {t("map")}
-              </span>
-            </button>
-            {isLoggedIn ? (
-              <button
-                onClick={() => {
-                  localStorage.removeItem('access_token');
-                  window.dispatchEvent(new Event("auth_status_changed"));
-                  setMobileOpen(false);
-                  router.push("/login");
-                }}
-                className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
-              >
-                <X
-                  className="w-7 h-7 text-red-500 group-hover:scale-110 transition-transform"
-                  strokeWidth={1.5}
-                />
-                <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
-                  {t("logout") || "Çıxış"}
-                </span>
-              </button>
-            ) : (
-              <Link
-                href="/login"
-                onClick={() => setMobileOpen(false)}
-                className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
-              >
-                <User
+            {/* Quick actions grid */}
+            <div className="mt-8 grid grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-sm">
+              <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
+                <Map
                   className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
                   strokeWidth={1.5}
                 />
                 <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
-                  {t("login")}
+                  {t("map")}
+                </span>
+              </button>
+              {isLoggedIn ? (
+                <button
+                  onClick={() => {
+                    localStorage.removeItem('access_token');
+                    window.dispatchEvent(new Event("auth_status_changed"));
+                    setMobileOpen(false);
+                    router.push("/login");
+                  }}
+                  className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+                >
+                  <X
+                    className="w-7 h-7 text-red-500 group-hover:scale-110 transition-transform"
+                    strokeWidth={1.5}
+                  />
+                  <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                    {t("logout") || "Çıxış"}
+                  </span>
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  onClick={() => setMobileOpen(false)}
+                  className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+                >
+                  <User
+                    className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                    strokeWidth={1.5}
+                  />
+                  <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                    {t("login")}
+                  </span>
+                </Link>
+              )}
+              <Link
+                href="/secilmisler"
+                onClick={() => setMobileOpen(false)}
+                className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
+              >
+                <Heart
+                  className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                  strokeWidth={1.5}
+                />
+                <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                  {t("favorites")}
                 </span>
               </Link>
-            )}
-            <Link
-              href="/secilmisler"
-              onClick={() => setMobileOpen(false)}
-              className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
-            >
-              <Heart
-                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
-                strokeWidth={1.5}
-              />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
-                {t("favorites")}
-              </span>
-            </Link>
-            <button
-              onClick={() => { setMobileOpen(false); openSearch(); }}
-              className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
-            >
-              <Search
-                className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
-                strokeWidth={1.5}
-              />
-              <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
-                {t("search")}
-              </span>
-            </button>
-          </div>
-
-          {/* Language selector */}
-          <div className="mt-6 flex flex-col border border-white/10 rounded-xl overflow-hidden">
-            {LANGUAGES.map((lang) => (
               <button
-                key={lang.code}
-                onClick={() => {
-                  router.replace(pathname, {
-                    locale: lang.code as "az" | "en" | "ru" | "tr" | "ar" | "hi",
-                  });
-                  setMobileOpen(false);
-                }}
-                className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${locale === lang.code
-                  ? "bg-blue-500/10 text-blue-400"
-                  : "text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5"
-                  }`}
+                onClick={() => { setMobileOpen(false); openSearch(); }}
+                className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group"
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-lg">{lang.flag}</span>
-                  <span className="uppercase tracking-wider">{lang.label}</span>
-                </div>
-                {locale === lang.code && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
-                )}
+                <Search
+                  className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
+                  strokeWidth={1.5}
+                />
+                <span className="text-[11px] font-bold tracking-wider text-white/80 uppercase text-center">
+                  {t("search")}
+                </span>
               </button>
-            ))}
-          </div>
+            </div>
+
+            {/* Language selector */}
+            <div className="mt-6 flex flex-col border border-white/10 rounded-xl overflow-hidden">
+              {LANGUAGES.map((lang) => (
+                <button
+                  key={lang.code}
+                  onClick={() => {
+                    router.replace(pathname, {
+                      locale: lang.code as "az" | "en" | "ru" | "tr" | "ar" | "hi",
+                    });
+                    setMobileOpen(false);
+                  }}
+                  className={`flex items-center justify-between px-5 py-3 text-[13px] font-bold transition-all border-b border-white/5 last:border-0 ${locale === lang.code
+                    ? "bg-blue-500/10 text-blue-400"
+                    : "text-white/70 hover:text-white bg-[#0A0C16] hover:bg-white/5"
+                    }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="text-lg">{lang.flag}</span>
+                    <span className="uppercase tracking-wider">{lang.label}</span>
+                  </div>
+                  {locale === lang.code && (
+                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>

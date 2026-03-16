@@ -14,4 +14,9 @@ export class RegionsController {
   findBySlug(@Param('slug') slug: string) {
     return this.regionsService.findBySlug(slug);
   }
+
+  @Get('id/:id')
+  findById(@Param('id') id: string) {
+    return this.regionsService.findById(id);
+  }
 }

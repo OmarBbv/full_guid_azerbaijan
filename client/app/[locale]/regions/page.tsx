@@ -35,8 +35,8 @@ export default async function RegionsPage() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {regions.map((region) => (
               <Link
-                key={region.slug}
-                href={`/regions/${region.slug}`}
+                key={region.id}
+                href={`/regions/${region.id}`}
                 className="group bg-card rounded-3xl overflow-hidden border border-border/50 hover:border-primary/50 transition-all hover:shadow-2xl hover:-translate-y-1 flex flex-col h-full"
               >
                 <div className="aspect-[16/10] bg-muted overflow-hidden relative">

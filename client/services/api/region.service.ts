@@ -18,6 +18,7 @@ export interface Region {
 export interface IRegionService {
   getRegions(): Promise<Region[]>;
   getRegionBySlug(slug: string): Promise<Region>;
+  getRegionById(id: string): Promise<Region>;
 }
 
 class RegionService implements IRegionService {
@@ -39,6 +40,16 @@ class RegionService implements IRegionService {
       return response.data;
     } catch (error) {
       console.error('[RegionService.getRegionBySlug]', error);
+      throw error;
+    }
+  }
+
+  async getRegionById(id: string): Promise<Region> {
+    try {
+      const response = await apiClient.get<Region>(`${this.endpoint}/id/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('[RegionService.getRegionById]', error);
       throw error;
     }
   }

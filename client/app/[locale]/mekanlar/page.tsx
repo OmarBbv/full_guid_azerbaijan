@@ -26,9 +26,10 @@ export default function PlacesPage() {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
+  const queryParam = searchParams.get("q");
 
   const [activeCategory, setActiveCategory] = useState(categoryParam || "hamısı");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(queryParam || "");
 
   const { data: dynamicCategories = [] } = useCategories(locale);
   const { data: allPlaces, isLoading: isLoadingPlaces } = usePlaces({
@@ -49,7 +50,6 @@ export default function PlacesPage() {
     }))
   ];
 
-  // Normalize both types into a consistent shape for PlaceCard
   const normalizedPlaces = [
     ...(allPlaces || []).map(p => ({
       ...p,
@@ -59,7 +59,7 @@ export default function PlacesPage() {
     })),
     ...allVenues.map(v => ({
       ...v,
-      id: v.id.toString(), // Place ID is UUID string, Venue is number
+      id: v.id ? v.id.toString() : 'new',
       title: v.name,
       short_description: v.description || '',
       displayTitle: v.name,
@@ -78,7 +78,6 @@ export default function PlacesPage() {
     } else if (isStaticCategory) {
       matchesCategory = item.type?.toLowerCase() === activeCategory.toLowerCase();
     } else {
-      // It's a dynamic category
       matchesCategory = (item as any).category?.slug === activeCategory;
     }
 
@@ -101,60 +100,25 @@ export default function PlacesPage() {
 
       <div className="relative z-10">
         {/* Header Section */}
-        <section className="pt-32 pb-16 md:pt-40 md:pb-24 px-6 relative border-b border-border/40" style={{ background: "linear-gradient(180deg, var(--muted) 0%, var(--background) 100%)" }}>
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-10">
-            <div className="w-full md:max-w-2xl">
-              <div className="inline-flex items-center gap-2 mb-4 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold uppercase tracking-wider shadow-sm">
-                <Map size={16} /> {tc("all")}
+        {/* Simplified Header / Search Section */}
+        <section className="pt-32 pb-8 px-6 relative">
+          <div className="max-w-7xl mx-auto">
+            {/* Search Box - Moved and simplified */}
+            <div className="relative flex items-center w-full max-w-2xl mx-auto shadow-xl shadow-primary/5 rounded-2xl bg-card border border-border/50 group hover:border-primary/50 transition-colors">
+              <div className="pl-5 pr-2 py-4 text-muted-foreground group-focus-within:text-primary transition-colors">
+                <Search size={22} />
               </div>
-              <h1 className="text-4xl md:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight">
-                {t("all_venues")}
-              </h1>
-              <p className="text-lg text-muted-foreground mb-8 max-w-xl leading-relaxed">
-                {t("all_venues_subtitle")}
-              </p>
-
-              {/* Search Box */}
-              <div className="relative flex items-center w-full max-w-xl shadow-xl shadow-primary/5 rounded-2xl bg-card border border-border/50 group hover:border-primary/50 transition-colors">
-                <div className="pl-5 pr-2 py-4 text-muted-foreground group-focus-within:text-primary transition-colors">
-                  <Search size={22} />
-                </div>
-                <input
-                  type="text"
-                  placeholder={t("search_placeholder")}
-                  className="w-full bg-transparent border-none outline-none py-4 px-2 text-foreground placeholder:text-muted-foreground/60 text-lg font-medium"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div className="pr-4 hidden sm:block">
-                  <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg active:scale-95">
-                    {t("search_btn")}
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* Visual Element - Hero Image Profile */}
-            <div className="hidden lg:block relative w-full max-w-[450px]">
-              <div className="relative z-10 rounded-[40px] overflow-hidden shadow-2xl shadow-primary/20 border-4 border-white rotate-3 hover:rotate-0 transition-transform duration-700">
-                <img
-                  src="/assets/azerbaijan_nature.png"
-                  alt="Azerbaijan Nature"
-                  className="w-full h-[500px] object-cover scale-110 hover:scale-100 transition-transform duration-700"
-                />
-              </div>
-              {/* Decorative behind image */}
-              <div className="absolute -inset-4 bg-primary/10 rounded-[48px] -rotate-3 blur-sm" />
-              <div className="absolute top-1/2 -right-8 -translate-y-1/2 bg-card/80 backdrop-blur-xl p-5 rounded-3xl border border-border shadow-xl z-20 animate-bounce-slow">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                    <Star className="fill-current" size={20} />
-                  </div>
-                  <div>
-                    <div className="text-xl font-black text-foreground">4.9/5</div>
-                    <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest">Reytinq</div>
-                  </div>
-                </div>
+              <input
+                type="text"
+                placeholder={t("search_placeholder")}
+                className="w-full bg-transparent border-none outline-none py-4 px-2 text-foreground placeholder:text-muted-foreground/60 text-lg font-medium"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <div className="pr-4 hidden sm:block">
+                <button className="bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2.5 rounded-xl font-semibold transition-all shadow-md hover:shadow-lg active:scale-95">
+                  {t("search_btn")}
+                </button>
               </div>
             </div>
           </div>
@@ -268,13 +232,6 @@ export default function PlacesPage() {
         .scrollbar-hide {
             -ms-overflow-style: none;
             scrollbar-width: none;
-        }
-        @keyframes bounce-slow {
-          0%, 100% { transform: translateY(-50%); }
-          50% { transform: translateY(-60%); }
-        }
-        .animate-bounce-slow {
-          animation: bounce-slow 3s ease-in-out infinite;
         }
       `}</style>
     </div>

@@ -2,11 +2,21 @@
 
 import { Separator } from "@/components/ui/separator";
 import { Link, usePathname } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useCategories } from "@/hooks/use-categories";
+import { useCities } from "@/hooks/use-cities";
+import { useAboutPages } from "@/hooks/use-about-pages";
 
 export default function Footer() {
   const pathname = usePathname();
   const t = useTranslations('Footer');
+  const tNav = useTranslations('Navbar');
+  const locale = useLocale();
+  
+  const { data: dynamicCategories = [] } = useCategories(locale);
+  const { data: cities = [] } = useCities({ language: locale, active: true });
+  const { data: aboutPages = [] } = useAboutPages({ language: locale, active: true });
+
   const authRoutes = ['/login', '/register'];
   const isAuthPage = authRoutes.some(route => pathname?.includes(route));
 
@@ -27,55 +37,54 @@ export default function Footer() {
 
           {/* Links Grid */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full uppercase text-xs font-semibold tracking-wider">
-            {/* Column 1 */}
+            {/* Column 1: Məkanlar */}
             <div className="flex flex-col gap-6">
-              <h3 className="text-foreground">{t('tours_entertainment')}</h3>
+              <h3 className="text-foreground">{tNav('destinations')}</h3>
               <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('historical_tours')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('city_tours')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('nature_tours')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('active_entertainment')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('culture')}</Link></li>
+                <li><Link href="/places/landmarks" className="hover:text-primary transition-colors">{tNav('landmarks')}</Link></li>
+                <li><Link href="/places/restaurants" className="hover:text-primary transition-colors">{tNav('restaurants')}</Link></li>
+                <li><Link href="/places/hotels" className="hover:text-primary transition-colors">{tNav('hotels')}</Link></li>
+                <li><Link href="/places/hostels" className="hover:text-primary transition-colors">{tNav('hostels')}</Link></li>
+                {dynamicCategories.slice(0, 3).map((cat) => (
+                  <li key={`cat-${cat.id}`}><Link href={`/mekanlar?category=${cat.slug}`} className="hover:text-primary transition-colors">{cat.name}</Link></li>
+                ))}
               </ul>
             </div>
 
-            {/* Column 2 */}
+            {/* Column 2: Regionlar / Şəhərlər */}
             <div className="flex flex-col gap-6">
-              <h3 className="text-foreground">{t('useful_information')}</h3>
+              <h3 className="text-foreground">{tNav('where_to_go')}</h3>
               <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('georgia_example')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('regions')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('map')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('popular_places')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('faq')}</Link></li>
+                {cities.slice(0, 6).map((city) => (
+                  <li key={`city-${city.id}`}><Link href={`/regions/${city.id}`} className="hover:text-primary transition-colors">{city.name}</Link></li>
+                ))}
               </ul>
             </div>
 
-            {/* Column 3 */}
+            {/* Column 3: Haqqımızda & Faydalı */}
+            <div className="flex flex-col gap-6">
+              <h3 className="text-foreground">{tNav('about')}</h3>
+              <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
+                {aboutPages.map((page) => (
+                  <li key={`page-${page.slug}`}><Link href={`/about/${page.slug}`} className="hover:text-primary transition-colors">{page.title}</Link></li>
+                ))}
+                <li><Link href="/contact" className="hover:text-primary transition-colors">{tNav('contact')}</Link></li>
+                <li><Link href="/secilmisler" className="hover:text-primary transition-colors">{tNav('favorites')}</Link></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Əlaqə */}
             <div className="flex flex-col gap-6">
               <h3 className="text-foreground">{t('contact')}</h3>
               <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li>Hotline: <span className="text-foreground font-medium">0 800 80 09 09</span></li>
-                <li>{t('address')}: <span>Bakı şəh., Nümunəvi küç.</span></li>
                 <li>E-mail: <a href="mailto:info@fullguide.az" className="hover:text-primary transition-colors">info@fullguide.az</a></li>
               </ul>
 
               <h3 className="text-foreground mt-4">{t('social_networks')}</h3>
               <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li><Link href="#" className="hover:text-primary transition-colors">Facebook</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">Instagram</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">X (Twitter)</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">YouTube</Link></li>
-              </ul>
-            </div>
-
-            {/* Column 4 */}
-            <div className="flex flex-col gap-6">
-              <h3 className="text-foreground">{t('useful_links')}</h3>
-              <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('ministry_tourism')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('state_agency')}</Link></li>
-                <li><Link href="#" className="hover:text-primary transition-colors">{t('reserves')}</Link></li>
+                <li><a href="https://instagram.com/fullguide.az" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Instagram</a></li>
+                <li><a href="https://facebook.com/fullguide.az" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Facebook</a></li>
+                <li><a href="https://youtube.com/@fullguideaz" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">YouTube</a></li>
               </ul>
             </div>
           </div>

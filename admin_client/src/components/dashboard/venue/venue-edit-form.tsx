@@ -55,6 +55,7 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
       city: '',
       district: '',
       phone: '',
+      whatsapp: '',
       website: '',
       thumbnail: '',
       status: VenueStatus.ACTIVE,
@@ -72,6 +73,7 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
         city: venue.city || '',
         district: venue.district || '',
         phone: venue.phone || '',
+        whatsapp: venue.whatsapp || '',
         website: venue.website || '',
         thumbnail: venue.thumbnail || '',
         status: venue.status || VenueStatus.ACTIVE,
@@ -292,7 +294,10 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
           <CardContent>
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('phone')} label="Telefon" fullWidth />
+                <TextField {...register('phone')} label="Telefon" fullWidth placeholder="+994 50 123 45 67" />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField {...register('whatsapp')} label="WhatsApp nömrəsi" fullWidth placeholder="+994 50 123 45 67" />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField

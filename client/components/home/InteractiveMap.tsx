@@ -4,7 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import { MapPin, Navigation, ArrowRight, Camera } from "lucide-react";
 import Azerbaijan from "@react-map/azerbaijan";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
+import { useCities } from "@/hooks/use-cities";
 import un_photo_1448375240586_882707db888b_fec9fe51 from "@/assets/unsplash/photo-1448375240586-882707db888b_fec9fe51.jpg";
 import un_photo_1506905925346_21bda4d32df4_fec9fe51 from "@/assets/unsplash/photo-1506905925346-21bda4d32df4_fec9fe51.jpg";
 import un_photo_1519681393784_d120267933ba_fec9fe51 from "@/assets/unsplash/photo-1519681393784-d120267933ba_fec9fe51.jpg";
@@ -16,7 +18,11 @@ import baku_fixed from "@/assets/unsplash/baku_fixed.jpg";
 
 export default function InteractiveMap() {
   const t = useTranslations('Home');
+  const locale = useLocale();
+  const router = useRouter();
   const [activeRegion, setActiveRegion] = useState<string | null>(null);
+
+  const { data: cities = [] } = useCities({ language: locale, active: true });
 
   const regionDetails: Record<string, { desc: string, img: any, famous: string }> = {
     "Bakı": {
@@ -49,10 +55,20 @@ export default function InteractiveMap() {
   const defaultData = {
     desc: t('default_map_desc'),
     img: un_photo_1506905925346_21bda4d32df4_fec9fe51,
-    famous: t('default_famous')
+    famous: t('default_famous'),
+    slug: ''
   };
 
-  const currentData = activeRegion ? (regionDetails[activeRegion] || defaultData) : defaultData;
+  const currentCity = cities.find(c => c.name.toLowerCase() === activeRegion?.toLowerCase() || c.region === activeRegion);
+  const regionStatic = regionDetails[activeRegion || ""];
+
+  const currentData = {
+    desc: currentCity?.description || regionStatic?.desc || defaultData.desc,
+    img: currentCity?.image_url || currentCity?.cover_image_url || regionStatic?.img || defaultData.img,
+    famous: (currentCity?.highlights && currentCity.highlights.length > 0) ? currentCity.highlights[0] : (regionStatic?.famous || defaultData.famous),
+    id: currentCity?.id || "",
+    slug: currentCity?.slug || ""
+  };
 
   return (
     <section className="hidden md:block py-24 relative overflow-hidden bg-background">
@@ -96,12 +112,18 @@ export default function InteractiveMap() {
                   {currentData.desc}
                 </p>
 
-                <div className="flex flex-wrap gap-4">
-                  <button className="px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary/90 active:scale-95 transition-all">
-                    {t('explore')} <ArrowRight size={18} />
-                  </button>
-                  <button className="px-8 py-4 bg-secondary text-secondary-foreground rounded-2xl font-bold flex items-center gap-2 hover:bg-secondary/80 transition-all border border-border/50">
-                    <Navigation size={18} /> {t('get_directions')}
+                <div className="flex w-full">
+                  <button 
+                    onClick={() => {
+                      if (currentData.id) {
+                        router.push(`/regions/${currentData.id}`);
+                      } else {
+                        router.push(`/mekanlar`);
+                      }
+                    }}
+                    className="w-full px-8 py-4 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:bg-primary/90 active:scale-95 transition-all text-lg"
+                  >
+                    {t('explore')} <ArrowRight size={20} className="hover:translate-x-1 transition-transform" />
                   </button>
                 </div>
               </div>
@@ -126,7 +148,13 @@ export default function InteractiveMap() {
                     hintBackgroundColor="#1e3a8a"
                     hintPadding="10px 20px"
                     hintBorderRadius={14}
-                    onSelect={(state) => setActiveRegion(state)}
+                    onSelect={(state) => {
+                      setActiveRegion(state);
+                      const city = cities.find(c => c.name.toLowerCase() === state?.toLowerCase() || c.region === state);
+                      if (city?.id) {
+                        router.push(`/regions/${city.id}`);
+                      }
+                    }}
                   />
                 </div>
               </div>

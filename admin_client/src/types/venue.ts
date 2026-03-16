@@ -23,6 +23,7 @@ export interface Venue {
   city?: string;
   district?: string;
   phone?: string;
+  whatsapp?: string;
   website?: string;
   workingHours?: any;
   rating: number;
@@ -45,6 +46,7 @@ export interface CreateVenueDto {
   city?: string;
   district?: string;
   phone?: string;
+  whatsapp?: string;
   website?: string;
   workingHours?: any;
   thumbnail?: string;

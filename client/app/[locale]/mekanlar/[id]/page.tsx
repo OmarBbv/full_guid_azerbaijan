@@ -240,6 +240,32 @@ export default function PlaceDetailPage() {
                   )}
                 </div>
 
+                {/* Location Info */}
+                {(place.address || (place as any).google_maps_url) && (
+                  <div className="mb-8 pt-6 border-t border-border/50">
+                    <h4 className="text-sm font-bold text-foreground mb-4 uppercase tracking-widest">{t("location")}</h4>
+                    <div className="space-y-4">
+                      {place.address && (
+                        <div className="flex items-start gap-3">
+                          <MapPin size={20} className="text-primary shrink-0 mt-0.5" />
+                          <span className="text-muted-foreground font-medium leading-relaxed">{place.address}</span>
+                        </div>
+                      )}
+                      {(place as any).google_maps_url && (
+                        <a
+                          href={(place as any).google_maps_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-full py-3.5 bg-muted text-foreground rounded-2xl font-bold text-sm border border-border/50 hover:bg-primary hover:text-primary-foreground hover:-translate-y-1 transition-all active:scale-95 flex items-center justify-center gap-2 shadow-sm"
+                        >
+                          <MapPin size={18} />
+                          Xəritədə bax
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Social Media & Website */}
                 {(place.website_url || place.social_media) && (
                   <div className="space-y-6 pt-6 border-t border-border/50">

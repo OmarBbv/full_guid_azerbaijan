@@ -19,6 +19,7 @@ export const venueSchema = z.object({
   city: z.string().optional(),
   district: z.string().optional(),
   phone: z.string().optional(),
+  whatsapp: z.string().optional(),
   website: z.string().url('Düzgün URL daxil edin').optional().or(z.literal('')),
   thumbnail: z.any().optional(),
   status: z.nativeEnum(VenueStatus).default(VenueStatus.ACTIVE),

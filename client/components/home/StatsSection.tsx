@@ -89,7 +89,7 @@ export default function StatsSection() {
   }, []);
 
   return (
-    <section ref={ref} className="relative py-24 md:py-32 overflow-hidden bg-background">
+    <section id="explore-destinations" ref={ref} className="relative py-24 md:py-32 overflow-hidden bg-background">
       {/* Abstract Background Shapes */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full max-w-4xl bg-primary/5 blur-[120px] rounded-full opacity-50" />

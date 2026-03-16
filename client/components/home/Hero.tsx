@@ -9,6 +9,7 @@ import { useHeroPlaces } from "@/hooks/use-places";
 import { Place } from "@/types/place";
 import { getImageUrl } from "@/lib/utils";
 import HeroSearchBar from "./HeroSearchBar";
+import { useRouter } from "@/i18n/routing";
 import AdBannerComponent from "../shared/AdBanner";
 import un_photo_1448375240586_882707db888b_1e93d564 from "@/assets/unsplash/photo-1448375240586-882707db888b_1e93d564.jpg";
 import un_photo_1448375240586_882707db888b_629753b7 from "@/assets/unsplash/photo-1448375240586-882707db888b_629753b7.jpg";
@@ -180,6 +181,7 @@ export default function Hero() {
   const defaultSlides = useMemo(() => getDefaultSlides(tHero), [tHero]);
   const locale = useLocale();
   const t = useTranslations('Navbar');
+  const router = useRouter();
   const { data: heroPlaces, isLoading } = useHeroPlaces(locale);
 
   const slides = useMemo(() => {
@@ -441,6 +443,13 @@ export default function Hero() {
             style={{ animationDelay: "0.3s" }}
           >
             <button
+              onClick={() => {
+                if (isCardView && activeCardData) {
+                  router.push(`/mekanlar?q=${encodeURIComponent(activeCardData.name)}`);
+                } else {
+                  router.push(displayRegion ? `/mekanlar?q=${encodeURIComponent(displayCountry)}` : '/mekanlar');
+                }
+              }}
               className="group flex items-center gap-3 px-7 py-3.5 rounded-full font-bold text-white text-sm transition-all duration-300 active:scale-95"
               style={{
                 background: slide.accent,
@@ -474,7 +483,14 @@ export default function Hero() {
               </button>
             )}
             {!isCardView && (
-              <button className="text-white/50 text-sm font-medium hover:text-white transition-colors flex items-center gap-1.5">
+              <button 
+                onClick={() => {
+                  const exploreSection = document.getElementById("explore-destinations");
+                  if (exploreSection) exploreSection.scrollIntoView({ behavior: "smooth" });
+                  else router.push('/about');
+                }}
+                className="text-white/50 text-sm font-medium hover:text-white transition-colors flex items-center gap-1.5"
+              >
                 {t('learn_more')}
                 <span className="text-lg leading-none">›</span>
               </button>

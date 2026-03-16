@@ -16,7 +16,6 @@ function WhatsAppIcon({ size = 20 }: { size?: number }) {
   );
 }
 
-// TikTok SVG icon
 function TikTokIcon({ size = 16 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -30,8 +29,11 @@ interface Props {
 }
 
 export default function PlaceDetailSidebar({ place }: Props) {
-  const whatsappUrl = place.whatsapp_number
-    ? `https://wa.me/${place.whatsapp_number}${place.whatsapp_message_template
+  const whatsappNum = place.whatsapp_number || (place as any).whatsapp;
+  const phoneNum = place.phone_number || (place as any).phone;
+
+  const whatsappUrl = whatsappNum
+    ? `https://wa.me/${whatsappNum.replace(/[^0-9+]/g, '')}${place.whatsapp_message_template
       ? `?text=${encodeURIComponent(
         place.whatsapp_message_template.replace("{name}", place.title)
       )}`
@@ -82,7 +84,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
         </div>
       )}
 
-      {place.phone_number && (
+      {phoneNum && (
         <div className="flex items-start gap-4">
           <div className="bg-secondary p-3 rounded-2xl shrink-0">
             <Phone className="w-5 h-5" />
@@ -90,10 +92,10 @@ export default function PlaceDetailSidebar({ place }: Props) {
           <div>
             <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Telefon</p>
             <a
-              href={`tel:${place.phone_number}`}
+              href={`tel:${phoneNum}`}
               className="font-semibold text-sm text-primary hover:underline"
             >
-              {place.phone_number}
+              {phoneNum}
             </a>
           </div>
         </div>
