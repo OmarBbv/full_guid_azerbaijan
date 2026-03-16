@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In, Not } from 'typeorm';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { UpdatePlaceDto } from './dto/update-place.dto';
-import { Place } from './entities/place.entity';
+import { Place, PlaceStatus } from './entities/place.entity';
 import { PlaceImage } from './entities/place-image.entity';
 
 @Injectable()
@@ -19,7 +19,10 @@ export class PlacesService {
     const { images: _images, ...rest } = createPlaceDto as CreatePlaceDto & {
       images?: unknown;
     };
-    const place = this.placeRepository.create(rest as Partial<Place>);
+    const place = this.placeRepository.create({
+      ...rest,
+      status: createPlaceDto.status ?? PlaceStatus.ACTIVE,
+    } as Partial<Place>);
     return await this.placeRepository.save(place);
   }
 

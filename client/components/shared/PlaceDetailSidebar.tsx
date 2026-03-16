@@ -40,8 +40,8 @@ export default function PlaceDetailSidebar({ place }: Props) {
     : null;
 
   const mapsUrl =
-    place.latitude && place.longitude
-      ? `https://maps.google.com/?q=${place.latitude},${place.longitude}`
+    place.google_maps_url
+      ? place.google_maps_url
       : place.address
         ? `https://maps.google.com/?q=${encodeURIComponent(place.address + ", Azerbaijan")}`
         : null;

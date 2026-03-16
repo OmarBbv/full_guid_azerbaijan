@@ -17,6 +17,7 @@ export const paths = {
     placesCreate: '/dashboard/places/create',
     restaurants: '/dashboard/restaurants',
     restaurantsCreate: '/dashboard/restaurants/create',
+    restaurantsEdit: (id: string | number) => `/dashboard/restaurants/${id}/edit`,
     blog: '/dashboard/blog',
     blogCreate: '/dashboard/blog/create',
     ads: '/dashboard/ads',
@@ -24,6 +25,7 @@ export const paths = {
     categories: '/dashboard/categories',
     venues: '/dashboard/venues',
     venuesCreate: '/dashboard/venues/create',
+    venuesEdit: (id: string | number) => `/dashboard/venues/${id}/edit`,
     cities: '/dashboard/cities',
     citiesCreate: '/dashboard/cities/create',
     about: '/dashboard/about',
@@ -35,4 +37,3 @@ export const paths = {
   },
   errors: { notFound: '/errors/not-found' },
 } as const;
-

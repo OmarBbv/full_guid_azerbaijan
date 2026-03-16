@@ -20,6 +20,7 @@ export const createRestaurantSchema = z.object({
   email: z.string().email('Düzgün e-poçt daxil edin').optional().or(z.literal('')),
   address: z.string().optional(),
   city: z.string().optional(),
+  google_maps_url: z.string().optional().or(z.literal('')),
   thumbnail: z.string().url('Düzgün URL daxil edin').optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),

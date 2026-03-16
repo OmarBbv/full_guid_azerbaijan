@@ -8,15 +8,14 @@ import { HostelEditForm } from '@/components/dashboard/hostel/hostel-edit-form';
 export const metadata = { title: `Hosteli Yenilə | Dashboard | ${config.site.name}` } satisfies Metadata;
 
 interface PageProps {
-  params: {
-    hostelId: string;
-  };
+  params: Promise<{ hostelId: string }>;
 }
 
-export default function Page({ params }: PageProps): React.JSX.Element {
+export default async function Page({ params }: PageProps): Promise<React.JSX.Element> {
+  const { hostelId } = await params;
   return (
     <Stack spacing={4}>
-      <HostelEditForm hostelId={params.hostelId} />
+      <HostelEditForm hostelId={hostelId} />
     </Stack>
   );
 }

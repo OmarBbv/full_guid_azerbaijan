@@ -15,6 +15,7 @@ export const createPlaceSchema = z.object({
   email: z.string().email('Düzgün e-poçt deyil').optional().or(z.literal('')),
   city: z.string().optional(),
   address: z.string().min(1, 'Ünvan mütləqdir'),
+  google_maps_url: z.string().optional().or(z.literal('')),
   thumbnail: z.string().url('Düzgün URL deyil').optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   show_in_hero: z.boolean().default(false),

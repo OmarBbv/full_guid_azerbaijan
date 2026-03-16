@@ -29,6 +29,7 @@ import { createHostelSchema, type CreateHostelFormValues } from './hostel-schema
 import { useCreateHostel, useUploadHostelImages } from '@/hooks/use-hostels';
 import { HostelType } from '@/types/hostel';
 import { paths } from '@/paths';
+import { PlaceStatus } from '@/types/restaurant';
 import { formatPhoneNumber } from '@/lib/format-phone';
 
 const hostelTypeLabels: Record<HostelType, string> = {
@@ -64,9 +65,10 @@ export function HostelCreateForm(): React.JSX.Element {
         has_bar: false,
         has_laundry: false,
         organizes_tours: false,
-        has_24h_security: false,
-        is_featured: false,
+        address: '',
+        google_maps_url: '',
         language: 'az',
+        status: PlaceStatus.ACTIVE,
       },
     });
 
@@ -208,6 +210,9 @@ export function HostelCreateForm(): React.JSX.Element {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
               </Grid>
             </Grid>
           </CardContent>

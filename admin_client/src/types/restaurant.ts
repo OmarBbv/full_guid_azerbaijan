@@ -47,6 +47,13 @@ export enum PriceRange {
 
 // ─── Place (base) ─────────────────────────────────────────────────────────────
 
+export interface PlaceImage {
+  id: string;
+  url: string;
+  is_cover: boolean;
+  sort_order: number;
+}
+
 export interface Place {
   id: string;
   title: string;
@@ -63,9 +70,9 @@ export interface Place {
   email: string | null;
   address: string;
   city: string | null;
-  latitude: number | null;
-  longitude: number | null;
+  google_maps_url: string | null;
   thumbnail: string | null;
+  images?: PlaceImage[];
   working_hours: Record<string, unknown> | null;
   features: string[] | null;
   meta_title: string | null;
@@ -123,8 +130,7 @@ export interface CreatePlaceDto {
   website_url?: string;
   address: string;
   city?: string;
-  latitude?: number;
-  longitude?: number;
+  google_maps_url?: string;
   thumbnail?: string;
   video_url?: string;
   is_featured?: boolean;
@@ -144,8 +150,7 @@ export interface CreateRestaurantDto {
   email?: string;
   address?: string;
   city?: string;
-  latitude?: number;
-  longitude?: number;
+  google_maps_url?: string;
   thumbnail?: string;
   features?: string[];
   meta_title?: string;

@@ -9,8 +9,7 @@ export interface Region {
   image_url: string | null;
   cover_image_url: string | null;
   gallery_urls: string[] | null;
-  latitude: number | null;
-  longitude: number | null;
+  google_maps_url: string | null;
   region: string | null;
   highlights: string[] | null;
   attractions: Array<{ name: string; type: string }> | null;

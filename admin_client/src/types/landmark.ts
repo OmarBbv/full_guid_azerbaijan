@@ -19,6 +19,7 @@ export interface CreateLandmarkDto {
   whatsapp_number: string;
   address: string;
   city?: string;
+  google_maps_url?: string;
   phone_number?: string;
   email?: string;
   thumbnail?: string;

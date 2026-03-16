@@ -30,7 +30,7 @@ export function RestaurantsView(): React.JSX.Element {
   const paginatedRows = restaurants.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   function handleEdit(id: string) {
-    router.push(`${paths.dashboard.restaurants}/${id}/edit`);
+    router.push(paths.dashboard.restaurantsEdit(id));
   }
 
   function handleDelete(id: string) {

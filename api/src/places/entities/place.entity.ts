@@ -136,11 +136,8 @@ export class Place {
   @Column({ type: 'varchar', length: 100, nullable: true })
   district: string | null;
 
-  @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
-  latitude: number | null;
-
-  @Column({ type: 'decimal', precision: 10, scale: 7, nullable: true })
-  longitude: number | null;
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  google_maps_url: string | null;
 
   // ─── Media ────────────────────────────────────────────────────────────────
 

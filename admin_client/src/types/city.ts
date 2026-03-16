@@ -9,8 +9,7 @@ export interface City {
   image_url: string | null;
   cover_image_url: string | null;
   gallery_urls: string[] | null;
-  latitude: number | null;
-  longitude: number | null;
+  google_maps_url: string | null;
   region: string | null;
   country_code: string | null;
   highlights: string[] | null;
@@ -30,8 +29,7 @@ export interface CreateCityDto {
   language?: string;
   description?: string;
   gallery_urls?: string[];
-  latitude?: number;
-  longitude?: number;
+  google_maps_url?: string;
   region?: string;
   country_code?: string;
   highlights?: string[];

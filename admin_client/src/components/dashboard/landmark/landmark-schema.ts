@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { PlaceStatus } from '@/types/restaurant';
 
 export const createLandmarkSchema = z.object({
   title: z.string().min(1, 'Ad tələb olunur').max(255),
@@ -16,10 +17,12 @@ export const createLandmarkSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().min(1, 'Ünvan tələb olunur'),
   city: z.string().optional(),
+  google_maps_url: z.string().optional().or(z.literal('')),
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   show_in_hero: z.boolean().default(false),
   language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
+  status: z.nativeEnum(PlaceStatus).default(PlaceStatus.ACTIVE),
 });
 
 export type CreateLandmarkFormValues = z.infer<typeof createLandmarkSchema>;

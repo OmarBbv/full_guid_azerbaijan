@@ -27,11 +27,6 @@ export default function PlaceJsonLd({ place, type = 'TouristAttraction' }: Props
       "streetAddress": place.address || undefined,
       "addressLocality": place.city || undefined,
       "addressCountry": "AZ"
-    } : undefined,
-    "geo": place.latitude && place.longitude ? {
-      "@type": "GeoCoordinates",
-      "latitude": place.latitude,
-      "longitude": place.longitude
     } : undefined
   };
 

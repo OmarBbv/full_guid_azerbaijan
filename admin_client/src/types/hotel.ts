@@ -59,6 +59,8 @@ export interface CreateHotelDto {
   whatsapp_number: string;
   address?: string;
   city?: string;
+  google_maps_url?: string;
+  thumbnail?: string;
   phone_number?: string;
   email?: string;
   star_rating?: number;

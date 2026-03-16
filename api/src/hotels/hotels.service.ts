@@ -41,15 +41,14 @@ export class HotelsService {
         short_description: dto.short_description,
         detailed_description: dto.detailed_description ?? null,
         type: PlaceType.HOTEL,
-        status: PlaceStatus.PENDING,
+        status: PlaceStatus.ACTIVE,
         whatsapp_number: dto.whatsapp_number,
         phone_number: dto.phone_number ?? null,
         email: dto.email ?? null,
         website_url: dto.website_url ?? null,
         address: dto.address ?? '',
         city: dto.city ?? null,
-        latitude: dto.latitude ?? null,
-        longitude: dto.longitude ?? null,
+        google_maps_url: dto.google_maps_url ?? null,
         thumbnail: dto.thumbnail ?? null,
         working_hours: dto.working_hours ?? null,
         features: dto.features ?? null,
@@ -143,8 +142,8 @@ export class HotelsService {
         placeUpdate.website_url = dto.website_url;
       if (dto.address !== undefined) placeUpdate.address = dto.address;
       if (dto.city !== undefined) placeUpdate.city = dto.city;
-      if (dto.latitude !== undefined) placeUpdate.latitude = dto.latitude;
-      if (dto.longitude !== undefined) placeUpdate.longitude = dto.longitude;
+      if (dto.google_maps_url !== undefined)
+        placeUpdate.google_maps_url = dto.google_maps_url;
       if (dto.thumbnail !== undefined) placeUpdate.thumbnail = dto.thumbnail;
       if (dto.working_hours !== undefined)
         placeUpdate.working_hours = dto.working_hours;

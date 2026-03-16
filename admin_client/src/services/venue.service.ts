@@ -14,6 +14,11 @@ class VenueService {
     return data;
   }
 
+  async getByIdAdmin(id: number): Promise<Venue> {
+    const { data } = await apiClient.get<Venue>(`${this.endpoint}/admin-detail/${id}`);
+    return data;
+  }
+
   async getBySlug(slug: string): Promise<Venue> {
     const { data } = await apiClient.get<Venue>(`${this.endpoint}/${slug}`);
     return data;

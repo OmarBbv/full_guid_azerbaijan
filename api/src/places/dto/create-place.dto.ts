@@ -74,13 +74,9 @@ export class CreatePlaceDto {
   @IsString()
   address: string;
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  latitude?: number;
-
-  @IsNumber()
-  @IsOptional()
-  longitude?: number;
+  google_maps_url?: string;
 
   @IsString()
   @IsOptional()

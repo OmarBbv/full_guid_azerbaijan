@@ -48,8 +48,7 @@ export interface Place {
   website_url?: string | null;
   // Location
   address?: string | null;
-  latitude?: number | null;
-  longitude?: number | null;
+  google_maps_url?: string | null;
   // Operation
   working_hours?: WorkingHours | null;
   social_media?: SocialMedia | null;

@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { HotelType } from '@/types/hotel';
+import { PlaceStatus } from '@/types/restaurant';
 
 export const createHotelSchema = z.object({
   // ─── Place fields ─────────────────────────────────────────────────────────
@@ -18,9 +19,11 @@ export const createHotelSchema = z.object({
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().optional(),
   city: z.string().optional(),
+  google_maps_url: z.string().optional().or(z.literal('')),
   thumbnail: z.string().url().optional().or(z.literal('')),
   is_featured: z.boolean().default(false),
   language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
+  status: z.nativeEnum(PlaceStatus).default(PlaceStatus.ACTIVE),
 
   // ─── Hotel fields ─────────────────────────────────────────────────────────
   hotel_type: z.nativeEnum(HotelType).default(HotelType.HOTEL),

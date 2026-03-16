@@ -7,6 +7,7 @@ import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
+import WhatsAppButton from '@/components/shared/WhatsAppButton';
 import { QueryProvider } from '@/providers/query-provider';
 
 // Şəkildəki HelveticaNeueLT vizual olaraq tam bu formada olacaq:
@@ -46,6 +47,7 @@ export default async function RootLayout({
                 {children}
               </main>
               <Footer />
+              <WhatsAppButton />
             </div>
           </QueryProvider>
         </NextIntlClientProvider>

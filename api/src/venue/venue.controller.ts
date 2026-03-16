@@ -10,7 +10,7 @@ import { VenueStatus } from './entities/venue.entity';
 
 @Controller('venues')
 export class VenueController {
-  constructor(private readonly venueService: VenueService) {}
+  constructor(private readonly venueService: VenueService) { }
 
   @Post()
   create(@Body() dto: CreateVenueDto) {
@@ -25,6 +25,11 @@ export class VenueController {
   @Get(':slug')
   findBySlug(@Param('slug') slug: string) {
     return this.venueService.findBySlug(slug);
+  }
+
+  @Get('admin-detail/:id')
+  findByIdAdmin(@Param('id', ParseIntPipe) id: number) {
+    return this.venueService.findOne(id);
   }
 
   @Put(':id')

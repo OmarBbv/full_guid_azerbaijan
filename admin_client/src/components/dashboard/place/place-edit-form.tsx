@@ -78,6 +78,7 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
         email: '',
         city: '',
         address: '',
+        google_maps_url: '',
         type: PlaceType.LANDMARK,
         is_featured: false,
         show_in_hero: false,
@@ -101,6 +102,7 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
         email: place.email || '',
         city: place.city || '',
         address: place.address || '',
+        google_maps_url: (place as any).google_maps_url || '',
         is_featured: place.is_featured || false,
         show_in_hero: place.show_in_hero || false,
       });
@@ -334,6 +336,9 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth required InputLabelProps={{ shrink: true }} error={Boolean(errors.address)} helperText={errors.address?.message} />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth InputLabelProps={{ shrink: true }} error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
               </Grid>
             </Grid>
           </CardContent>

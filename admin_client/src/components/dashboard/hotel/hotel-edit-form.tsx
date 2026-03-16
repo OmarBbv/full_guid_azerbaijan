@@ -22,15 +22,21 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { createHotelSchema, type CreateHotelFormValues } from './hotel-schema';
-import { useCreateHotel, useUploadHotelImages } from '@/hooks/use-hotels';
+import { useHotel, useUpdateHotel, useUploadHotelImages } from '@/hooks/use-hotels';
 import { HotelType } from '@/types/hotel';
 import { paths } from '@/paths';
 import { PlaceStatus } from '@/types/restaurant';
 import { formatPhoneNumber } from '@/lib/format-phone';
+
+interface HotelEditFormProps {
+  id: string;
+}
 
 const hotelTypeLabels: Record<HotelType, string> = {
   [HotelType.HOTEL]: 'Otel',
@@ -40,13 +46,17 @@ const hotelTypeLabels: Record<HotelType, string> = {
   [HotelType.APARTMENT]: 'Apart',
 };
 
-export function HotelCreateForm(): React.JSX.Element {
+export function HotelEditForm({ id }: HotelEditFormProps): React.JSX.Element {
   const router = useRouter();
-  const { mutate: createHotel, isPending, isError, error } = useCreateHotel();
-  const { mutateAsync: uploadImages } = useUploadHotelImages();
+  const { data: hotel, isLoading: isFetching, isError: isFetchError } = useHotel(id);
+  const { mutate: updateHotel, isPending: isUpdating, isError, error } = useUpdateHotel(id);
+  const { mutateAsync: uploadImages, isPending: isUploading } = useUploadHotelImages();
+  
   const [images, setImages] = React.useState<File[]>([]);
+  
+  const isPending = isUpdating || isUploading;
 
-  const { control, register, handleSubmit, formState: { errors }, watch, setValue } =
+  const { control, register, handleSubmit, formState: { errors }, watch, setValue, reset } =
     useForm<CreateHotelFormValues>({
       resolver: zodResolver(createHotelSchema) as any,
       defaultValues: {
@@ -76,59 +86,61 @@ export function HotelCreateForm(): React.JSX.Element {
       },
     });
 
+  React.useEffect(() => {
+    if (hotel && hotel.place) {
+      reset({
+        title: hotel.place.title || '',
+        slug: hotel.place.slug || '',
+        short_description: hotel.place.short_description || '',
+        whatsapp_number: hotel.place.whatsapp_number || '',
+        hotel_type: hotel.hotel_type || HotelType.HOTEL,
+        star_rating: hotel.star_rating || 3,
+        total_rooms: hotel.total_rooms || undefined,
+        price_from_azn: hotel.price_from_azn || undefined,
+        price_to_azn: hotel.price_to_azn || undefined,
+        check_in_time: hotel.check_in_time || '14:00',
+        check_out_time: hotel.check_out_time || '12:00',
+        has_wifi: hotel.has_wifi || false,
+        has_parking: hotel.has_parking || false,
+        has_pool: hotel.has_pool || false,
+        has_spa: hotel.has_spa || false,
+        has_gym: hotel.has_gym || false,
+        has_restaurant: hotel.has_restaurant || false,
+        has_room_service: hotel.has_room_service || false,
+        has_airport_transfer: hotel.has_airport_transfer || false,
+        pets_allowed: hotel.pets_allowed || false,
+        accepts_cards: hotel.accepts_cards || false,
+        is_featured: hotel.place.is_featured || false,
+        address: hotel.place.address || '',
+        google_maps_url: (hotel.place as any).google_maps_url || '',
+        city: hotel.place.city || '',
+        language: (hotel.place as any).language || 'az',
+        status: hotel.place.status || PlaceStatus.ACTIVE,
+      });
+    }
+  }, [hotel, reset]);
+
   const titleValue = watch('title');
   React.useEffect(() => {
-    const slug = titleValue
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-    setValue('slug', slug);
-  }, [titleValue, setValue]);
-
-  function fillTestData() {
-    const langs = ['az', 'en', 'ru', 'tr', 'ar', 'hi'] as const;
-    const lang = langs[Math.floor(Math.random() * langs.length)];
-    const names = [
-      'Baku Palace Hotel', 'Caspian Grand Resort', 'Old City Boutique Hotel',
-      'Abseron Hotel Baku', 'Four Seasons Baku', 'Hilton Baku', 'JW Marriott Baku'
-    ];
-    const name = names[Math.floor(Math.random() * names.length)];
-    setValue('title', name);
-    setValue('short_description', 'Hər zəvqə uyğun məkanlar, premium xidmət və unutulmaz təcrübə ilə Bakının mərkəzində yerləşən lüks oteli.');
-    setValue('whatsapp_number', '+994 50 123 45 67');
-    setValue('city', 'Bakı');
-    setValue('address', 'İstiqaliyyət küçəsi 1, Bakı, Azərbaycan');
-    setValue('hotel_type', HotelType.HOTEL);
-    setValue('star_rating', 5);
-    setValue('total_rooms', 120);
-    setValue('price_from_azn', 150);
-    setValue('price_to_azn', 450);
-    setValue('check_in_time', '14:00');
-    setValue('check_out_time', '12:00');
-    setValue('has_wifi', true);
-    setValue('has_parking', true);
-    setValue('has_pool', true);
-    setValue('has_spa', true);
-    setValue('has_gym', true);
-    setValue('has_restaurant', true);
-    setValue('has_room_service', true);
-    setValue('has_airport_transfer', true);
-    setValue('pets_allowed', false);
-    setValue('accepts_cards', true);
-    setValue('is_featured', true);
-    setValue('language', lang);
-  }
+    if (titleValue && hotel && titleValue !== hotel.place?.title) {
+        const slug = titleValue
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-')
+        .trim();
+        setValue('slug', slug);
+    }
+  }, [titleValue, hotel, setValue]);
 
   function onSubmit(values: CreateHotelFormValues) {
-    createHotel(values, {
-      onSuccess: async (hotel) => {
+    updateHotel(values, {
+      onSuccess: async () => {
         if (images.length > 0) {
           const formData = new FormData();
           images.forEach((image) => formData.append('images', image));
           try {
-            await uploadImages({ id: hotel.id, formData });
+            await uploadImages({ id, formData });
           } catch (err) {
             console.error('Image upload error:', err);
           }
@@ -138,6 +150,18 @@ export function HotelCreateForm(): React.JSX.Element {
     });
   }
 
+  if (isFetching) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isFetchError || !hotel) {
+    return <Alert severity="error">Otel tapılmadı və ya xəta baş verdi.</Alert>;
+  }
+
   return (
     <form onSubmit={handleSubmit(onSubmit as any)} noValidate>
       <Stack spacing={4}>
@@ -145,17 +169,7 @@ export function HotelCreateForm(): React.JSX.Element {
           <Button startIcon={<ArrowLeftIcon />} variant="text" onClick={() => router.push(paths.dashboard.hotels)}>
             Geri
           </Button>
-          <Typography variant="h4">Yeni Otel Əlavə Et</Typography>
-          <Box sx={{ flex: 1 }} />
-          <Button
-            variant="outlined"
-            color="secondary"
-            size="small"
-            onClick={fillTestData}
-            sx={{ fontWeight: 700, borderStyle: 'dashed' }}
-          >
-            🧪 Test Məlumatlarını Doldur
-          </Button>
+          <Typography variant="h4">Oteli Redaktə Et</Typography>
         </Stack>
 
         {isError && (
@@ -174,7 +188,7 @@ export function HotelCreateForm(): React.JSX.Element {
                 <TextField {...register('title')} label="Otelin adı" fullWidth required error={Boolean(errors.title)} helperText={errors.title?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: Boolean(watch('slug')) || undefined }} error={Boolean(errors.slug)} helperText={errors.slug?.message ?? 'Avtomatik yaranılır'} />
+                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: true }} error={Boolean(errors.slug)} helperText={errors.slug?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -183,7 +197,7 @@ export function HotelCreateForm(): React.JSX.Element {
                   render={({ field }) => (
                     <FormControl fullWidth>
                       <InputLabel>Məzmun dili</InputLabel>
-                      <Select {...field} label="Məzmun dili">
+                      <Select {...field} label="Məzmun dili" disabled>
                         <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
                         <MenuItem value="en">🇬🇧 English</MenuItem>
                         <MenuItem value="ru">🇷🇺 Русский</MenuItem>
@@ -206,15 +220,12 @@ export function HotelCreateForm(): React.JSX.Element {
                     <TextField
                       {...field}
                       onChange={(e) => field.onChange(formatPhoneNumber(e.target.value))}
-                      onFocus={(e) => {
-                        if (!e.target.value) field.onChange('+994 ');
-                      }}
                       label="WhatsApp nömrəsi"
                       fullWidth
                       required
                       placeholder="+994 50 123 45 67"
                       error={Boolean(errors.whatsapp_number)}
-                      helperText={errors.whatsapp_number?.message ?? 'Nümunə: +994 xx xxx xx xx'}
+                      helperText={errors.whatsapp_number?.message}
                     />
                   )}
                 />
@@ -227,6 +238,22 @@ export function HotelCreateForm(): React.JSX.Element {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel>Status</InputLabel>
+                      <Select {...field} label="Status">
+                        <MenuItem value={PlaceStatus.ACTIVE}>Aktiv</MenuItem>
+                        <MenuItem value={PlaceStatus.PENDING}>Gözləmədə</MenuItem>
+                        <MenuItem value={PlaceStatus.INACTIVE}>Deaktiv</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
               </Grid>
             </Grid>
           </CardContent>
@@ -319,59 +346,76 @@ export function HotelCreateForm(): React.JSX.Element {
           <CardHeader title="Şəkillər" />
           <Divider />
           <CardContent>
-            <Button variant="outlined" component="label">
-              Şəkil Seç
-              <input
-                type="file"
-                multiple
-                accept="image/*"
-                hidden
-                onChange={(e) => {
-                  const files = Array.from(e.target.files || []);
-                  setImages((prev) => [...prev, ...files]);
-                  // Reset the input value so the same file can be selected again if it's removed
-                  e.target.value = '';
-                }}
-              />
-            </Button>
-            {images.length > 0 && (
-              <Box sx={{ mt: 2 }}>
-                <Typography variant="body2">{images.length} şəkil seçildi</Typography>
-                <Stack direction="row" spacing={1} sx={{ mt: 1, overflowX: 'auto', py: 1 }}>
-                  {images.map((img, idx) => (
-                    <Box key={`${img.name}-${idx}`} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
-                      <img
-                        src={URL.createObjectURL(img)}
-                        alt={`preview-${idx}`}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      />
-                      <IconButton
-                        size="small"
-                        onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}
-                        sx={{
-                          position: 'absolute',
-                          top: 4,
-                          right: 4,
-                          bgcolor: 'background.paper',
-                          width: 20,
-                          height: 20,
-                          '&:hover': { bgcolor: 'background.paper' },
-                        }}
-                      >
-                        <XIcon size={12} weight="bold" />
-                      </IconButton>
-                    </Box>
-                  ))}
-                </Stack>
+            <Stack spacing={3}>
+              {hotel.place?.images && hotel.place.images.length > 0 && (
+                <Box>
+                  <Typography variant="subtitle2" gutterBottom>Mövcud Şəkillər</Typography>
+                  <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
+                    {hotel.place.images.map((img: any) => (
+                      <Box key={img.id} sx={{ width: 100, height: 100, borderRadius: 1, overflow: 'hidden', flexShrink: 0 }}>
+                        <img src={img.url} alt="hotel" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      </Box>
+                    ))}
+                  </Stack>
+                </Box>
+              )}
+
+              <Box>
+                <Typography variant="subtitle2" gutterBottom>Yeni Şəkillər Əlavə Et</Typography>
+                <Button variant="outlined" component="label">
+                  Şəkil Seç
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    hidden
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      setImages((prev) => [...prev, ...files]);
+                      e.target.value = '';
+                    }}
+                  />
+                </Button>
+                {images.length > 0 && (
+                  <Box sx={{ mt: 2 }}>
+                    <Typography variant="body2">{images.length} yeni şəkil seçildi</Typography>
+                    <Stack direction="row" spacing={1} sx={{ mt: 1, overflowX: 'auto', py: 1 }}>
+                      {images.map((img, idx) => (
+                        <Box key={`${img.name}-${idx}`} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                          <img
+                            src={URL.createObjectURL(img)}
+                            alt={`preview-${idx}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          />
+                          <IconButton
+                            size="small"
+                            onClick={() => setImages((prev) => prev.filter((_, i) => i !== idx))}
+                            sx={{
+                              position: 'absolute',
+                              top: 4,
+                              right: 4,
+                              bgcolor: 'background.paper',
+                              width: 20,
+                              height: 20,
+                              '&:hover': { bgcolor: 'background.paper' },
+                            }}
+                          >
+                            <XIcon size={12} weight="bold" />
+                          </IconButton>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
               </Box>
-            )}
+            </Stack>
           </CardContent>
         </Card>
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
           <Button variant="outlined" onClick={() => router.push(paths.dashboard.hotels)}>Ləğv et</Button>
           <Button type="submit" variant="contained" disabled={isPending}>
-            {isPending ? 'Saxlanılır...' : 'Otel Əlavə Et'}
+            {isPending ? 'Saxlanılır...' : 'Dəyişiklikləri Yadda Saxla'}
           </Button>
         </Box>
       </Stack>

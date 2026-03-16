@@ -55,13 +55,9 @@ export class CreateHotelDto {
   @IsOptional()
   city?: string;
 
+  @IsString()
   @IsOptional()
-  @Type(() => Number)
-  latitude?: number;
-
-  @IsOptional()
-  @Type(() => Number)
-  longitude?: number;
+  google_maps_url?: string;
 
   @IsString()
   @IsOptional()

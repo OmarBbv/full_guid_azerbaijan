@@ -42,6 +42,7 @@ export function CityCreateForm(): React.JSX.Element {
         slug: '',
         language: 'az',
         country_code: 'AZ',
+        google_maps_url: '',
         is_active: true,
         is_featured: false,
         sort_order: 0,
@@ -86,8 +87,7 @@ export function CityCreateForm(): React.JSX.Element {
   function fillTestData() {
     setValue('name', 'Baku');
     setValue('description', 'Azərbaycanın paytaxtı — Xəzər dənizinin sahilindəki canlı şəhər. Şərq və Qərb mədəniyyətlərinin qovuşduğu bu şəhər öz müasir memarlığı və qədim İçərişəhəri ilə tanınır.');
-    setValue('latitude', 40.3755);
-    setValue('longitude', 49.8328);
+    setValue('google_maps_url', 'https://www.google.com/maps/place/Baku');
     setValue('region', 'Abşeron');
     setValue('country_code', 'AZ');
     setValue('language', 'az');
@@ -131,8 +131,6 @@ export function CityCreateForm(): React.JSX.Element {
     createCity(
       {
         ...values,
-        latitude: values.latitude ? Number(values.latitude) : undefined,
-        longitude: values.longitude ? Number(values.longitude) : undefined,
         highlights: highlights.length > 0 ? highlights : undefined,
         attractions: attractions.length > 0 ? attractions : undefined
       },
@@ -485,24 +483,12 @@ export function CityCreateForm(): React.JSX.Element {
           <Divider />
           <CardContent>
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 3 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
-                  {...register('latitude')}
-                  label="Enlik (Latitude)"
-                  type="number"
+                  {...register('google_maps_url')}
+                  label="Google Maps URL"
                   fullWidth
-                  inputProps={{ step: 0.000001 }}
-                  helperText="Məs: 40.375"
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 3 }}>
-                <TextField
-                  {...register('longitude')}
-                  label="Uzunluq (Longitude)"
-                  type="number"
-                  fullWidth
-                  inputProps={{ step: 0.000001 }}
-                  helperText="Məs: 49.832"
+                  helperText="Məs: https://www.google.com/maps/..."
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 3 }}>

@@ -62,6 +62,7 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
         slug: '',
         short_description: '',
         whatsapp_number: '',
+        google_maps_url: '',
         hostel_type: HostelType.BACKPACKER,
         check_in_time: '14:00',
         check_out_time: '12:00',
@@ -88,6 +89,7 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
         whatsapp_number: hostel.place?.whatsapp_number || '',
         city: hostel.place?.city || '',
         address: hostel.place?.address || '',
+        google_maps_url: (hostel.place as any)?.google_maps_url || '',
         hostel_type: hostel.hostel_type || HostelType.BACKPACKER,
         dorm_beds_count: hostel.dorm_beds_count ?? undefined,
         private_rooms_count: hostel.private_rooms_count ?? undefined,
@@ -218,6 +220,9 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth InputLabelProps={{ shrink: true }} />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth InputLabelProps={{ shrink: true }} error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
               </Grid>
             </Grid>
           </CardContent>

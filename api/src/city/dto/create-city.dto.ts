@@ -41,15 +41,9 @@ export class CreateCityDto {
   @IsOptional()
   gallery_urls?: string[];
 
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  @Type(() => Number)
-  latitude?: number;
-
-  @IsNumber()
-  @IsOptional()
-  @Type(() => Number)
-  longitude?: number;
+  google_maps_url?: string;
 
   @IsString()
   @MaxLength(100)

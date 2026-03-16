@@ -23,6 +23,14 @@ export function useVenue(id: number) {
   });
 }
 
+export function useVenueAdmin(id: number) {
+  return useQuery({
+    queryKey: VENUE_KEYS.detail(id),
+    queryFn: () => venueService.getByIdAdmin(id),
+    enabled: !!id,
+  });
+}
+
 export function useCreateVenue() {
   const qc = useQueryClient();
   return useMutation({
@@ -47,7 +55,7 @@ export function useUpdateVenue(id: number) {
 export function useChangeVenueStatus() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, status }: { id: number, status: VenueStatus }) => 
+    mutationFn: ({ id, status }: { id: number, status: VenueStatus }) =>
       venueService.changeStatus(id, status),
     onSuccess: (_, variables) => {
       qc.invalidateQueries({ queryKey: ['venues'] });

@@ -27,7 +27,7 @@ import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 
 import { createPlaceSchema, type CreatePlaceFormValues } from './place-schema';
 import { useCreatePlace, useUploadPlaceImages } from '@/hooks/use-places';
-import { PlaceType } from '@/types/restaurant';
+import { PlaceType, PlaceStatus } from '@/types/restaurant';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
 
@@ -42,7 +42,6 @@ const placeTypeLabels: Record<PlaceType, string> = {
   [PlaceType.OTHER]: 'Digər',
 };
 
-// Yalnız otel, hostel və restoran olmayanları seçmək üçün
 const selectablePlaceTypes = [
   PlaceType.LANDMARK,
   PlaceType.NATURE,
@@ -72,10 +71,12 @@ export function PlaceCreateForm(): React.JSX.Element {
         email: '',
         city: '',
         address: '',
+        google_maps_url: '',
         type: PlaceType.LANDMARK,
         is_featured: false,
         show_in_hero: false,
         language: 'az',
+        status: PlaceStatus.ACTIVE,
       },
     });
 
@@ -332,6 +333,9 @@ export function PlaceCreateForm(): React.JSX.Element {
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth required error={Boolean(errors.address)} helperText={errors.address?.message} />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
               </Grid>
             </Grid>
           </CardContent>

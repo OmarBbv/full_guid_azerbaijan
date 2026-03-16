@@ -23,14 +23,17 @@ import Switch from '@mui/material/Switch';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
+import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
 
 import { createRestaurantSchema, type CreateRestaurantFormValues } from './restaurant-schema';
-import { useCreateRestaurant, useUploadRestaurantImages } from '@/hooks/use-restaurants';
+import { useRestaurant, useUpdateRestaurant, useUploadRestaurantImages } from '@/hooks/use-restaurants';
 import { CuisineType, DiningStyle, PriceRange, PlaceStatus } from '@/types/restaurant';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
+import { apiClient } from '@/lib/api-client';
 
 // ─── Enum labels ──────────────────────────────────────────────────────────────
 
@@ -64,13 +67,21 @@ const priceRangeLabels: Record<PriceRange, string> = {
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
-export function RestaurantCreateForm(): React.JSX.Element {
-  const router = useRouter();
-  const { mutate: createRestaurant, isPending, isError, error } = useCreateRestaurant();
-  const { mutateAsync: uploadImages } = useUploadRestaurantImages();
-  const [images, setImages] = React.useState<File[]>([]);
+interface RestaurantEditFormProps {
+  id: string;
+}
 
-  const { control, register, handleSubmit, formState: { errors }, watch, setValue } =
+export function RestaurantEditForm({ id }: RestaurantEditFormProps): React.JSX.Element {
+  const router = useRouter();
+  const { data: restaurant, isLoading: isLoadingRestaurant, isError: isLoadError } = useRestaurant(id);
+  const { mutate: updateRestaurant, isPending: isUpdating, isError: isUpdateError, error: updateError } = useUpdateRestaurant(id);
+  const { mutateAsync: uploadImages } = useUploadRestaurantImages();
+  
+  const [images, setImages] = React.useState<File[]>([]);
+  const [isUploadingThumbnail, setIsUploadingThumbnail] = React.useState(false);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
+
+  const { control, register, handleSubmit, formState: { errors }, watch, setValue, reset } =
     useForm<CreateRestaurantFormValues>({
       resolver: zodResolver(createRestaurantSchema) as any,
       defaultValues: {
@@ -104,51 +115,87 @@ export function RestaurantCreateForm(): React.JSX.Element {
       },
     });
 
-  // Auto-generate slug from title
-  const titleValue = watch('title');
+  // Populate form when data is loaded
   React.useEffect(() => {
-    const slug = titleValue
-      .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .trim();
-    setValue('slug', slug);
-  }, [titleValue, setValue]);
+    if (restaurant && restaurant.place) {
+      const { place } = restaurant;
+      reset({
+        title: place.title || '',
+        slug: place.slug || '',
+        short_description: place.short_description || '',
+        detailed_description: place.detailed_description || '',
+        whatsapp_number: place.whatsapp_number || '',
+        phone_number: place.phone_number || '',
+        email: place.email || '',
+        city: place.city || '',
+        address: place.address || '',
+        google_maps_url: (place as any).google_maps_url || '',
+        thumbnail: place.thumbnail || '',
+        cuisine_type: restaurant.cuisine_type || CuisineType.AZERBAIJANI,
+        dining_style: restaurant.dining_style || DiningStyle.CASUAL,
+        price_range: restaurant.price_range || PriceRange.MID,
+        avg_bill_per_person_azn: restaurant.avg_bill_per_person_azn || 0,
+        seating_capacity: restaurant.seating_capacity || 0,
+        has_wifi: restaurant.has_wifi || false,
+        has_parking: restaurant.has_parking || false,
+        has_outdoor_seating: restaurant.has_outdoor_seating || false,
+        has_live_music: restaurant.has_live_music || false,
+        is_halal_certified: restaurant.is_halal_certified || false,
+        is_vegetarian_friendly: restaurant.is_vegetarian_friendly || false,
+        has_private_rooms: restaurant.has_private_rooms || false,
+        accepts_cards: restaurant.accepts_cards || false,
+        is_featured: place.is_featured || false,
+        language: (place as any).language || 'az',
+        status: place.status || PlaceStatus.ACTIVE,
+      });
+      if (place.thumbnail) {
+        setPreviewUrl(place.thumbnail);
+      }
+    }
+  }, [restaurant, reset]);
 
-  const handleFillTestData = () => {
-    setValue('title', 'Art Club Restaurant');
-    setValue('short_description', 'Bakının köhnə şəhərində yerləşən, ənənəvi və modern Azərbaycan mətbəxini birləşdirən zərif restoran.');
-    setValue('detailed_description', 'Art Club həm yerli, həm də xarici qonaqlar üçün xüsusi dizayn edilmiş interyeri və xüsusi dadları ilə fərqlənən unikal məkanlardan biridir. Təzə dəniz məhsulları və yerli ət yeməkləri xüsusi reseptlərlə hazırlanır.');
-    setValue('whatsapp_number', '+994 50 123 45 67');
-    setValue('phone_number', '+994 12 123 45 67');
-    setValue('email', 'info@artclub.az');
-    setValue('city', 'Bakı');
-    setValue('address', 'İçərişəhər, Asəf Zeynallı küç. 11');
-    setValue('cuisine_type', CuisineType.AZERBAIJANI);
-    setValue('dining_style', DiningStyle.FINE_DINING);
-    setValue('price_range', PriceRange.UPSCALE);
-    setValue('avg_bill_per_person_azn', 60);
-    setValue('seating_capacity', 120);
-    setValue('has_wifi', true);
-    setValue('has_parking', true);
-    setValue('has_outdoor_seating', true);
-    setValue('has_live_music', true);
-    setValue('is_halal_certified', true);
-    setValue('is_vegetarian_friendly', true);
-    setValue('has_private_rooms', true);
-    setValue('accepts_cards', true);
-    setValue('is_featured', true);
+  const handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Show preview
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+
+    // Upload immediately
+    setIsUploadingThumbnail(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await apiClient.post('/upload/image', formData, {
+        headers: { 'Content-Type': undefined },
+      });
+      const resData = response.data;
+      const url = resData?.data?.url ?? resData?.url;
+      if (!url) {
+        throw new Error('URL gəlmədi');
+      }
+      setValue('thumbnail', url);
+    } catch (err) {
+      console.error('Şəkil yüklənmədi:', err);
+      alert('Şəkil yüklənməsində xəta baş verdi');
+    } finally {
+      setIsUploadingThumbnail(false);
+    }
   };
 
-  function onSubmit(values: CreateRestaurantFormValues) {
-    createRestaurant(values, {
-      onSuccess: async (restaurant) => {
+  async function onSubmit(values: CreateRestaurantFormValues) {
+    updateRestaurant(values, {
+      onSuccess: async () => {
         if (images.length > 0) {
           const formData = new FormData();
           images.forEach((image) => formData.append('images', image));
           try {
-            await uploadImages({ id: restaurant.id, formData });
+            await uploadImages({ id, formData });
           } catch (err) {
             console.error('Image upload error:', err);
           }
@@ -156,6 +203,22 @@ export function RestaurantCreateForm(): React.JSX.Element {
         router.push(paths.dashboard.restaurants);
       },
     });
+  }
+
+  if (isLoadingRestaurant) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  if (isLoadError) {
+    return (
+      <Alert severity="error">
+        Restoran məlumatlarını yükləyərkən xəta baş verdi.
+      </Alert>
+    );
   }
 
   return (
@@ -166,12 +229,12 @@ export function RestaurantCreateForm(): React.JSX.Element {
           <Button startIcon={<ArrowLeftIcon />} variant="text" onClick={() => router.push(paths.dashboard.restaurants)}>
             Geri
           </Button>
-          <Typography variant="h4">Yeni Restoran Əlavə Et</Typography>
+          <Typography variant="h4">Restoranı Redaktə Et</Typography>
         </Stack>
 
-        {isError && (
+        {isUpdateError && (
           <Alert severity="error">
-            {(error as any)?.response?.data?.message ?? 'Xəta baş verdi. Yenidən cəhd edin.'}
+            {(updateError as any)?.response?.data?.message ?? 'Xəta baş verdi. Yenidən cəhd edin.'}
           </Alert>
         )}
 
@@ -185,7 +248,7 @@ export function RestaurantCreateForm(): React.JSX.Element {
                 <TextField {...register('title')} label="Restoranın adı" fullWidth required error={Boolean(errors.title)} helperText={errors.title?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('slug')} label="Slug (URL)" fullWidth required InputLabelProps={{ shrink: Boolean(watch('slug')) || undefined }} error={Boolean(errors.slug)} helperText={errors.slug?.message ?? 'Avtomatik yaranılır'} />
+                <TextField {...register('slug')} label="Slug (URL)" fullWidth required error={Boolean(errors.slug)} helperText={errors.slug?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
@@ -201,6 +264,22 @@ export function RestaurantCreateForm(): React.JSX.Element {
                         <MenuItem value="tr">🇹🇷 Türkçe</MenuItem>
                         <MenuItem value="ar">🇸🇦 العربية</MenuItem>
                         <MenuItem value="hi">🇮🇳 हिन्दी</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel>Status</InputLabel>
+                      <Select {...field} label="Status">
+                        <MenuItem value={PlaceStatus.ACTIVE}>Aktiv</MenuItem>
+                        <MenuItem value={PlaceStatus.INACTIVE}>Deaktiv</MenuItem>
+                        <MenuItem value={PlaceStatus.PENDING}>Gözləmədə</MenuItem>
                       </Select>
                     </FormControl>
                   )}
@@ -230,15 +309,12 @@ export function RestaurantCreateForm(): React.JSX.Element {
                     <TextField
                       {...field}
                       onChange={(e) => field.onChange(formatPhoneNumber(e.target.value))}
-                      onFocus={(e) => {
-                        if (!e.target.value) field.onChange('+994 ');
-                      }}
                       label="WhatsApp nömrəsi"
                       fullWidth
                       required
                       placeholder="+994 50 123 45 67"
                       error={Boolean(errors.whatsapp_number)}
-                      helperText={errors.whatsapp_number?.message ?? '+994 xx xxx xx xx'}
+                      helperText={errors.whatsapp_number?.message}
                     />
                   )}
                 />
@@ -251,9 +327,6 @@ export function RestaurantCreateForm(): React.JSX.Element {
                     <TextField
                       {...field}
                       onChange={(e) => field.onChange(formatPhoneNumber(e.target.value))}
-                      onFocus={(e) => {
-                        if (!e.target.value) field.onChange('+994 ');
-                      }}
                       label="Telefon nömrəsi"
                       fullWidth
                       placeholder="+994 50 123 45 67"
@@ -271,7 +344,7 @@ export function RestaurantCreateForm(): React.JSX.Element {
                 <TextField {...register('address')} label="Ünvan" fullWidth />
               </Grid>
               <Grid size={{ xs: 12 }}>
-                <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
+                <TextField {...register('google_maps_url')} label="Google Maps URL" fullWidth InputLabelProps={{ shrink: true }} error={Boolean(errors.google_maps_url)} helperText={errors.google_maps_url?.message} />
               </Grid>
             </Grid>
           </CardContent>
@@ -333,10 +406,10 @@ export function RestaurantCreateForm(): React.JSX.Element {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <TextField {...register('avg_bill_per_person_azn')} label="Ortalama hesab (AZN/nəfər)" type="number" fullWidth inputProps={{ min: 0 }} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
+                <TextField {...register('avg_bill_per_person_azn')} label="Ortalama hesab (AZN/nəfər)" type="number" fullWidth inputProps={{ min: 0 }} />
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
-                <TextField {...register('seating_capacity')} label="Oturma yeri (nəfər)" type="number" fullWidth inputProps={{ min: 1 }} onWheel={(e) => (e.target as HTMLInputElement).blur()} />
+                <TextField {...register('seating_capacity')} label="Oturma yeri (nəfər)" type="number" fullWidth inputProps={{ min: 1 }} />
               </Grid>
             </Grid>
           </CardContent>
@@ -378,13 +451,69 @@ export function RestaurantCreateForm(): React.JSX.Element {
           </CardContent>
         </Card>
 
-        {/* Images */}
+        {/* Thumbnail */}
         <Card>
-          <CardHeader title="Şəkillər" />
+          <CardHeader title="Əsas Şəkil (Thumbnail)" />
           <Divider />
           <CardContent>
+             <Stack direction="row" spacing={3} alignItems="center">
+                <Button
+                  variant="outlined"
+                  component="label"
+                  startIcon={<UploadIcon />}
+                  disabled={isUploadingThumbnail}
+                >
+                  {isUploadingThumbnail ? 'Yüklənir...' : 'Şəkli dəyiş'}
+                  <input
+                    type="file"
+                    hidden
+                    accept="image/*"
+                    onChange={handleThumbnailChange}
+                  />
+                </Button>
+                {previewUrl && (
+                  <Box
+                    component="img"
+                    src={previewUrl}
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      borderRadius: 1,
+                      objectFit: 'cover',
+                      border: '1px solid',
+                      borderColor: 'divider',
+                    }}
+                  />
+                )}
+              </Stack>
+              {errors.thumbnail?.message && (
+                <Typography color="error" variant="caption" sx={{ mt: 1, display: 'block' }}>
+                  {String(errors.thumbnail.message)}
+                </Typography>
+              )}
+          </CardContent>
+        </Card>
+
+        {/* Gallery Images */}
+        <Card>
+          <CardHeader title="Qalereya Şəkilləri" />
+          <Divider />
+          <CardContent>
+            {restaurant?.menu_images && restaurant.menu_images.length > 0 && (
+                <Box sx={{ mb: 3 }}>
+                    <Typography variant="subtitle2" gutterBottom>Mövcud şəkillər (Menyu):</Typography>
+                    <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
+                        {restaurant.menu_images.map((url: string, idx: number) => (
+                            <Box key={idx} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0 }}>
+                                <img src={url} alt="Menu" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                            </Box>
+                        ))}
+                    </Stack>
+                </Box>
+            )}
+
             <Button variant="outlined" component="label">
-              Şəkil Seç
+              Yeni Şəkillər Seç
               <input
                 type="file"
                 multiple
@@ -399,7 +528,7 @@ export function RestaurantCreateForm(): React.JSX.Element {
             </Button>
             {images.length > 0 && (
               <Box sx={{ mt: 2 }}>
-                <Typography variant="body2">{images.length} şəkil seçildi</Typography>
+                <Typography variant="body2">{images.length} yeni şəkil seçildi</Typography>
                 <Stack direction="row" spacing={1} sx={{ mt: 1, overflowX: 'auto', py: 1 }}>
                   {images.map((img, idx) => (
                     <Box key={`${img.name}-${idx}`} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
@@ -432,14 +561,11 @@ export function RestaurantCreateForm(): React.JSX.Element {
         </Card>
 
         {/* Actions */}
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Button variant="text" color="info" onClick={handleFillTestData}>Test Məlumatlarını Doldur</Button>
-          <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button variant="outlined" onClick={() => router.push(paths.dashboard.restaurants)}>Ləğv et</Button>
-            <Button type="submit" variant="contained" disabled={isPending}>
-              {isPending ? 'Saxlanılır...' : 'Restoran Əlavə Et'}
-            </Button>
-          </Box>
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
+          <Button variant="outlined" onClick={() => router.push(paths.dashboard.restaurants)}>Ləğv et</Button>
+          <Button type="submit" variant="contained" disabled={isUpdating || isUploadingThumbnail}>
+            {isUpdating ? 'Saxlanılır...' : 'Məlumatları Yenilə'}
+          </Button>
         </Box>
       </Stack>
     </form>

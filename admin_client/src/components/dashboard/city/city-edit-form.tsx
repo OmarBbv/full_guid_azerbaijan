@@ -60,8 +60,7 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
         slug: city.slug,
         language: city.language ?? 'az',
         description: city.description ?? undefined,
-        latitude: city.latitude ?? undefined,
-        longitude: city.longitude ?? undefined,
+        google_maps_url: (city as any).google_maps_url ?? undefined,
         region: city.region ?? undefined,
         country_code: city.country_code ?? undefined,
         meta_title: city.meta_title ?? undefined,
@@ -119,8 +118,6 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
     updateCity(
       { 
         ...values, 
-        latitude: values.latitude ? Number(values.latitude) : undefined,
-        longitude: values.longitude ? Number(values.longitude) : undefined,
         highlights: highlights.length > 0 ? highlights : undefined 
       },
       {
@@ -359,25 +356,11 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
           <Divider />
           <CardContent>
             <Grid container spacing={3}>
-              <Grid size={{ xs: 12, md: 3 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <TextField
-                  {...register('latitude')}
-                  label="Enlik (Latitude)"
-                  type="number"
+                  {...register('google_maps_url')}
+                  label="Google Maps URL"
                   fullWidth
-                  inputProps={{ step: 0.000001 }}
-                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid size={{ xs: 12, md: 3 }}>
-                <TextField
-                  {...register('longitude')}
-                  label="Uzunluq (Longitude)"
-                  type="number"
-                  fullWidth
-                  inputProps={{ step: 0.000001 }}
-                  onWheel={(e) => (e.target as HTMLInputElement).blur()}
                   InputLabelProps={{ shrink: true }}
                 />
               </Grid>
