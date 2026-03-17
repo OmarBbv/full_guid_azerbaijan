@@ -12,6 +12,8 @@ import { ListIcon } from '@phosphor-icons/react/dist/ssr/List';
 import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass';
 import { UsersIcon } from '@phosphor-icons/react/dist/ssr/Users';
 
+import { UserIcon } from '@phosphor-icons/react/dist/ssr/User';
+
 import { usePopover } from '@/hooks/use-popover';
 
 import { MobileNav } from './mobile-nav';
@@ -70,9 +72,11 @@ export function MainNav(): React.JSX.Element {
             <Avatar
               onClick={userPopover.handleOpen}
               ref={userPopover.anchorRef}
-              src="/admin/assets/avatar.png"
               sx={{ cursor: 'pointer' }}
-            />
+            >
+              <UserIcon fontSize="var(--icon-fontSize-md)" />
+            </Avatar>
+
           </Stack>
         </Stack>
       </Box>

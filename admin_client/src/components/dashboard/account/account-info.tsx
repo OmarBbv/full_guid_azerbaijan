@@ -8,9 +8,10 @@ import Divider from '@mui/material/Divider';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 
+import { UserIcon } from '@phosphor-icons/react/dist/ssr/User';
+
 const user = {
   name: 'Admin',
-  avatar: '/admin/assets/avatar.png',
   jobTitle: 'Administrator',
   country: 'Azərbaycan',
   city: 'Bakı',
@@ -23,7 +24,9 @@ export function AccountInfo(): React.JSX.Element {
       <CardContent>
         <Stack spacing={2} sx={{ alignItems: 'center' }}>
           <div>
-            <Avatar src={user.avatar} sx={{ height: '80px', width: '80px' }} />
+            <Avatar sx={{ height: '80px', width: '80px' }}>
+              <UserIcon fontSize="40px" />
+            </Avatar>
           </div>
           <Stack spacing={1} sx={{ textAlign: 'center' }}>
             <Typography variant="h5">{user.name}</Typography>
@@ -38,8 +41,8 @@ export function AccountInfo(): React.JSX.Element {
       </CardContent>
       <Divider />
       <CardActions>
-        <Button fullWidth variant="text">
-          Şəkil yüklə
+        <Button fullWidth variant="text" disabled>
+          Şəkil yüklə (Deaktivdir)
         </Button>
       </CardActions>
     </Card>

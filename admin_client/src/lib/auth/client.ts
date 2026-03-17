@@ -10,7 +10,6 @@ function generateToken(): string {
 
 const user = {
   id: 'USR-000',
-  avatar: '/admin/assets/avatar.png',
   firstName: 'Admin',
   lastName: '',
   email: 'admin@fullguide.az',
