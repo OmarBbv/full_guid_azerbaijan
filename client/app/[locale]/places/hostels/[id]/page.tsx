@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Backpack, MapPin, ChevronLeft, Wifi, Zap, Shield, Loader2, Camera, Star } from 'lucide-react';
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
@@ -16,6 +16,9 @@ import un_photo_1596394516093_501ba68a0ba6_629067c0 from "@/assets/unsplash/phot
 export default function HostelDetailPage() {
   const params = useParams();
   const locale = useLocale();
+  const t = useTranslations('VenueDetail');
+  const tCommon = useTranslations('Navbar');
+  const tPlaces = useTranslations('PlacesPage');
   const id = params.id as string;
   const { data: hostel, isLoading } = usePlaceById(id, locale);
 
@@ -36,9 +39,9 @@ export default function HostelDetailPage() {
   if (!hostel) {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <h1 className="text-2xl font-bold">Hostel tapılmadı</h1>
+        <h1 className="text-2xl font-bold">{t('not_found')}</h1>
         <Link href="/places/hostels" className="text-primary hover:underline flex items-center gap-2">
-          <ChevronLeft className="w-4 h-4" /> Hostellərə qayıt
+          <ChevronLeft className="w-4 h-4" /> {t('back_to_hostels')}
         </Link>
       </div>
     );
@@ -67,13 +70,13 @@ export default function HostelDetailPage() {
         {/* Hero Content */}
         <div className="relative z-20 h-full flex flex-col items-center justify-end pb-20 text-center px-4 max-w-5xl mx-auto">
           <Link href="/places/hostels" className="absolute top-28 left-4 text-white/80 hover:text-white flex items-center gap-2 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 active:scale-95 transition-all">
-            <ChevronLeft className="w-5 h-5" /> Geri
+            <ChevronLeft className="w-5 h-5" /> {tCommon('back')}
           </Link>
 
           <div className="flex items-center gap-2 text-emerald-400 mb-4 bg-emerald-400/10 backdrop-blur-md px-4 py-1 rounded-full border border-emerald-400/20">
             <Star className="w-4 h-4 fill-emerald-400" />
             <span className="font-bold">{Number(hostel.average_rating || 5).toFixed(1)}</span>
-            <span className="text-white/60 text-sm">({hostel.review_count || 0} rəy)</span>
+            <span className="text-white/60 text-sm">({hostel.review_count || 0} {tPlaces('reviews')})</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl">
             {hostel.title}
@@ -88,14 +91,14 @@ export default function HostelDetailPage() {
         {/* Left Content */}
         <div className="lg:col-span-2 space-y-12">
           <section>
-            <h2 className="text-3xl font-black mb-6">Məlumat</h2>
+            <h2 className="text-3xl font-black mb-6">{t('tab_about')}</h2>
             <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
               {hostel.detailed_description || hostel.short_description}
             </p>
           </section>
 
           <section>
-            <h2 className="text-3xl font-black mb-8">Nə Təklif Edirik?</h2>
+            <h2 className="text-3xl font-black mb-8">{t('what_we_offer')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {((hostel as any).features || []).map((f: string, i: number) => (
                 <div key={i} className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10 hover:shadow-lg transition-all group">
@@ -111,7 +114,7 @@ export default function HostelDetailPage() {
                   <div className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
                     <Wifi className="w-5 h-5" />
                   </div>
-                  <span className="font-bold text-sm">Sürətli İnternet</span>
+                  <span className="font-bold text-sm">{t('fast_internet')}</span>
                 </div>
               )}
             </div>
@@ -122,7 +125,7 @@ export default function HostelDetailPage() {
             <section>
               <h2 className="text-3xl font-black mb-8 flex items-center gap-3">
                 <Camera className="w-8 h-8 text-emerald-600" />
-                Qalereya
+                {t('tab_gallery')}
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {hostel.images.map((img: any, i: number) => (
@@ -133,7 +136,7 @@ export default function HostelDetailPage() {
                   >
                     <Image
                       src={img.url ? img.url.replace('localhost', '127.0.0.1') : ''}
-                      alt={`Qalereya şəkli ${i + 1}`}
+                      alt={`${t('gallery_photo')} ${i + 1}`}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                       unoptimized
@@ -156,10 +159,10 @@ export default function HostelDetailPage() {
           <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/10">
             <div className="flex items-center gap-4 mb-4">
               <Shield className="text-emerald-500 w-10 h-10" />
-              <h2 className="text-2xl font-bold italic">Təhlükəsizlik Zəmanəti</h2>
+              <h2 className="text-2xl font-bold italic">{t('safety_guarantee')}</h2>
             </div>
             <p className="text-muted-foreground">
-              Bütün hostellərimiz FGA komandası tərəfindən şəxsən yoxlanılmışdır. Təmizlik, təhlükəsizlik və səmimiyyət bizim üçün ən vacib prinsipdir. Hər bir hosteldə şəxsi əşyalarınız üçün kilidli şkaflar (lockers) mövcuddur.
+              {t('hostel_safety_desc')}
             </p>
           </section>
         </div>

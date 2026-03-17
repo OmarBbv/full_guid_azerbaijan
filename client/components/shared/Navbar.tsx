@@ -586,11 +586,11 @@ export default function Navbar() {
                   {searchLoading ? (
                     <div className="px-4 py-6 flex items-center justify-center gap-2 text-white/40 text-sm">
                       <span className="w-4 h-4 border-2 border-white/20 border-t-white/60 rounded-full animate-spin" />
-                      Axtarılır...
+                      {t('searching') || "Axtarılır..."}
                     </div>
                   ) : searchResults.length === 0 ? (
                     <div className="px-4 py-8 text-center text-white/30 text-sm">
-                      Heç bir nəticə tapılmadı
+                      {t('no_results') || "Heç bir nəticə tapılmadı"}
                     </div>
                   ) : (
                     <div>
@@ -627,7 +627,7 @@ export default function Navbar() {
                         className="w-full flex items-center justify-center gap-2 px-4 py-3.5 text-[13px] font-semibold text-blue-400 hover:text-blue-300 hover:bg-white/5 transition-colors"
                       >
                         <Search size={13} />
-                        &ldquo;{searchQuery}&rdquo; üçün bütün nəticələrə bax
+                        {t('view_all_results', { query: searchQuery }) || `"${searchQuery}" üçün bütün nəticələrə bax`}
                       </button>
                     </div>
                   )}

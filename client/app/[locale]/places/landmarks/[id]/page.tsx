@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Castle, MapPin, ChevronLeft, Loader2, Camera, Shield } from 'lucide-react';
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
@@ -15,6 +15,8 @@ import PlaceJsonLd from '@/components/shared/PlaceJsonLd';
 export default function LandmarkDetailPage() {
   const params = useParams();
   const locale = useLocale();
+  const t = useTranslations('VenueDetail');
+  const tCommon = useTranslations('Navbar');
   const id = params.id as string;
   const { data: landmark, isLoading } = usePlaceById(id, locale);
 
@@ -35,9 +37,9 @@ export default function LandmarkDetailPage() {
   if (!landmark) {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <h1 className="text-2xl font-bold">Məkan tapılmadı</h1>
+        <h1 className="text-2xl font-bold">{t('not_found')}</h1>
         <Link href="/places/landmarks" className="text-primary hover:underline flex items-center gap-2">
-          <ChevronLeft className="w-4 h-4" /> Məkanlara qayıt
+          <ChevronLeft className="w-4 h-4" /> {t('back_to_landmarks')}
         </Link>
       </div>
     );
@@ -61,11 +63,11 @@ export default function LandmarkDetailPage() {
         </div>
         <div className="relative z-20 h-full flex flex-col items-center justify-end pb-20 text-center px-4 max-w-5xl mx-auto">
           <Link href="/places/landmarks" className="absolute top-28 left-4 text-white/80 hover:text-white flex items-center gap-2 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 active:scale-95 transition-all">
-            <ChevronLeft className="w-5 h-5" /> Geri
+            <ChevronLeft className="w-5 h-5" /> {tCommon('back')}
           </Link>
           <div className="flex items-center gap-2 text-primary mb-4 bg-primary/20 backdrop-blur-md px-5 py-2 rounded-full border border-primary/30">
             <Castle className="w-5 h-5 text-primary-content" />
-            <span className="font-bold text-white tracking-wider">TARİXİ MƏKAN</span>
+            <span className="font-bold text-white tracking-wider">{t('historical_landmark')}</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl">
             {landmark.title}
@@ -85,7 +87,7 @@ export default function LandmarkDetailPage() {
         {/* Left Content */}
         <div className="lg:col-span-2 space-y-12">
           <section>
-            <h2 className="text-3xl font-black mb-6">Məkan Haqqında</h2>
+            <h2 className="text-3xl font-black mb-6">{t('about_venue')}</h2>
             <p className="text-lg leading-relaxed whitespace-pre-line text-foreground/80">
               {landmark.detailed_description || landmark.short_description}
             </p>
@@ -96,7 +98,7 @@ export default function LandmarkDetailPage() {
             <section>
               <h2 className="text-3xl font-black mb-8 flex items-center gap-3">
                 <Camera className="w-8 h-8 text-primary" />
-                Fotolar
+                {t('tab_gallery')}
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {landmark.images.map((img, i) => (
@@ -107,7 +109,7 @@ export default function LandmarkDetailPage() {
                   >
                     <Image
                       src={img.url ? img.url.replace('localhost', '127.0.0.1') : ''}
-                      alt={`Foto ${i + 1}`}
+                      alt={`${t('gallery_photo')} ${i + 1}`}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                       unoptimized
@@ -130,10 +132,10 @@ export default function LandmarkDetailPage() {
           <section className="bg-primary/5 p-8 rounded-3xl border border-primary/10">
             <div className="flex items-center gap-4 mb-4">
               <Shield className="text-primary w-10 h-10" />
-              <h2 className="text-2xl font-bold italic">Təhlükəsizlik və Tövsiyələr</h2>
+              <h2 className="text-2xl font-bold italic">{t('safety_recommendations')}</h2>
             </div>
             <p className="text-foreground/70">
-              Tarixi məkanları ziyarət edərkən abidələrə ehtiramla yanaşmağınız xahiş olunur. Turistik zonalar polis tərəfindən 24/7 mühafizə olunur. Ətraflı məlumat üçün rəsmi turizm mərkəzlərinə (TIC) yaxınlaşa bilərsiniz.
+              {t('landmark_safety_desc')}
             </p>
           </section>
         </div>

@@ -2,8 +2,11 @@
 
 import { Mail, Phone, MapPin, Send, MessageSquare, Clock, Globe, Instagram, Facebook, Twitter } from "lucide-react";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function ContactPage() {
+  const t = useTranslations("ContactPage");
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -14,30 +17,26 @@ export default function ContactPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted:", formData);
-    // Add logic for sending message
   };
 
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/20 overflow-hidden">
-
-      {/* Decorative Background Elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
         <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[20%] w-[500px] h-[500px] rounded-full bg-accent/5 blur-[120px]" />
       </div>
 
       <div className="relative z-10">
-        {/* Header Section */}
         <section className="pt-32 pb-12 md:pt-40 md:pb-20 px-6 border-b border-border/40" style={{ background: "linear-gradient(180deg, var(--muted) 0%, var(--background) 100%)" }}>
           <div className="max-w-7xl mx-auto text-center">
             <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold uppercase tracking-wider">
-              <MessageSquare size={16} /> Əlaqə Saxlayın
+              <MessageSquare size={16} /> {t("badge")}
             </div>
             <h1 className="text-4xl md:text-6xl font-black text-foreground mb-6 leading-tight tracking-tight">
-              Sualınız var? Bizə <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-500">Yazın</span>
+              {t("title_part1")} <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-blue-500">{t("title_part2")}</span>
             </h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Azərbaycan səyahətinizlə bağlı hər hansı bir sualınız, təklifiniz və ya əməkdaşlıq fikriniz varsa, bizimlə əlaqə saxlamaqdan çəkinməyin.
+              {t("description")}
             </p>
           </div>
         </section>
@@ -51,7 +50,7 @@ export default function ContactPage() {
               <div>
                 <h3 className="text-2xl font-bold text-foreground mb-8 flex items-center gap-3">
                   <span className="w-8 h-1 bg-primary rounded-full" />
-                  Əlaqə Məlumataı
+                  {t("contact_info")}
                 </h3>
 
                 <div className="space-y-8">
@@ -60,8 +59,8 @@ export default function ContactPage() {
                       <Mail size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-foreground mb-1">E-poçt Ünvanı</h4>
-                      <p className="text-muted-foreground mb-1">Suallarınız üçün bizə yazın</p>
+                      <h4 className="font-bold text-foreground mb-1">{t("email_title")}</h4>
+                      <p className="text-muted-foreground mb-1">{t("email_desc")}</p>
                       <a href="mailto:info@fullguide.az" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">info@fullguide.az</a>
                     </div>
                   </div>
@@ -71,8 +70,8 @@ export default function ContactPage() {
                       <Phone size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-foreground mb-1">Telefon</h4>
-                      <p className="text-muted-foreground mb-1">Bazar ertəsi - Cümə, 09:00 - 18:00</p>
+                      <h4 className="font-bold text-foreground mb-1">{t("phone_title")}</h4>
+                      <p className="text-muted-foreground mb-1">{t("phone_desc")}</p>
                       <a href="tel:+994501234567" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">+994 50 123 45 67</a>
                     </div>
                   </div>
@@ -82,9 +81,9 @@ export default function ContactPage() {
                       <MapPin size={24} />
                     </div>
                     <div>
-                      <h4 className="font-bold text-foreground mb-1">Ünvan</h4>
-                      <p className="text-muted-foreground mb-1">Baş ofisimiz</p>
-                      <p className="text-foreground font-semibold">Bakı şəhəri, Nizami küçəsi 103</p>
+                      <h4 className="font-bold text-foreground mb-1">{t("address_title")}</h4>
+                      <p className="text-muted-foreground mb-1">{t("address_desc")}</p>
+                      <p className="text-foreground font-semibold">{t("address_value")}</p>
                     </div>
                   </div>
                 </div>
@@ -92,7 +91,7 @@ export default function ContactPage() {
 
               {/* Social Media */}
               <div>
-                <h4 className="font-bold text-foreground mb-6">Bizi izləyin</h4>
+                <h4 className="font-bold text-foreground mb-6">{t("follow_us")}</h4>
                 <div className="flex gap-4">
                   {[
                     { icon: <Instagram size={20} />, label: "Instagram", color: "#E4405F" },
@@ -119,20 +118,20 @@ export default function ContactPage() {
                 <div className="relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <Clock size={20} />
-                    <h4 className="font-bold text-lg">İş Saatlarımız</h4>
+                    <h4 className="font-bold text-lg">{t("work_hours")}</h4>
                   </div>
                   <ul className="space-y-3 opacity-90 text-sm">
                     <li className="flex justify-between border-b border-white/10 pb-2">
-                      <span>Bazar ertəsi - Cümə:</span>
+                      <span>{t("mon_fri")}</span>
                       <span className="font-bold">09:00 - 18:00</span>
                     </li>
                     <li className="flex justify-between border-b border-white/10 pb-2">
-                      <span>Şənbə:</span>
+                      <span>{t("saturday")}</span>
                       <span className="font-bold">10:00 - 15:00</span>
                     </li>
                     <li className="flex justify-between text-white/60">
-                      <span>Bazar:</span>
-                      <span className="font-bold">Bağlıdır</span>
+                      <span>{t("sunday")}</span>
+                      <span className="font-bold">{t("closed")}</span>
                     </li>
                   </ul>
                 </div>
@@ -144,16 +143,16 @@ export default function ContactPage() {
               <div className="bg-card border border-border/50 rounded-[2.5rem] p-8 md:p-12 shadow-2xl shadow-black/5 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-bl-[100%] pointer-events-none" />
 
-                <h3 className="text-2xl font-bold text-foreground mb-2">Mesaj Göndərin</h3>
-                <p className="text-muted-foreground mb-10">Sizə 24 saat ərzində geri dönüş edəcəyik.</p>
+                <h3 className="text-2xl font-bold text-foreground mb-2">{t("send_message")}</h3>
+                <p className="text-muted-foreground mb-10">{t("reply_time")}</p>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-foreground ml-1">Adınız və Soyadınız</label>
+                      <label className="text-sm font-bold text-foreground ml-1">{t("name_label")}</label>
                       <input
                         type="text"
-                        placeholder="Məs: Əli Məmmədov"
+                        placeholder={t("name_placeholder")}
                         className="w-full px-6 py-4 rounded-2xl bg-muted/50 border border-border/50 outline-none focus:border-primary/50 focus:bg-card transition-all"
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -161,10 +160,10 @@ export default function ContactPage() {
                       />
                     </div>
                     <div className="space-y-2">
-                      <label className="text-sm font-bold text-foreground ml-1">E-poçt</label>
+                      <label className="text-sm font-bold text-foreground ml-1">{t("email_label")}</label>
                       <input
                         type="email"
-                        placeholder="example@mail.com"
+                        placeholder={t("email_placeholder")}
                         className="w-full px-6 py-4 rounded-2xl bg-muted/50 border border-border/50 outline-none focus:border-primary/50 focus:bg-card transition-all"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -174,10 +173,10 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-foreground ml-1">Mövzu</label>
+                    <label className="text-sm font-bold text-foreground ml-1">{t("subject_label")}</label>
                     <input
                       type="text"
-                      placeholder="Nə haqqında yazmaq istəyirsiniz?"
+                      placeholder={t("subject_placeholder")}
                       className="w-full px-6 py-4 rounded-2xl bg-muted/50 border border-border/50 outline-none focus:border-primary/50 focus:bg-card transition-all"
                       value={formData.subject}
                       onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
@@ -186,10 +185,10 @@ export default function ContactPage() {
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-foreground ml-1">Mesajınız</label>
+                    <label className="text-sm font-bold text-foreground ml-1">{t("message_label")}</label>
                     <textarea
                       rows={5}
-                      placeholder="Mesajınızı buraya daxil edin..."
+                      placeholder={t("message_placeholder")}
                       className="w-full px-6 py-4 rounded-2xl bg-muted/50 border border-border/50 outline-none focus:border-primary/50 focus:bg-card transition-all resize-none"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
@@ -201,7 +200,7 @@ export default function ContactPage() {
                     type="submit"
                     className="w-full md:w-auto px-10 py-4 bg-primary text-white rounded-2xl font-bold flex items-center justify-center gap-3 shadow-lg shadow-primary/20 hover:bg-primary/90 hover:shadow-primary/30 active:scale-95 transition-all group"
                   >
-                    Göndər
+                    {t("submit")}
                     <Send size={18} className="transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
                   </button>
                 </form>
@@ -210,7 +209,7 @@ export default function ContactPage() {
 
           </div>
         </section>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }

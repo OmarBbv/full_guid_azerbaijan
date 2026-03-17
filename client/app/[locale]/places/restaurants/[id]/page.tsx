@@ -3,7 +3,7 @@
 import { useParams } from 'next/navigation';
 import { UtensilsCrossed, ChevronLeft, Star, Wifi, ParkingCircle, CreditCard, Music, Loader2 } from 'lucide-react';
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
@@ -13,6 +13,9 @@ import PlaceJsonLd from '@/components/shared/PlaceJsonLd';
 export default function RestaurantDetailPage() {
   const params = useParams();
   const locale = useLocale();
+  const t = useTranslations('VenueDetail');
+  const tCommon = useTranslations('Navbar');
+  const tPlaces = useTranslations('PlacesPage');
   const id = params.id as string;
   const { data: restaurant, isLoading } = usePlaceById(id, locale);
 
@@ -27,9 +30,9 @@ export default function RestaurantDetailPage() {
   if (!restaurant) {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <h1 className="text-2xl font-bold">Məkan tapılmadı</h1>
+        <h1 className="text-2xl font-bold">{t('not_found')}</h1>
         <Link href="/places/restaurants" className="text-primary hover:underline flex items-center gap-2">
-          <ChevronLeft className="w-4 h-4" /> Restoranlara qayıt
+          <ChevronLeft className="w-4 h-4" /> {t('back_to_restaurants')}
         </Link>
       </div>
     );
@@ -58,13 +61,13 @@ export default function RestaurantDetailPage() {
         {/* Hero Content */}
         <div className="relative z-20 h-full flex flex-col items-center justify-end pb-20 text-center px-4 max-w-5xl mx-auto">
           <Link href="/places/restaurants" className="absolute top-28 left-4 text-white/80 hover:text-white flex items-center gap-2 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 active:scale-95 transition-all">
-            <ChevronLeft className="w-5 h-5" /> Geri
+            <ChevronLeft className="w-5 h-5" /> {tCommon('back')}
           </Link>
 
           <div className="flex items-center gap-2 text-orange-400 mb-4 bg-orange-400/10 backdrop-blur-md px-4 py-1 rounded-full border border-orange-400/20">
             <Star className="w-4 h-4 fill-orange-400" />
             <span className="font-bold">{Number(restaurant.average_rating || 0).toFixed(1)}</span>
-            <span className="text-white/60 text-sm">({restaurant.review_count || 0} rəy)</span>
+            <span className="text-white/60 text-sm">({restaurant.review_count || 0} {tPlaces('reviews')})</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl">
             {restaurant.title}
@@ -79,14 +82,14 @@ export default function RestaurantDetailPage() {
         {/* Left Content - Main Info */}
         <div className="lg:col-span-2 space-y-12">
           <section>
-            <h2 className="text-3xl font-black mb-6">Haqqında</h2>
+            <h2 className="text-3xl font-black mb-6">{t('tab_about')}</h2>
             <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
               {restaurant.detailed_description || restaurant.short_description}
             </p>
           </section>
 
           <section>
-            <h2 className="text-3xl font-black mb-8">Xüsusiyyətlər</h2>
+            <h2 className="text-3xl font-black mb-8">{t('features')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {/* Dynamic Features from API */}
               {((restaurant as any).features || []).map((f: string, i: number) => (
@@ -102,25 +105,25 @@ export default function RestaurantDetailPage() {
               {(restaurant as any).has_wifi && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Wifi className="w-8 h-8 rounded-lg bg-emerald-500/10 p-1.5 text-emerald-500" />
-                  <span className="font-bold text-sm">Pulsuz Wi-Fi</span>
+                  <span className="font-bold text-sm">{t('free_wifi')}</span>
                 </div>
               )}
               {(restaurant as any).has_parking && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <ParkingCircle className="w-8 h-8 rounded-lg bg-blue-500/10 p-1.5 text-blue-500" />
-                  <span className="font-bold text-sm">Dayanacaq</span>
+                  <span className="font-bold text-sm">{t('parking')}</span>
                 </div>
               )}
               {(restaurant as any).accepts_cards && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <CreditCard className="w-8 h-8 rounded-lg bg-purple-500/10 p-1.5 text-purple-500" />
-                  <span className="font-bold text-sm">Kartla ödəniş</span>
+                  <span className="font-bold text-sm">{t('card_payment')}</span>
                 </div>
               )}
               {(restaurant as any).has_live_music && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Music className="w-8 h-8 rounded-lg bg-amber-500/10 p-1.5 text-amber-500" />
-                  <span className="font-bold text-sm">Canlı musiqi</span>
+                  <span className="font-bold text-sm">{t('live_music')}</span>
                 </div>
               )}
             </div>

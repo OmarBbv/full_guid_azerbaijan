@@ -35,7 +35,7 @@ export function AdCreateForm(): React.JSX.Element {
 
   const [formData, setFormData] = React.useState({
     title: '',
-    position: 'homepage_top',
+    position: 'hero_alti',
     redirect_url: '',
     is_active: true,
   });

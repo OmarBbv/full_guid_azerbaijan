@@ -18,7 +18,10 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 export default function RegisterPage() {
+  const t = useTranslations("Auth");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "", password: "", terms: false });
@@ -31,7 +34,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
     if (!formData.terms) {
-      setError("Şərtlər və qaydalarla razılaşmalısınız");
+      setError(t("errors.terms_required"));
       return;
     }
     setIsLoading(true);
@@ -44,7 +47,7 @@ export default function RegisterPage() {
       });
       setStep("otp");
     } catch {
-      setError("Xəta baş verdi! E-poçt artıq istifadədə ola bilər.");
+      setError(t("errors.register_failed"));
     } finally {
       setIsLoading(false);
     }
@@ -60,7 +63,7 @@ export default function RegisterPage() {
       window.dispatchEvent(new Event("auth_status_changed"));
       router.push("/");
     } catch {
-      setError("OTP kodu yanlışdır və ya vaxtı keçib.");
+      setError(t("errors.invalid_otp"));
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +74,7 @@ export default function RegisterPage() {
     try {
       await authService.requestOtp(formData.email, formData.password);
     } catch {
-      setError("Kod göndərilərkən xəta baş verdi.");
+      setError(t("errors.resend_error"));
     } finally {
       setIsLoading(false);
     }
@@ -82,12 +85,12 @@ export default function RegisterPage() {
       {/* Header */}
       <div className="text-center mb-10">
         <h1 className="text-3xl font-black text-foreground mb-3 tracking-tight">
-          {step === "form" ? "Yeni Hesab" : "Doğrulama Kodu"}
+          {step === "form" ? t("register_title") : t("otp_title")}
         </h1>
         <p className="text-muted-foreground text-sm font-medium">
           {step === "form"
-            ? "Azərbaycanın sehrini bizimlə kəşf edin"
-            : `${formData.email} ünvanına 6 rəqəmli kod göndərdik`}
+            ? t("register_subtitle")
+            : t("otp_subtitle", { email: formData.email })}
         </p>
       </div>
 
@@ -112,20 +115,20 @@ export default function RegisterPage() {
 
             <div className="space-y-2">
               <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest pl-1">
-                Doğrulama Kodu
+                {t("otp_title")}
               </label>
               <input
                 type="text"
                 inputMode="numeric"
                 maxLength={6}
                 required
-                placeholder="_ _ _ _ _ _"
+                placeholder={t("otp_placeholder")}
                 className="w-full text-center tracking-[0.5em] text-2xl font-black bg-muted/40 border border-border/50 rounded-2xl py-5 px-4 text-foreground placeholder:text-muted-foreground/30 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
               />
               <p className="text-center text-xs text-muted-foreground pt-1">
-                Kod 10 dəqiqə keçərlidir
+                {t("otp_expiry")}
               </p>
             </div>
 
@@ -137,7 +140,7 @@ export default function RegisterPage() {
               {isLoading ? (
                 <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
               ) : (
-                <><ShieldCheck size={18} /> Təsdiqlə</>
+                <><ShieldCheck size={18} /> {t("confirm_btn")}</>
               )}
             </button>
 
@@ -147,7 +150,7 @@ export default function RegisterPage() {
                 onClick={() => { setStep("form"); setOtp(""); setError(""); }}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium"
               >
-                ← Geri qayıt
+                ← {t("back_btn")}
               </button>
               <button
                 type="button"
@@ -155,7 +158,7 @@ export default function RegisterPage() {
                 disabled={isLoading}
                 className="flex items-center gap-1.5 text-xs text-primary hover:underline font-bold disabled:opacity-50"
               >
-                <RefreshCw size={12} /> Yenidən göndər
+                <RefreshCw size={12} /> {t("resend_btn")}
               </button>
             </div>
           </form>
@@ -166,7 +169,7 @@ export default function RegisterPage() {
                 {/* Full Name */}
                 <div className="space-y-2 col-span-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest pl-1">
-                    Ad və Soyad
+                    {t("name_label")}
                   </label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -175,7 +178,7 @@ export default function RegisterPage() {
                     <input
                       type="text"
                       required
-                      placeholder="Omar Babayev"
+                      placeholder={t("name_placeholder")}
                       className="w-full bg-muted/40 border border-border/50 rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 focus:ring-8 focus:ring-primary/5 transition-all text-sm font-bold"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -186,7 +189,7 @@ export default function RegisterPage() {
                 {/* Email */}
                 <div className="space-y-2 col-span-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest pl-1">
-                    E-poçt
+                    {t("email_label")}
                   </label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -195,7 +198,7 @@ export default function RegisterPage() {
                     <input
                       type="email"
                       required
-                      placeholder="nümunə@mail.com"
+                      placeholder={t("email_placeholder")}
                       className="w-full bg-muted/40 border border-border/50 rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 focus:ring-8 focus:ring-primary/5 transition-all text-sm font-bold"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -206,7 +209,7 @@ export default function RegisterPage() {
                 {/* Password */}
                 <div className="space-y-2 col-span-2">
                   <label className="text-[10px] font-black text-muted-foreground uppercase tracking-widest pl-1">
-                    Şifrə
+                    {t("password_label")}
                   </label>
                   <div className="relative group">
                     <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -215,7 +218,7 @@ export default function RegisterPage() {
                     <input
                       type={showPassword ? "text" : "password"}
                       required
-                      placeholder="••••••••"
+                      placeholder={t("password_placeholder")}
                       className="w-full bg-muted/40 border border-border/50 rounded-2xl py-4 pl-12 pr-12 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 focus:ring-8 focus:ring-primary/5 transition-all text-sm font-bold"
                       value={formData.password}
                       onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -242,11 +245,11 @@ export default function RegisterPage() {
                   {formData.terms && <CheckCircle2 size={12} />}
                 </div>
                 <p className="text-xs font-medium text-muted-foreground leading-relaxed">
-                  Hesab yaradaraq{" "}
+                  {t("terms_agree_part1")}{" "}
                   <Link href="/terms" className="text-primary font-bold hover:underline">
-                    Şərtlər və Qaydalar
+                    {t("terms_link")}
                   </Link>{" "}
-                  ilə razılaşırsınız.
+                  {t("terms_agree_part2")}
                 </p>
               </div>
 
@@ -259,7 +262,7 @@ export default function RegisterPage() {
                   <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
                 ) : (
                   <>
-                    Qeydiyyatı Tamamla{" "}
+                    {t("register_submit")}{" "}
                     <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                   </>
                 )}
@@ -271,7 +274,7 @@ export default function RegisterPage() {
                 <div className="w-full border-t border-border/50" />
               </div>
               <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                <span className="bg-card px-4">sosial hesablar</span>
+                <span className="bg-card px-4">{t("social_label")}</span>
               </div>
             </div>
 
@@ -294,9 +297,9 @@ export default function RegisterPage() {
       </div>
 
       <p className="text-center mt-10 text-muted-foreground text-sm font-medium">
-        Artıq hesabınız var?{" "}
+        {t("already_have_account")}{" "}
         <Link href="/login" className="text-primary font-bold hover:underline">
-          Daxil olun
+          {t("login_link")}
         </Link>
       </p>
     </div>

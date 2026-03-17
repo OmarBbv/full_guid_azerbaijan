@@ -15,6 +15,9 @@ import TableRow from '@mui/material/TableRow';
 import Image from 'next/image';
 import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr/PencilSimple';
 import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
+import RouterLink from 'next/link';
+
+import { paths } from '@/paths';
 
 import { DeleteConfirmationDialog } from '@/components/core/delete-confirmation-dialog';
 import { useAds, useDeleteAd } from '@/hooks/use-ads';
@@ -88,7 +91,12 @@ export function AdsTable(): React.JSX.Element {
                     )}
                   </TableCell>
                   <TableCell align="right">
-                    <IconButton size="small" color="primary">
+                    <IconButton 
+                      size="small" 
+                      color="primary"
+                      component={RouterLink}
+                      href={paths.dashboard.adsEdit(ad.id)}
+                    >
                       <PencilSimpleIcon weight="bold" />
                     </IconButton>
                     <IconButton size="small" color="error" onClick={() => handleDeleteClick(ad.id)}>

@@ -22,6 +22,7 @@ export const paths = {
     blogCreate: '/dashboard/blog/create',
     ads: '/dashboard/ads',
     adsCreate: '/dashboard/ads/create',
+    adsEdit: (id: string) => `/dashboard/ads/${id}/edit`,
     categories: '/dashboard/categories',
     venues: '/dashboard/venues',
     venuesCreate: '/dashboard/venues/create',

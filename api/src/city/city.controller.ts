@@ -21,7 +21,7 @@ import { UpdateCityDto } from './dto/update-city.dto';
 
 @Controller('cities')
 export class CityController {
-  constructor(private readonly cityService: CityService) {}
+  constructor(private readonly cityService: CityService) { }
 
   // POST /cities
   @Post()
@@ -30,7 +30,6 @@ export class CityController {
     return this.cityService.create(dto);
   }
 
-  // GET /cities?language=az&active=true&featured=true
   @Get()
   findAll(
     @Query('language') language?: string,

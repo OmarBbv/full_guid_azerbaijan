@@ -97,7 +97,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
             className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider"
             style={{ background: `${accentColor}dd`, backdropFilter: "blur(8px)" }}
           >
-            TOP
+            {t('top_label') || "TOP"}
           </div>
         )}
 
@@ -124,7 +124,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
             className="absolute bottom-4 left-4 px-3 py-1 rounded-full text-[11px] font-medium text-white/80"
             style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
           >
-            {place.type}
+            {t(`types.${place.type.toLowerCase()}`) || place.type}
           </div>
         )}
       </div>
@@ -139,7 +139,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
             <div className="flex items-center gap-1.5">
               <MapPin size={14} className="text-primary/70" />
               <span className="text-sm font-medium text-muted-foreground line-clamp-1">
-                {place.city || (place as any).location || "Bakı"}
+                {place.city || (place as any).location || t('default_city') || "Bakı"}
               </span>
             </div>
           </div>
@@ -154,7 +154,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
 
         {/* Added Description */}
         <p className="text-sm text-muted-foreground line-clamp-2 mb-5 leading-relaxed">
-          {place.short_description || (place as any).description || place.subtitle || "Ətraflı məlumat üçün klikləyin və bu məkanın imkanları ilə tanış olun."}
+          {place.short_description || (place as any).description || place.subtitle || t('default_card_desc')}
         </p>
 
         <div className="flex items-center justify-between mt-auto pt-4 border-t border-border">

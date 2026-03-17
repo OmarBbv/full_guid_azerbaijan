@@ -17,9 +17,12 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
+import { useTranslations } from "next-intl";
+
 type Step = "credentials" | "otp";
 
 export default function LoginPage() {
+  const t = useTranslations("Auth");
   const [step, setStep] = useState<Step>("credentials");
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -54,7 +57,7 @@ export default function LoginPage() {
       await authService.requestOtp(formData.email, formData.password);
       setStep("otp");
     } catch {
-      setError("E-poçt və ya şifrə yanlışdır.");
+      setError(t("errors.invalid_credentials"));
     } finally {
       setIsLoading(false);
     }
@@ -71,7 +74,7 @@ export default function LoginPage() {
       window.dispatchEvent(new Event("auth_status_changed"));
       router.push("/");
     } catch {
-      setError("OTP kodu yanlışdır və ya vaxtı keçib.");
+      setError(t("errors.invalid_otp"));
     } finally {
       setIsLoading(false);
     }
@@ -84,7 +87,7 @@ export default function LoginPage() {
     try {
       await authService.requestOtp(formData.email, formData.password);
     } catch {
-      setError("Kod göndərilərkən xəta baş verdi.");
+      setError(t("errors.resend_error"));
     } finally {
       setIsLoading(false);
     }
@@ -95,12 +98,12 @@ export default function LoginPage() {
       {/* Header */}
       <div className="text-center mb-10">
         <h1 className="text-3xl font-black text-foreground mb-3 tracking-tight">
-          {step === "credentials" ? "Xoş Gəldiniz!" : "Doğrulama Kodu"}
+          {step === "credentials" ? t("login_title") : t("otp_title")}
         </h1>
         <p className="text-muted-foreground text-sm font-medium">
           {step === "credentials"
-            ? "Full Guide hesabınıza daxil olun"
-            : `${formData.email} ünvanına 6 rəqəmli kod göndərdik`}
+            ? t("login_subtitle")
+            : t("otp_subtitle", { email: formData.email })}
         </p>
       </div>
 
@@ -120,7 +123,7 @@ export default function LoginPage() {
               {/* Email */}
               <div className="space-y-2">
                 <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest pl-1">
-                  E-poçt
+                  {t("email_label")}
                 </label>
                 <div className="relative group">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-primary transition-colors">
@@ -129,7 +132,7 @@ export default function LoginPage() {
                   <input
                     type="email"
                     required
-                    placeholder="nümunə@mail.com"
+                    placeholder={t("email_placeholder")}
                     className="w-full bg-muted/40 border border-border/50 rounded-2xl py-4 pl-12 pr-4 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -141,10 +144,10 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex justify-between items-center pl-1">
                   <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                    Şifrə
+                    {t("password_label")}
                   </label>
                   <Link href="/auth/forgot" className="text-xs font-bold text-primary hover:underline">
-                    Unutmusunuz?
+                    {t("forgot_password")}
                   </Link>
                 </div>
                 <div className="relative group">
@@ -154,7 +157,7 @@ export default function LoginPage() {
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    placeholder="••••••••"
+                    placeholder={t("password_placeholder")}
                     className="w-full bg-muted/40 border border-border/50 rounded-2xl py-4 pl-12 pr-12 text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all text-sm font-medium"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -179,7 +182,7 @@ export default function LoginPage() {
                 <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  Davam Et <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  {t("continue_btn")} <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </>
               )}
             </button>
@@ -201,20 +204,20 @@ export default function LoginPage() {
             {/* OTP input */}
             <div className="space-y-2">
               <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest pl-1">
-                Doğrulama Kodu
+                {t("otp_title")}
               </label>
               <input
                 type="text"
                 inputMode="numeric"
                 maxLength={6}
                 required
-                placeholder="_ _ _ _ _ _"
+                placeholder={t("otp_placeholder")}
                 className="w-full text-center tracking-[0.5em] text-2xl font-black bg-muted/40 border border-border/50 rounded-2xl py-5 px-4 text-foreground placeholder:text-muted-foreground/30 outline-none focus:border-primary/50 focus:ring-4 focus:ring-primary/5 transition-all"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
               />
               <p className="text-center text-xs text-muted-foreground pt-1">
-                Kod 10 dəqiqə keçərlidir
+                {t("otp_expiry")}
               </p>
             </div>
 
@@ -227,7 +230,7 @@ export default function LoginPage() {
                 <div className="w-5 h-5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  Təsdiqlə <ShieldCheck size={18} />
+                  {t("confirm_btn")} <ShieldCheck size={18} />
                 </>
               )}
             </button>
@@ -238,7 +241,7 @@ export default function LoginPage() {
                 onClick={() => { setStep("credentials"); setOtp(""); setError(""); }}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors font-medium"
               >
-                ← Geri qayıt
+                ← {t("back_btn")}
               </button>
               <button
                 type="button"
@@ -246,7 +249,7 @@ export default function LoginPage() {
                 disabled={isLoading}
                 className="flex items-center gap-1.5 text-xs text-primary hover:underline font-bold disabled:opacity-50"
               >
-                <RefreshCw size={12} /> Yenidən göndər
+                <RefreshCw size={12} /> {t("resend_btn")}
               </button>
             </div>
           </form>
@@ -260,7 +263,7 @@ export default function LoginPage() {
                 <div className="w-full border-t border-border/60" />
               </div>
               <div className="relative flex justify-center text-[10px] font-black uppercase tracking-widest text-muted-foreground">
-                <span className="bg-card px-4">və ya sosial şəbəkə ilə</span>
+                <span className="bg-card px-4">{t("social_or")}</span>
               </div>
             </div>
 
@@ -284,9 +287,9 @@ export default function LoginPage() {
 
       {/* Footer */}
       <p className="text-center mt-10 text-muted-foreground text-sm font-medium">
-        Hesabınız yoxdur?{" "}
+        {t("no_account")}{" "}
         <Link href="/register" className="text-primary font-bold hover:underline">
-          Qeydiyyatdan keçin
+          {t("register_link")}
         </Link>
       </p>
     </div>

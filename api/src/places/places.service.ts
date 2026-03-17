@@ -92,6 +92,14 @@ export class PlacesService {
     await this.placeRepository.remove(place);
   }
 
+  async removeImage(imageId: string): Promise<void> {
+    const image = await this.placeImageRepository.findOne({ where: { id: imageId } });
+    if (!image) {
+      throw new NotFoundException(`Image with ID ${imageId} not found`);
+    }
+    await this.placeImageRepository.remove(image);
+  }
+
   async uploadImages(id: string, files: Express.Multer.File[]): Promise<Place> {
     const place = await this.findOne(id);
     const existingCount = await this.placeImageRepository.count({

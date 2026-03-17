@@ -162,7 +162,7 @@ export default function PlacesPage() {
             </p>
             {/* Sort Dropdown Placeholder */}
             <div className="flex items-center gap-2 text-sm font-medium hover:text-foreground cursor-pointer transition-colors">
-              Sırala: Populyarlığa görə <Star size={14} />
+              {t('sort_by')} {t('by_popularity')} <Star size={14} />
             </div>
           </div>
 
@@ -184,13 +184,13 @@ export default function PlacesPage() {
               <div className="w-20 h-20 bg-muted rounded-full flex items-center justify-center mb-6 text-3xl">
                 🔍
               </div>
-              <h3 className="text-2xl font-bold text-foreground mb-2">Heç bir məkan tapılmadı</h3>
-              <p className="text-muted-foreground max-w-md">Axtarış meyarlarınıza uyğun nəticə yoxdur. Zəhmət olmasa başqa sözlə sınayın və ya filtrləri təmizləyin.</p>
+              <h3 className="text-2xl font-bold text-foreground mb-2">{t('no_results_title')}</h3>
+              <p className="text-muted-foreground max-w-md">{t('no_results_desc')}</p>
               <button
                 onClick={() => { setSearchQuery(""); setActiveCategory("hamısı"); }}
                 className="mt-6 px-6 py-3 bg-primary text-primary-foreground rounded-xl font-semibold hover:bg-primary/90 transition-colors shadow-md"
               >
-                Təmizlə
+                {t('clear_btn')}
               </button>
             </div>
           )}
@@ -199,7 +199,7 @@ export default function PlacesPage() {
           {!isLoading && filteredItems.length > 10 && (
             <div className="mt-16 flex justify-center">
               <button className="px-8 py-3.5 bg-card border border-border rounded-xl text-foreground font-bold hover:bg-muted transition-colors shadow-sm flex items-center gap-2">
-                Daha çox yüklə
+                {t('load_more')}
               </button>
             </div>
           )}

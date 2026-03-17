@@ -53,6 +53,11 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
   const [coverImageFile, setCoverImageFile] = React.useState<File | null>(null);
   const [galleryFiles, setGalleryFiles] = React.useState<File[]>([]);
 
+  // Existing images states
+  const [existingImageUrl, setExistingImageUrl] = React.useState<string | null>(null);
+  const [existingCoverImageUrl, setExistingCoverImageUrl] = React.useState<string | null>(null);
+  const [existingGalleryUrls, setExistingGalleryUrls] = React.useState<string[]>([]);
+
   React.useEffect(() => {
     if (city) {
       reset({
@@ -70,6 +75,10 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
         sort_order: city.sort_order,
       });
 
+      setExistingImageUrl(city.image_url);
+      setExistingCoverImageUrl(city.cover_image_url);
+      setExistingGalleryUrls(city.gallery_urls || []);
+
       if (city.highlights && city.highlights.length > 0) {
         setHighlightsRaw(city.highlights.join(', '));
       } else {
@@ -78,7 +87,6 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
     }
   }, [city, reset]);
 
-  // Slug avtomatik yaranır (əgər istifadəçi adını dəyişirsə)
   const nameValue = watch('name');
   React.useEffect(() => {
     if (nameValue && city && nameValue !== city.name) {
@@ -109,6 +117,10 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
     setGalleryFiles((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function removeExistingGalleryImage(url: string) {
+    setExistingGalleryUrls((prev) => prev.filter((item) => item !== url));
+  }
+
   function onSubmit(values: FormValues) {
     const highlights = highlightsRaw
       .split(',')
@@ -116,9 +128,12 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
       .filter(Boolean);
 
     updateCity(
-      { 
-        ...values, 
-        highlights: highlights.length > 0 ? highlights : undefined 
+      {
+        ...values,
+        image_url: imageFile ? undefined : existingImageUrl,
+        cover_image_url: coverImageFile ? undefined : existingCoverImageUrl,
+        gallery_urls: existingGalleryUrls,
+        highlights: highlights.length > 0 ? highlights : undefined
       },
       {
         onSuccess: async () => {
@@ -255,9 +270,23 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
                       <img src={URL.createObjectURL(imageFile)} alt="preview" style={{ maxHeight: 150, borderRadius: 8 }} />
                       <Button color="error" size="small" startIcon={<TrashIcon />} onClick={() => setImageFile(null)}>Yenisini Sil</Button>
                     </Stack>
-                  ) : city.image_url ? (
+                  ) : existingImageUrl ? (
                     <Stack spacing={1} alignItems="center">
-                      <img src={city.image_url.startsWith('http') ? city.image_url : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${city.image_url}`} alt="current" style={{ maxHeight: 150, borderRadius: 8 }} />
+                      <Box sx={{ position: 'relative' }}>
+                        <img 
+                          src={existingImageUrl.startsWith('http') ? existingImageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${existingImageUrl}`} 
+                          alt="current" 
+                          style={{ maxHeight: 150, borderRadius: 8 }} 
+                        />
+                        <Button 
+                          color="error" 
+                          size="small"
+                          onClick={() => setExistingImageUrl(null)}
+                          sx={{ position: 'absolute', top: -10, right: -10, minWidth: 'auto', p: 0.5, bgcolor: 'background.paper', border: '1px solid', borderColor: 'error.main', borderRadius: '50%', '&:hover': { bgcolor: 'error.light', color: 'white' } }}
+                        >
+                          <TrashIcon size={16} />
+                        </Button>
+                      </Box>
                       <Button variant="outlined" component="label" startIcon={<UploadIcon />} size="small">
                         Şəkli Dəyişdir
                         <input type="file" hidden accept="image/*" onChange={(e) => handleImageChange(e, setImageFile)} />
@@ -289,9 +318,23 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
                       <img src={URL.createObjectURL(coverImageFile)} alt="preview" style={{ maxHeight: 150, borderRadius: 8, width: '100%', objectFit: 'cover' }} />
                       <Button color="error" size="small" startIcon={<TrashIcon />} onClick={() => setCoverImageFile(null)}>Yenisini Sil</Button>
                     </Stack>
-                  ) : city.cover_image_url ? (
+                  ) : existingCoverImageUrl ? (
                     <Stack spacing={1} alignItems="center">
-                      <img src={city.cover_image_url.startsWith('http') ? city.cover_image_url : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${city.cover_image_url}`} alt="current" style={{ maxHeight: 150, borderRadius: 8, width: '100%', objectFit: 'cover' }} />
+                      <Box sx={{ position: 'relative', width: '100%' }}>
+                        <img 
+                          src={existingCoverImageUrl.startsWith('http') ? existingCoverImageUrl : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${existingCoverImageUrl}`} 
+                          alt="current" 
+                          style={{ maxHeight: 150, borderRadius: 8, width: '100%', objectFit: 'cover' }} 
+                        />
+                        <Button 
+                          color="error" 
+                          size="small"
+                          onClick={() => setExistingCoverImageUrl(null)}
+                          sx={{ position: 'absolute', top: -10, right: -10, minWidth: 'auto', p: 0.5, bgcolor: 'background.paper', border: '1px solid', borderColor: 'error.main', borderRadius: '50%', '&:hover': { bgcolor: 'error.light', color: 'white' } }}
+                        >
+                          <TrashIcon size={16} />
+                        </Button>
+                      </Box>
                       <Button variant="outlined" component="label" startIcon={<UploadIcon />} size="small">
                         Örtük Şəklini Dəyişdir
                         <input type="file" hidden accept="image/*" onChange={(e) => handleImageChange(e, setCoverImageFile)} />
@@ -316,16 +359,28 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
                     p: 3,
                   }}
                 >
-                  <Button variant="outlined" component="label" startIcon={<UploadIcon />} sx={{ mb: (galleryFiles.length > 0 || (city.gallery_urls && city.gallery_urls.length > 0)) ? 3 : 0 }}>
+                  <Button variant="outlined" component="label" startIcon={<UploadIcon />} sx={{ mb: (galleryFiles.length > 0 || existingGalleryUrls.length > 0) ? 3 : 0 }}>
                     Yeni Yardımçı Şəkillər Əlavə Et
                     <input type="file" hidden multiple accept="image/*" onChange={handleGalleryChange} />
                   </Button>
-                  
+
                   <Stack direction="row" spacing={2} sx={{ flexWrap: 'wrap', gap: 2 }}>
                     {/* Existing Gallery Files */}
-                    {city.gallery_urls && city.gallery_urls.map((url, idx) => (
+                    {existingGalleryUrls.map((url, idx) => (
                       <Box key={`existing-${idx}`} sx={{ position: 'relative', width: 100, height: 100 }}>
-                        <img src={url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${url}`} alt={`existing-gallery-${idx}`} style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8 }} />
+                        <img 
+                          src={url.startsWith('http') ? url : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}${url}`} 
+                          alt={`existing-gallery-${idx}`} 
+                          style={{ width: 100, height: 100, objectFit: 'cover', borderRadius: 8 }} 
+                        />
+                        <Button 
+                          color="error" 
+                          size="small"
+                          onClick={() => removeExistingGalleryImage(url)}
+                          sx={{ position: 'absolute', top: -10, right: -10, minWidth: 'auto', p: 0.5, bgcolor: 'background.paper', border: '1px solid', borderColor: 'error.main', borderRadius: '50%', '&:hover': { bgcolor: 'error.light', color: 'white' } }}
+                        >
+                          <TrashIcon size={16} />
+                        </Button>
                       </Box>
                     ))}
 
@@ -333,13 +388,13 @@ export function CityEditForm({ id }: CityEditFormProps): React.JSX.Element {
                     {galleryFiles.map((f, idx) => (
                       <Box key={`new-${idx}`} sx={{ position: 'relative', width: 100, height: 100, border: '2px solid var(--mui-palette-primary-main)', borderRadius: '10px' }}>
                         <img src={URL.createObjectURL(f)} alt={`new-gallery-${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 8 }} />
-                        <Button 
-                          color="error" 
+                        <Button
+                          color="error"
                           size="small"
                           onClick={() => removeGalleryFile(idx)}
-                          sx={{ position: 'absolute', top: 0, right: 0, minWidth: 'auto', p: 0.5, bgcolor: 'background.paper' }}
+                          sx={{ position: 'absolute', top: -10, right: -10, minWidth: 'auto', p: 0.5, bgcolor: 'background.paper', border: '1px solid', borderColor: 'error.main', borderRadius: '50%', '&:hover': { bgcolor: 'error.light', color: 'white' } }}
                         >
-                          <TrashIcon />
+                          <TrashIcon size={16} />
                         </Button>
                       </Box>
                     ))}

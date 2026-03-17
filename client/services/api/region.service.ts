@@ -16,9 +16,8 @@ export interface Region {
 }
 
 export interface IRegionService {
-  getRegions(): Promise<Region[]>;
-  getRegionBySlug(slug: string): Promise<Region>;
-  getRegionById(id: string): Promise<Region>;
+  getRegionBySlug(slug: string, language?: string): Promise<Region>;
+  getRegionById(id: string, language?: string): Promise<Region>;
 }
 
 class RegionService implements IRegionService {
@@ -34,9 +33,11 @@ class RegionService implements IRegionService {
     }
   }
 
-  async getRegionBySlug(slug: string): Promise<Region> {
+  async getRegionBySlug(slug: string, language?: string): Promise<Region> {
     try {
-      const response = await apiClient.get<Region>(`${this.endpoint}/${slug}`);
+      const response = await apiClient.get<Region>(`${this.endpoint}/${slug}`, {
+        params: { language },
+      });
       return response.data;
     } catch (error) {
       console.error('[RegionService.getRegionBySlug]', error);
@@ -44,9 +45,11 @@ class RegionService implements IRegionService {
     }
   }
 
-  async getRegionById(id: string): Promise<Region> {
+  async getRegionById(id: string, language?: string): Promise<Region> {
     try {
-      const response = await apiClient.get<Region>(`${this.endpoint}/id/${id}`);
+      const response = await apiClient.get<Region>(`${this.endpoint}/id/${id}`, {
+        params: { language },
+      });
       return response.data;
     } catch (error) {
       console.error('[RegionService.getRegionById]', error);

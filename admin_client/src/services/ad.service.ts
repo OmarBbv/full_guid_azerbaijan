@@ -69,8 +69,7 @@ class AdService implements IAdService {
       const formData = new FormData();
       formData.append('file', file);
 
-      // Using a generic upload endpoint if available, otherwise we might need to add one
-      const { data } = await apiClient.post<{ data: { url: string } }>('/api/upload/image', formData, {
+      const { data } = await apiClient.post<{ data: { url: string } }>('/upload/image', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

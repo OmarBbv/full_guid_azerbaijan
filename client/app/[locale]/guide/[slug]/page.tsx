@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { guidePageService } from "@/services/api/guide-page.service";
 import { Info } from "lucide-react";
 import { Link } from "@/i18n/routing";
+import { getTranslations } from "next-intl/server";
 
 export async function generateMetadata({
   params,
@@ -10,6 +11,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
   const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "GuidePage" });
   try {
     const page = await guidePageService.getBySlug(slug, locale);
     return {
@@ -17,7 +19,7 @@ export async function generateMetadata({
       description: page.subtitle || page.title,
     };
   } catch {
-    return { title: 'Məlumat | FullGuide' };
+    return { title: t("meta_fallback") };
   }
 }
 
@@ -27,6 +29,7 @@ export default async function GuidePageDetail({
   params: Promise<{ slug: string; locale: string }>;
 }) {
   const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: "GuidePage" });
 
   let page;
   try {
@@ -67,15 +70,12 @@ export default async function GuidePageDetail({
           )}
         </div>
 
-        {/* Floating Scroll Indicator */}
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 animate-bounce opacity-50">
           <div className="w-px h-12 bg-linear-to-b from-white to-transparent" />
         </div>
       </section>
 
-      {/* Main Content */}
       <main className="max-w-4xl mx-auto px-6 py-24">
-        {/* Dynamic Sections */}
         {page.sections && page.sections.length > 0 ? (
           <div className="space-y-20">
             {page.sections.map((section: any, index: number) => (
@@ -96,7 +96,7 @@ export default async function GuidePageDetail({
         ) : (
           <div className="text-center py-20 bg-muted/30 rounded-[40px] border border-dashed border-border">
             <Info className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-20" />
-            <p className="text-muted-foreground">Məzmun tezliklə əlavə olunacaq.</p>
+            <p className="text-muted-foreground">{t("no_content")}</p>
           </div>
         )}
       </main>
@@ -105,11 +105,11 @@ export default async function GuidePageDetail({
       <section className="pb-24 px-6 max-w-5xl mx-auto">
         <div className="bg-muted/50 rounded-[50px] p-12 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 border border-border/50">
           <div className="text-center md:text-left">
-            <h3 className="text-2xl font-bold mb-2">Başqa suallarınız var?</h3>
-            <p className="text-muted-foreground">Kömək üçün bizimlə əlaqə saxlayın.</p>
+            <h3 className="text-2xl font-bold mb-2">{t("footer_title")}</h3>
+            <p className="text-muted-foreground">{t("footer_desc")}</p>
           </div>
           <Link href="/contact" className="px-10 py-5 bg-foreground text-background rounded-full font-black hover:scale-105 transition-all shadow-xl">
-            Bizimlə Əlaqə
+            {t("contact_us")}
           </Link>
         </div>
       </section>

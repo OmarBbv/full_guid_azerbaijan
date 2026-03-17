@@ -20,9 +20,11 @@ import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { venueSchema, VENUE_LANGUAGES, type VenueFormValues } from './venue-schema';
 import { useVenueAdmin, useUpdateVenue } from '@/hooks/use-venues';
@@ -327,18 +329,38 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
                     />
                   </Button>
                   {previewUrl && (
-                    <Box
-                      component="img"
-                      src={previewUrl}
-                      sx={{
-                        width: 100,
-                        height: 100,
-                        borderRadius: 1,
-                        objectFit: 'cover',
-                        border: '1px solid',
-                        borderColor: 'divider',
-                      }}
-                    />
+                    <Box sx={{ position: 'relative' }}>
+                        <Box
+                          component="img"
+                          src={previewUrl}
+                          sx={{
+                            width: 100,
+                            height: 100,
+                            borderRadius: 1,
+                            objectFit: 'cover',
+                            border: '1px solid',
+                            borderColor: 'divider',
+                          }}
+                        />
+                        <IconButton
+                            size="small"
+                            onClick={() => {
+                                setPreviewUrl(null);
+                                setValue('thumbnail', '');
+                            }}
+                            sx={{
+                              position: 'absolute',
+                              top: -8,
+                              right: -8,
+                              bgcolor: 'background.paper',
+                              width: 20,
+                              height: 20,
+                              '&:hover': { bgcolor: 'error.main', color: 'white' },
+                            }}
+                          >
+                            <TrashIcon size={12} weight="bold" />
+                          </IconButton>
+                    </Box>
                   )}
                 </Stack>
                 {errors.thumbnail?.message && (

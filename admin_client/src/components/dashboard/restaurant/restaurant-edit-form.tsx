@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -27,9 +28,10 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { createRestaurantSchema, type CreateRestaurantFormValues } from './restaurant-schema';
-import { useRestaurant, useUpdateRestaurant, useUploadRestaurantImages } from '@/hooks/use-restaurants';
+import { useRestaurant, useUpdateRestaurant, useUploadRestaurantImages, RESTAURANT_KEYS } from '@/hooks/use-restaurants';
 import { CuisineType, DiningStyle, PriceRange, PlaceStatus } from '@/types/restaurant';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
@@ -73,10 +75,11 @@ interface RestaurantEditFormProps {
 
 export function RestaurantEditForm({ id }: RestaurantEditFormProps): React.JSX.Element {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: restaurant, isLoading: isLoadingRestaurant, isError: isLoadError } = useRestaurant(id);
   const { mutate: updateRestaurant, isPending: isUpdating, isError: isUpdateError, error: updateError } = useUpdateRestaurant(id);
   const { mutateAsync: uploadImages } = useUploadRestaurantImages();
-  
+
   const [images, setImages] = React.useState<File[]>([]);
   const [isUploadingThumbnail, setIsUploadingThumbnail] = React.useState(false);
   const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
@@ -115,7 +118,6 @@ export function RestaurantEditForm({ id }: RestaurantEditFormProps): React.JSX.E
       },
     });
 
-  // Populate form when data is loaded
   React.useEffect(() => {
     if (restaurant && restaurant.place) {
       const { place } = restaurant;
@@ -153,6 +155,15 @@ export function RestaurantEditForm({ id }: RestaurantEditFormProps): React.JSX.E
       }
     }
   }, [restaurant, reset]);
+
+  const handleDeleteExistingImage = async (imageId: string) => {
+    try {
+      await apiClient.delete(`/places/images/${imageId}`);
+      queryClient.invalidateQueries({ queryKey: RESTAURANT_KEYS.detail(id) });
+    } catch (err) {
+      console.error('Failed to delete image', err);
+    }
+  };
 
   const handleThumbnailChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -456,41 +467,41 @@ export function RestaurantEditForm({ id }: RestaurantEditFormProps): React.JSX.E
           <CardHeader title="Əsas Şəkil (Thumbnail)" />
           <Divider />
           <CardContent>
-             <Stack direction="row" spacing={3} alignItems="center">
-                <Button
-                  variant="outlined"
-                  component="label"
-                  startIcon={<UploadIcon />}
-                  disabled={isUploadingThumbnail}
-                >
-                  {isUploadingThumbnail ? 'Yüklənir...' : 'Şəkli dəyiş'}
-                  <input
-                    type="file"
-                    hidden
-                    accept="image/*"
-                    onChange={handleThumbnailChange}
-                  />
-                </Button>
-                {previewUrl && (
-                  <Box
-                    component="img"
-                    src={previewUrl}
-                    sx={{
-                      width: 100,
-                      height: 100,
-                      borderRadius: 1,
-                      objectFit: 'cover',
-                      border: '1px solid',
-                      borderColor: 'divider',
-                    }}
-                  />
-                )}
-              </Stack>
-              {errors.thumbnail?.message && (
-                <Typography color="error" variant="caption" sx={{ mt: 1, display: 'block' }}>
-                  {String(errors.thumbnail.message)}
-                </Typography>
+            <Stack direction="row" spacing={3} alignItems="center">
+              <Button
+                variant="outlined"
+                component="label"
+                startIcon={<UploadIcon />}
+                disabled={isUploadingThumbnail}
+              >
+                {isUploadingThumbnail ? 'Yüklənir...' : 'Şəkli dəyiş'}
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleThumbnailChange}
+                />
+              </Button>
+              {previewUrl && (
+                <Box
+                  component="img"
+                  src={previewUrl}
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: 1,
+                    objectFit: 'cover',
+                    border: '1px solid',
+                    borderColor: 'divider',
+                  }}
+                />
               )}
+            </Stack>
+            {errors.thumbnail?.message && (
+              <Typography color="error" variant="caption" sx={{ mt: 1, display: 'block' }}>
+                {String(errors.thumbnail.message)}
+              </Typography>
+            )}
           </CardContent>
         </Card>
 
@@ -499,17 +510,32 @@ export function RestaurantEditForm({ id }: RestaurantEditFormProps): React.JSX.E
           <CardHeader title="Qalereya Şəkilləri" />
           <Divider />
           <CardContent>
-            {restaurant?.menu_images && restaurant.menu_images.length > 0 && (
-                <Box sx={{ mb: 3 }}>
-                    <Typography variant="subtitle2" gutterBottom>Mövcud şəkillər (Menyu):</Typography>
-                    <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
-                        {restaurant.menu_images.map((url: string, idx: number) => (
-                            <Box key={idx} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0 }}>
-                                <img src={url} alt="Menu" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            </Box>
-                        ))}
-                    </Stack>
-                </Box>
+            {restaurant?.place?.images && restaurant.place.images.length > 0 && (
+              <Box sx={{ mb: 3 }}>
+                <Typography variant="subtitle2" gutterBottom>Mövcud şəkillər:</Typography>
+                <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
+                  {restaurant.place.images.map((img: any) => (
+                    <Box key={img.id} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                      <img src={img.url} alt="Gallery" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteExistingImage(img.id)}
+                        sx={{
+                          position: 'absolute',
+                          top: 4,
+                          right: 4,
+                          bgcolor: 'background.paper',
+                          width: 20,
+                          height: 20,
+                          '&:hover': { bgcolor: 'error.main', color: 'white' },
+                        }}
+                      >
+                        <TrashIcon size={12} weight="bold" />
+                      </IconButton>
+                    </Box>
+                  ))}
+                </Stack>
+              </Box>
             )}
 
             <Button variant="outlined" component="label">

@@ -1,20 +1,21 @@
 import { MapPin, ArrowRight, Star, Globe, Camera, Compass } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import { regionService } from "@/services/api/region.service";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string; locale: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { slug, locale } = await params;
   try {
     let region;
     try {
-      region = await regionService.getRegionById(id);
+      region = await regionService.getRegionById(slug, locale);
     } catch {
-      region = await regionService.getRegionBySlug(id);
+      region = await regionService.getRegionBySlug(slug, locale);
     }
     return {
       title: `${region.name} - Azərbaycanın Regionları | FullGuide`,
@@ -33,18 +34,19 @@ export async function generateMetadata({
 export default async function RegionPage({
   params,
 }: {
-  params: Promise<{ id: string; locale: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }) {
-  const { id } = await params;
+  const { slug, locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'RegionPage' });
   
   let region;
   try {
-    // Try ID first
-    region = await regionService.getRegionById(id);
+    // Try ID first, with language so we get the correct translation
+    region = await regionService.getRegionById(slug, locale);
   } catch {
     try {
       // Fallback: try treating the param as a slug
-      region = await regionService.getRegionBySlug(id);
+      region = await regionService.getRegionBySlug(slug, locale);
     } catch {
       return (
         <div className="min-h-screen flex flex-col items-center justify-center gap-6 bg-background px-4">
@@ -52,11 +54,11 @@ export default async function RegionPage({
             <MapPin className="w-10 h-10 text-muted-foreground opacity-30" />
           </div>
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-2">Bölgə tapılmadı</h1>
-            <p className="text-muted-foreground mb-8">Axtardığınız məlumat bazada mövcud deyildir.</p>
+            <h1 className="text-3xl font-bold mb-2">{t("not_found_title")}</h1>
+            <p className="text-muted-foreground mb-8">{t("not_found_desc")}</p>
           </div>
           <Link href="/regions" className="px-8 py-3 bg-primary text-primary-foreground rounded-full font-bold hover:shadow-lg transition-all">
-            Bütün bölgələrə qayıt
+            {t("back_to_regions")}
           </Link>
         </div>
       );
@@ -96,7 +98,7 @@ export default async function RegionPage({
           </p>
 
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 animate-bounce">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">Aşağı çəkin</span>
+            <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">{t("scroll_down")}</span>
             <div className="w-px h-12 bg-gradient-to-b from-white to-transparent" />
           </div>
         </div>
@@ -109,14 +111,25 @@ export default async function RegionPage({
             <div className="lg:col-span-7">
               <div className="inline-flex items-center gap-2 text-primary font-bold tracking-wider uppercase text-xs mb-4">
                 <Compass className="w-4 h-4" />
-                <span>Region Haqqında</span>
+                <span>{t("about_region")}</span>
               </div>
               <h2 className="text-4xl md:text-5xl font-black mb-8 leading-[1.1]">
-                Niyə <span className="text-primary">{region.name}</span>-ni ziyarət etməlisiniz?
+                {t("why_visit", { name: `<span class="text-primary">${region.name}</span>` }).split('<span').map((part, i) => {
+                  if (i === 0) return part;
+                  const [inner, rest] = part.split('</span>');
+                  const match = inner.match(/class="([^"]+)">/);
+                  const className = match ? match[1] : '';
+                  const content = inner.replace(/.*>/, '');
+                  return (
+                    <span key={i}>
+                      <span className={className}>{content}</span>{rest}
+                    </span>
+                  );
+                })}
               </h2>
               <div className="prose prose-lg dark:prose-invert max-w-none text-muted-foreground leading-relaxed space-y-6">
                 <p className="text-xl leading-relaxed">
-                  {region.description || "Bu region haqqında ətraflı məlumat tezliklə əlavə olunacaq. Hazırda biz bu səhifəni maraqlı kontentlə zənginləşdiririk."}
+                  {region.description || t("description_placeholder")}
                 </p>
               </div>
 
@@ -138,7 +151,7 @@ export default async function RegionPage({
               <div className="sticky top-24 bg-card border border-border/50 rounded-[40px] p-8 md:p-12 shadow-2xl">
                 <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
                   <Star className="w-6 h-6 text-yellow-500 fill-yellow-500" />
-                  Görülməli Yerlər
+                  {t("must_see")}
                 </h3>
                 
                 <div className="space-y-4">
@@ -160,7 +173,7 @@ export default async function RegionPage({
                       </div>
                     ))
                   ) : (
-                    <p className="text-muted-foreground italic text-center py-6">Bu bölmədə hələ ki, heç bir məkan əlavə edilməyib.</p>
+                    <p className="text-muted-foreground italic text-center py-6">{t("no_attractions")}</p>
                   )}
                 </div>
 
@@ -168,7 +181,7 @@ export default async function RegionPage({
                   href={`/mekanlar?region=${region.id}`}
                   className="mt-10 w-full flex items-center justify-center gap-3 py-5 bg-foreground text-background rounded-full font-bold hover:scale-[1.02] transition-all"
                 >
-                  Bütün Məkanları Gör <Compass className="w-5 h-5" />
+                  {t("see_all_venues")} <Compass className="w-5 h-5" />
                 </Link>
               </div>
             </div>
@@ -183,12 +196,12 @@ export default async function RegionPage({
                 <div>
                   <div className="inline-flex items-center gap-2 text-primary font-bold uppercase text-xs mb-3">
                     <Camera className="w-4 h-4" />
-                    <span>Vizual Kəşf</span>
+                    <span>{t("visual_discovery")}</span>
                   </div>
-                  <h2 className="text-4xl md:text-5xl font-black">{region.name} Qalereyası</h2>
+                  <h2 className="text-4xl md:text-5xl font-black">{t("gallery_title", { name: region.name })}</h2>
                 </div>
                 <p className="text-muted-foreground max-w-md text-sm leading-relaxed">
-                  Regionun gözəlliklərini əks etdirən rəsmi görüntülər. Hər bir kadr bu yerin ruhunu duymağa yardımçı olacaq.
+                  {t("gallery_desc")}
                 </p>
               </div>
 
@@ -227,23 +240,23 @@ export default async function RegionPage({
               
               <div className="relative z-10">
                 <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter">
-                  {region.name} səyahətinizi planlaşdırın
+                  {t("plan_trip", { name: region.name })}
                 </h2>
                 <p className="text-xl md:text-2xl text-primary-foreground/80 mb-12 max-w-2xl mx-auto font-medium">
-                  Regiondakı ən yaxşı otelləri, restoranları və gəzməli yerləri bir toxunuşla tapın.
+                  {t("plan_trip_desc")}
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                   <Link
                     href={`/mekanlar?region=${region.id}`}
                     className="px-10 py-5 bg-white text-primary rounded-full font-black text-lg hover:shadow-2xl hover:-translate-y-1 transition-all"
                   >
-                    Hemen Kəşf Et
+                    {t("discover_now")}
                   </Link>
                   <Link
                     href="/contact"
                     className="px-10 py-5 bg-transparent border-2 border-white/50 text-white rounded-full font-black text-lg hover:bg-white/10 transition-all"
                   >
-                    Bizə Yazın
+                    {t("contact_us")}
                   </Link>
                 </div>
               </div>

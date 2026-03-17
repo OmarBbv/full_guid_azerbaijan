@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { Bed, Star, ChevronLeft, Wifi, Waves, Globe, ShieldCheck, Loader2, Camera } from 'lucide-react';
 import Image from 'next/image';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 import { usePlaceById } from '@/hooks/use-places';
 import { getImageUrl } from '@/lib/utils';
@@ -15,6 +15,9 @@ import PlaceJsonLd from '@/components/shared/PlaceJsonLd';
 export default function HotelDetailPage() {
   const params = useParams();
   const locale = useLocale();
+  const t = useTranslations('VenueDetail');
+  const tCommon = useTranslations('Navbar');
+  const tPlaces = useTranslations('PlacesPage');
   const id = params.id as string;
   const { data: hotel, isLoading } = usePlaceById(id, locale);
 
@@ -35,9 +38,9 @@ export default function HotelDetailPage() {
   if (!hotel) {
     return (
       <div className="min-h-screen flex items-center justify-center flex-col gap-4">
-        <h1 className="text-2xl font-bold">Otel tapılmadı</h1>
+        <h1 className="text-2xl font-bold">{t('not_found')}</h1>
         <Link href="/places/hotels" className="text-primary hover:underline flex items-center gap-2">
-          <ChevronLeft className="w-4 h-4" /> Otellərə qayıt
+          <ChevronLeft className="w-4 h-4" /> {t('back_to_hotels')}
         </Link>
       </div>
     );
@@ -66,13 +69,13 @@ export default function HotelDetailPage() {
         {/* Hero Content */}
         <div className="relative z-20 h-full flex flex-col items-center justify-end pb-20 text-center px-4 max-w-5xl mx-auto">
           <Link href="/places/hotels" className="absolute top-28 left-4 text-white/80 hover:text-white flex items-center gap-2 bg-black/20 backdrop-blur-md px-4 py-2 rounded-full border border-white/10 active:scale-95 transition-all">
-            <ChevronLeft className="w-5 h-5" /> Geri
+            <ChevronLeft className="w-5 h-5" /> {tCommon('back')}
           </Link>
 
           <div className="flex items-center gap-2 text-yellow-500 mb-4 bg-yellow-500/10 backdrop-blur-md px-4 py-1 rounded-full border border-yellow-500/20">
             <Star className="w-4 h-4 fill-yellow-500" />
             <span className="font-bold">{Number(hotel.average_rating || 5).toFixed(1)}</span>
-            <span className="text-white/60 text-sm">({hotel.review_count || 0} rəy)</span>
+            <span className="text-white/60 text-sm">({hotel.review_count || 0} {tPlaces('reviews')})</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl uppercase italic">
             {hotel.title}
@@ -87,14 +90,14 @@ export default function HotelDetailPage() {
         {/* Left Content - Main Info */}
         <div className="lg:col-span-2 space-y-12">
           <section>
-            <h2 className="text-3xl font-black mb-6">Haqqında</h2>
+            <h2 className="text-3xl font-black mb-6">{t('tab_about')}</h2>
             <p className="text-muted-foreground text-lg leading-relaxed italic whitespace-pre-line">
               {hotel.detailed_description || hotel.short_description}
             </p>
           </section>
 
           <section>
-            <h2 className="text-3xl font-black mb-8">İmkanlar</h2>
+            <h2 className="text-3xl font-black mb-8">{t('what_we_offer')}</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
               {((hotel as any).features || []).map((f: string, i: number) => (
                 <div key={i} className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10 hover:border-primary/30 transition-colors">
@@ -108,13 +111,13 @@ export default function HotelDetailPage() {
               {(hotel as any).has_wifi && (
                 <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
                   <Wifi className="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500" />
-                  <span className="font-bold text-sm">High-Speed Wi-Fi</span>
+                  <span className="font-bold text-sm">{t('fast_internet')}</span>
                 </div>
               )}
               {((hotel as any).has_pool || (hotel as any).has_outdoor_seating) && (
                 <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
                   <Waves className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500" />
-                  <span className="font-bold text-sm">Hovuz & SPA</span>
+                  <span className="font-bold text-sm">{t('pool_spa')}</span>
                 </div>
               )}
             </div>
@@ -125,7 +128,7 @@ export default function HotelDetailPage() {
             <section>
               <h2 className="text-3xl font-black mb-8 flex items-center gap-3">
                 <Camera className="w-8 h-8 text-primary" />
-                Qalereya
+                {t('tab_gallery')}
               </h2>
               <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                 {hotel.images.map((img: any, i: number) => (
@@ -136,7 +139,7 @@ export default function HotelDetailPage() {
                   >
                     <Image
                       src={img.url ? img.url.replace('localhost', '127.0.0.1') : ''}
-                      alt={`Qalereya şəkli ${i + 1}`}
+                      alt={`${t('gallery_photo')} ${i + 1}`}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
                       unoptimized
@@ -161,10 +164,10 @@ export default function HotelDetailPage() {
             <div className="relative z-10">
               <h2 className="text-3xl font-black mb-4 flex items-center gap-3">
                 <ShieldCheck className="w-8 h-8 text-primary" />
-                Rezervasiya Zəmanəti
+                {t('reservation_guarantee')}
               </h2>
               <p className="text-muted-foreground text-lg max-w-2xl">
-                FGA üzərindən etdiyiniz bütün rezervasiyalar rəsmi tərəfdaşlarımız tərəfindən doğrulanır və sizə ən aşağı qiymət zəmanəti verilir.
+                {t('hotel_reservation_desc')}
               </p>
             </div>
           </section>

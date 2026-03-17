@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
-
+import { useTranslations } from 'next-intl';
 import { Plane, Compass, AlertCircle, Calendar } from 'lucide-react';
+import Image from "next/image";
 import un_photo_1570710891163_6d3b5c47248b_24bb943f from "@/assets/unsplash/photo-1570710891163-6d3b5c47248b_24bb943f.jpg";
 
 export default function AirportInfoPage() {
+  const t = useTranslations('AirportInfo');
+
   return (
     <div className="bg-background pb-20">
       {/* Hero Header */}
@@ -18,7 +20,7 @@ export default function AirportInfoPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src={un_photo_1570710891163_6d3b5c47248b_24bb943f.src}
-            alt="Hava Limanı"
+            alt={t('title')}
             fill
             className="object-cover"
             style={{ filter: "brightness(0.65) saturate(1.1)" }}
@@ -33,10 +35,10 @@ export default function AirportInfoPage() {
             <Plane className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-5xl md:text-7xl font-black tracking-tight text-white mb-6 drop-shadow-2xl">
-            Hava Limanı <span className="text-blue-300">Bələdçisi</span>
+            {t('title')} <span className="text-blue-300">{t('title_accent')}</span>
           </h1>
           <p className="text-xl md:text-2xl text-white/90 font-medium max-w-2xl drop-shadow-md">
-            Heydər Əliyev Beynəlxalq Aeroportu (GYD) - MDB məkanının və Şərqin ən qabaqcıl, müasir hava limanlarından biridir.
+            {t('hero_desc')}
           </p>
         </div>
       </section>
@@ -46,20 +48,20 @@ export default function AirportInfoPage() {
         {[
           {
             icon: <Compass className="w-6 h-6 text-indigo-500" />,
-            title: "Təyinat & İstiqamətləndirmə",
-            description: "Aeroport şəhərin mərkəzindən təxminən 20 km şərqdə yerləşir. İstər taksi, istərsə də ekspress avtobuslarla mərkəzə 25-30 dəqiqə ərzində rahat çata bilərsiniz.",
+            title: t('cards.arrival_title'),
+            description: t('cards.arrival_desc'),
             bg: "bg-indigo-500/10"
           },
           {
             icon: <Calendar className="w-6 h-6 text-sky-500" />,
-            title: "Aeroport Ekspress (H1)",
-            description: "Hər 30 dəqiqədən bir uçuşların qrafikinə uyğun hərəkət edir. Birbaşa Koroğlu Metrosuna və 28 May mərkəzi stansiyasına sərnişin daşıyır.",
+            title: t('cards.express_title'),
+            description: t('cards.express_desc'),
             bg: "bg-sky-500/10"
           },
           {
             icon: <AlertCircle className="w-6 h-6 text-red-500" />,
-            title: "Əhəmiyyətli məlumatlar",
-            description: "Duty Free mağazaları, VİP zallar, pulsuz Wi-Fi xidməti (Baku Airport Free Wi-Fi) bütün sərnişinlərə təqdim olunur. Rəsmi taksilərdən (Baku Taxi) istifadə etmək daha güvənlidir.",
+            title: t('cards.important_title'),
+            description: t('cards.important_desc'),
             bg: "bg-red-500/10"
           },
         ].map((item, index) => (

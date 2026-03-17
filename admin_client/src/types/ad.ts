@@ -1,8 +1,8 @@
 export enum AdPosition {
-  HOMEPAGE_TOP = 'homepage_top',
-  HOMEPAGE_SIDE = 'homepage_side',
-  CATEGORY_TOP = 'category_top',
-  PLACE_SIDEBAR = 'place_sidebar',
+  HERO_ALTI = 'hero_alti',
+  ORTA_BANNER = 'orta_banner',
+  KATEQORIYA_UST = 'kateqoriya_ust',
+  MEKAN_SIDEBAR = 'mekan_sidebar',
 }
 
 export interface Ad {

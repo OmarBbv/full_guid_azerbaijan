@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -28,7 +29,7 @@ import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { createLandmarkSchema, type CreateLandmarkFormValues } from './landmark-schema';
-import { useLandmark, useUpdateLandmark, useUploadLandmarkImages } from '@/hooks/use-landmarks';
+import { useLandmark, useUpdateLandmark, useUploadLandmarkImages, LANDMARK_KEYS } from '@/hooks/use-landmarks';
 import { paths } from '@/paths';
 import { PlaceStatus } from '@/types/restaurant';
 import { formatPhoneNumber } from '@/lib/format-phone';
@@ -39,6 +40,7 @@ interface LandmarkEditFormProps {
 
 export function LandmarkEditForm({ id }: LandmarkEditFormProps): React.JSX.Element {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: landmark, isLoading: isFetching, isError: isFetchError } = useLandmark(id);
   const { mutate: updateLandmark, isPending: isUpdating, isError, error } = useUpdateLandmark(id);
   const { mutateAsync: uploadImages, isPending: isUploading } = useUploadLandmarkImages();
@@ -103,6 +105,16 @@ export function LandmarkEditForm({ id }: LandmarkEditFormProps): React.JSX.Eleme
         setValue('slug', slug);
     }
   }, [titleValue, landmark, setValue]);
+
+  const handleDeleteExistingImage = async (imageId: string) => {
+    try {
+      const { apiClient } = await import('@/lib/api-client');
+      await apiClient.delete(`/places/images/${imageId}`);
+      queryClient.invalidateQueries({ queryKey: LANDMARK_KEYS.detail(id) });
+    } catch (err) {
+      console.error('Failed to delete image', err);
+    }
+  };
 
   function onSubmit(values: CreateLandmarkFormValues) {
     updateLandmark(values, {
@@ -276,8 +288,23 @@ export function LandmarkEditForm({ id }: LandmarkEditFormProps): React.JSX.Eleme
                   <Typography variant="subtitle2" gutterBottom>Mövcud Şəkillər</Typography>
                   <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
                     {landmark.place.images.map((img: any) => (
-                      <Box key={img.id} sx={{ width: 100, height: 100, borderRadius: 1, overflow: 'hidden', flexShrink: 0 }}>
+                      <Box key={img.id} sx={{ width: 100, height: 100, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
                         <img src={img.url} alt="landmark" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                        <IconButton
+                            size="small"
+                            onClick={() => handleDeleteExistingImage(img.id)}
+                            sx={{
+                              position: 'absolute',
+                              top: 4,
+                              right: 4,
+                              bgcolor: 'background.paper',
+                              width: 20,
+                              height: 20,
+                              '&:hover': { bgcolor: 'error.main', color: 'white' },
+                            }}
+                          >
+                            <TrashIcon size={12} weight="bold" />
+                          </IconButton>
                       </Box>
                     ))}
                   </Stack>

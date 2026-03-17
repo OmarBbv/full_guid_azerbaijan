@@ -5,33 +5,37 @@ import { Search, MapPin, ChevronDown, Tag } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 
-const CITIES = [
-  { key: "city_all",       value: "",           label: "Bütün şəhərlər" },
-  { key: "city_baku",      value: "Baku",       label: "Bakı" },
-  { key: "city_ganja",     value: "Ganja",      label: "Gəncə" },
-  { key: "city_sumgayit",  value: "Sumgayit",   label: "Sumqayıt" },
-  { key: "city_qabala",    value: "Qabala",     label: "Qəbələ" },
-  { key: "city_sheki",     value: "Sheki",      label: "Şəki" },
-  { key: "city_quba",      value: "Quba",       label: "Quba" },
-  { key: "city_lankaran",  value: "Lankaran",   label: "Lənkəran" },
-  { key: "city_shusha",    value: "Shusha",     label: "Şuşa" },
-  { key: "city_nakhchivan",value: "Nakhchivan", label: "Naxçıvan" },
-  { key: "city_shamakhi",  value: "Shamakhi",   label: "Şamaxı" },
+const getLocalizedCities = (t: any) => [
+  { key: "city_all",       value: "",           label: t("all_cities") },
+  { key: "city_baku",      value: "Baku",       label: t("city_baku") },
+  { key: "city_ganja",     value: "Ganja",      label: t("city_ganja") },
+  { key: "city_sumgayit",  value: "Sumgayit",   label: t("city_sumgayit") },
+  { key: "city_qabala",    value: "Qabala",     label: t("city_qabala") },
+  { key: "city_sheki",     value: "Sheki",      label: t("city_sheki") },
+  { key: "city_quba",      value: "Quba",       label: t("city_quba") },
+  { key: "city_lankaran",  value: "Lankaran",   label: t("city_lankaran") },
+  { key: "city_shusha",    value: "Shusha",     label: t("city_shusha") },
+  { key: "city_nakhchivan",value: "Nakhchivan", label: t("city_nakhchivan") },
+  { key: "city_shamakhi",  value: "Shamakhi",   label: t("city_shamakhi") },
 ];
 
-const TYPES = [
-  { value: "",           label: "Hər şey",     icon: "✨" },
-  { value: "restaurant", label: "Restoran",    icon: "🍴" },
-  { value: "hotel",      label: "Otel",        icon: "🏨" },
-  { value: "hostel",     label: "Hostel",      icon: "🛌" },
-  { value: "venue",      label: "Məkan",       icon: "📍" },
-  { value: "landmark",   label: "Tarixi Yer",  icon: "🏛️" },
-  { value: "nature",     label: "Təbiət",      icon: "🌿" },
+const getLocalizedTypes = (t: any) => [
+  { value: "",           label: t("type_all"),     icon: "✨" },
+  { value: "restaurant", label: t("type_restaurant"),    icon: "🍴" },
+  { value: "hotel",      label: t("type_hotel"),        icon: "🏨" },
+  { value: "hostel",     label: t("type_hostel"),      icon: "🛌" },
+  { value: "venue",      label: t("type_venue"),       icon: "📍" },
+  { value: "landmark",   label: t("type_landmark"),  icon: "🏛️" },
+  { value: "nature",     label: t("type_nature"),      icon: "🌿" },
 ];
 
 export default function HeroSearchBar() {
   const locale = useLocale();
   const router = useRouter();
+  const t = useTranslations("HeroSearch");
+
+  const CITIES = getLocalizedCities(t);
+  const TYPES = getLocalizedTypes(t);
 
   const [query, setQuery]         = useState("");
   const [city,  setCity]          = useState("");
@@ -62,7 +66,7 @@ export default function HeroSearchBar() {
   };
 
   const selectedCity = CITIES.find((c) => c.value === city) ?? CITIES[0];
-  const selectedType = TYPES.find((t)  => t.value === type)  ?? TYPES[0];
+  const selectedType = TYPES.find((tItem)  => tItem.value === type)  ?? TYPES[0];
 
   return (
     <form
@@ -85,7 +89,7 @@ export default function HeroSearchBar() {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Nə axtarırsınız?"
+          placeholder={t("what_placeholder")}
           className="w-full bg-transparent text-white placeholder-white/40 text-sm outline-none font-medium"
         />
       </div>
@@ -117,16 +121,16 @@ export default function HeroSearchBar() {
               boxShadow:      "0 20px 60px rgba(0,0,0,0.5)",
             }}
           >
-            {TYPES.map((t) => (
+            {TYPES.map((tItem) => (
               <button
-                key={t.value}
+                key={tItem.value}
                 type="button"
-                onClick={() => { setType(t.value); setTypeOpen(false); }}
+                onClick={() => { setType(tItem.value); setTypeOpen(false); }}
                 className="w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 transition-colors hover:bg-white/10"
-                style={{ color: type === t.value ? "#3b9cf5" : "rgba(255,255,255,0.8)" }}
+                style={{ color: type === tItem.value ? "#3b9cf5" : "rgba(255,255,255,0.8)" }}
               >
-                <span>{t.icon}</span>
-                {t.label}
+                <span>{tItem.icon}</span>
+                {tItem.label}
               </button>
             ))}
           </div>
@@ -186,9 +190,10 @@ export default function HeroSearchBar() {
           }}
         >
           <Search size={15} />
-          Axtar
+          {t("search_btn")}
         </button>
       </div>
     </form>
+
   );
 }

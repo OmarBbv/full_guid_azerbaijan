@@ -30,16 +30,16 @@ export class CreateCityDto {
 
   @IsString()
   @IsOptional()
-  image_url?: string;
+  image_url?: string | null;
 
   @IsString()
   @IsOptional()
-  cover_image_url?: string;
+  cover_image_url?: string | null;
 
   @IsArray()
   @IsString({ each: true })
   @IsOptional()
-  gallery_urls?: string[];
+  gallery_urls?: string[] | null;
 
   @IsString()
   @IsOptional()

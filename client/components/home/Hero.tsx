@@ -31,11 +31,11 @@ const getDefaultSlides = (tHero: any) => [
     bg: un_photo_1570168007204_dfb528c6958f_1e93d564,
     country: tHero ? tHero("slide1_country") : "AZƏRBAYCAN",
     subtitle: tHero ? tHero("slide1_subtitle") : "Şərqin açarı, Qafqazın incisi",
-    description: tHero ? tHero("slide1_desc") : "Qədim şəhər küçələrindən buzlaq dağ zirvələrinə, zəngin mədəniyyətdən Xəzərin sahillərinə — Azərbaycan sizi heyrətdə qoyacaq.",
+    description: tHero ? tHero("slide1_desc") : "Qədim şəhər küçələrindən buzlaq dağ zirvələrinə, zəngin mədəniyyətdən Xəzərin sahillərinə — Azərbaycan sizi heyrətdə qoyacak.",
     accent: "#3b9cf5",
     cards: [
       {
-        name: "Bakı",
+        name: tHero ? tHero("city_baku") : "Bakı",
         region: "Abşeron",
         subtitle: tHero ? tHero("slide1_c1_sub") : "Şərqin Paris'i",
         description: tHero ? tHero("slide1_c1_desc") : "Qədim İçərişəhər, Alov qüllələri və müasir arxitektura — Bakı hər gün yeni sirlər açır.",
@@ -44,7 +44,7 @@ const getDefaultSlides = (tHero: any) => [
         reviews: "12.4k",
       },
       {
-        name: "Şuşa",
+        name: tHero ? tHero("city_shusha") : "Şuşa",
         region: "Qarabağ",
         subtitle: tHero ? tHero("slide1_c2_sub") : "Musiqi şəhəri",
         description: tHero ? tHero("slide1_c2_desc") : "Qarabağın döyünən ürəyi, musiqi və şeirin beşiyi olan bu şəhər zamana aparan bir gəzinti təklif edir.",
@@ -53,7 +53,7 @@ const getDefaultSlides = (tHero: any) => [
         reviews: "5.1k",
       },
       {
-        name: "Qəbələ",
+        name: tHero ? tHero("city_qabala") : "Qəbələ",
         region: "Şimal",
         subtitle: tHero ? tHero("slide1_c3_sub") : "Dağların qucağı",
         description: tHero ? tHero("slide1_c3_desc") : "Böyük Qafqazın yaşıl qoynunda göllər, şəlalələr və Tufandağ ski mərkəzi — mövsümü olmayan cənnət.",
@@ -63,120 +63,10 @@ const getDefaultSlides = (tHero: any) => [
       },
     ],
   },
-  {
-    bg: un_photo_1519681393784_d120267933ba_1e93d564,
-    country: "QƏBƏLƏ",
-    subtitle: "Böyük Qafqazın qucağında",
-    description:
-      "Göy meşələr, şəlalələr və dağ havası sizi bu füsunkar şimal bölgəsinin sirlərini kəşf etməyə dəvət edir.",
-    accent: "#4dd9ac",
-    cards: [
-      {
-        name: "Nohur Gölü",
-        region: "Qəbələ",
-        subtitle: "Kristal ayna",
-        description: "Dağların arasında gizlənmiş bu əsrarlı göl, sakit sularıyla ziyarətçilərini heyran qoyur.",
-        img: un_photo_1501854140801_50d01698950b_629753b7,
-        rating: 4.8,
-        reviews: "3.2k",
-      },
-      {
-        name: "Vəndam",
-        region: "Qəbələ",
-        subtitle: "Yaşıl vadilər",
-        description: "Heyrətamiz meşə yolları, füsunkar vadilər və təmiz dağ havası ilə Vəndam unudulmaz bir gəzinti yeridir.",
-        img: un_photo_1527489377706_5bf97e608852_629753b7,
-        rating: 4.7,
-        reviews: "2.8k",
-      },
-      {
-        name: "Tufandağ",
-        region: "Qəbələ",
-        subtitle: "Ski cənnəti",
-        description: "Qışda qarla örtülü yamaclar, yayda isə gözəl trekkinq marşrutları ilə Tufandağ hər mövsüm gözəldir.",
-        img: un_photo_1519681393784_d120267933ba_629753b7,
-        rating: 4.9,
-        reviews: "4.1k",
-      },
-    ],
-  },
-  {
-    bg: un_photo_1544735716_392fe2489ffa_1e93d564,
-    country: "ŞUŞA",
-    subtitle: "Qarabağın döyünən ürəyi",
-    description:
-      "Musiqi, şeir və tarixi mədəniyyətin beşiyi olan bu qədim şəhər sizi zamana aparan bir gəzintiyə dəvət edir.",
-    accent: "#f5a623",
-    cards: [
-      {
-        name: "Qız Qalası",
-        region: "Şuşa",
-        subtitle: "Tarixi möcüzə",
-        description: "Şuşanın simvolu olan bu qədim qala şəhərin tarixini özündə yaşadır və panoramik mənzərə təklif edir.",
-        img: un_photo_1544735716_392fe2489ffa_629753b7,
-        rating: 4.9,
-        reviews: "7.3k",
-      },
-      {
-        name: "Əlibəyli",
-        region: "Şuşa",
-        subtitle: "Təbiətin qoynunda",
-        description: "Sakit kənd həyatı, yaşıl bağçalar və isti mehmanpərvərlik — şəhər həyatının stresindən uzaqlaşın.",
-        img: un_photo_1500534314209_a25ddb2bd429_629753b7,
-        rating: 4.6,
-        reviews: "1.9k",
-      },
-      {
-        name: "Cıdır Düzü",
-        region: "Şuşa",
-        subtitle: "Açıq havada",
-        description: "Tarixi at yarışlarının keçirildiyi bu gözəl düzənlik bu gün də mədəni tədbirlərə ev sahibliyi edir.",
-        img: un_photo_1448375240586_882707db888b_629753b7,
-        rating: 4.8,
-        reviews: "3.5k",
-      },
-    ],
-  },
-  {
-    bg: un_photo_1448375240586_882707db888b_1e93d564,
-    country: "LƏNKƏRAN",
-    subtitle: "Subtropik cənnətin qucağında",
-    description:
-      "Çay bağçaları, Xəzər sahilləri və unikal subtropik iqlimi ilə Lənkəran unudulmaz bir səyahət hədəfidir.",
-    accent: "#8bc34a",
-    cards: [
-      {
-        name: "Hirkan Meşəsi",
-        region: "Lənkəran",
-        subtitle: "UNESCO mirası",
-        description: "Nadir nəbatat və heyvanatlara ev sahib olan bu qoruq dünyanın ən qədim meşə ekosistemlərindən biridir.",
-        img: un_photo_1448375240586_882707db888b_629753b7,
-        rating: 4.7,
-        reviews: "2.2k",
-      },
-      {
-        name: "Astara",
-        region: "Lənkəran",
-        subtitle: "Sərhəd şəhəri",
-        description: "İranla sərhəddə yerləşən bu şəhər, çay bağçaları və Xəzər sahilinin möhtəşəm mənzərəsi ilə məşhurdur.",
-        img: un_photo_1534531173927_aeb928d54385_629753b7,
-        rating: 4.5,
-        reviews: "1.8k",
-      },
-      {
-        name: "Lerik",
-        region: "Lənkəran",
-        subtitle: "Uzunömürlülər yurdu",
-        description: "Dünyanın ən uzunömürlü sakinlərinin yaşadığı bu dağ rayonu saf hava və gözəl təbiəti ilə heyranedicidir.",
-        img: un_photo_1501854140801_50d01698950b_629753b7,
-        rating: 4.6,
-        reviews: "1.3k",
-      },
-    ],
-  },
 ];
 
 export default function Hero() {
+  const tHome = useTranslations("Home");
   const tHero = useTranslations("HeroDefault");
   const defaultSlides = useMemo(() => getDefaultSlides(tHero), [tHero]);
   const locale = useLocale();
@@ -203,7 +93,7 @@ export default function Hero() {
       return {
         bg: imageUrl,
         country: city.toUpperCase(),
-        subtitle: firstPlace.subtitle || 'Möhtəşəm məkan kəşfi',
+        subtitle: firstPlace.subtitle || (locale === 'az' ? 'Möhtəşəm məkan kəşfi' : 'Discover amazing places'),
         description: firstPlace.short_description || firstPlace.title,
         accent: firstPlace.accent_color || '#3b9cf5',
         cards: cityPlaces.map(p => {
@@ -215,12 +105,12 @@ export default function Hero() {
             description: p.short_description || p.title,
             img: pImg,
             rating: Number(p.average_rating) || 0,
-            reviews: p.review_count ? `${p.review_count} rəy` : '0 rəy',
+            reviews: p.review_count ? `${p.review_count} ${tHome('reviews_count')}` : `0 ${tHome('reviews_count')}`,
           };
         }),
       };
     });
-  }, [heroPlaces]);
+  }, [heroPlaces, tHome]);
 
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
@@ -350,7 +240,7 @@ export default function Hero() {
               height: i === current ? 36 : 12,
               background: i === current ? slide.accent : "rgba(255,255,255,0.3)",
             }}
-            aria-label={`Slayd ${i + 1}`}
+            aria-label={`${tHome('slide_label')} ${i + 1}`}
           />
         ))}
       </div>
@@ -431,7 +321,7 @@ export default function Hero() {
                 ))}
               </div>
               <span className="text-white/60 text-sm font-medium">
-                {activeCardData.rating} · {activeCardData.reviews} rəy
+                {activeCardData.rating} · {activeCardData.reviews}
               </span>
             </div>
           )}
@@ -634,7 +524,7 @@ export default function Hero() {
                         style={{ animationDelay: "0.1s" }}
                       >
                         <MapPin size={11} className="text-white/40" />
-                        <span className="text-white/40 text-[11px]">{card.region}, Azərbaycan</span>
+                        <span className="text-white/40 text-[11px]">{card.region}, {locale === 'az' ? 'Azərbaycan' : 'Azerbaijan'}</span>
                         <span
                           className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
                           style={{ background: `${slide.accent}33`, color: slide.accent }}
@@ -758,10 +648,6 @@ export default function Hero() {
         }
       `}</style>
 
-      {/* ── Ad Banner Component ── */}
-      <div className="absolute top-[80px] left-1/2 -translate-x-1/2 z-30 w-[90%] max-w-4xl opacity-90 hover:opacity-100 transition-opacity drop-shadow-2xl">
-        <AdBannerComponent position="hero_alti" />
-      </div>
     </section>
   );
 }

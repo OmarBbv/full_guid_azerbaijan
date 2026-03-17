@@ -28,6 +28,8 @@ export interface CreateCityDto {
   slug: string;
   language?: string;
   description?: string;
+  image_url?: string | null;
+  cover_image_url?: string | null;
   gallery_urls?: string[];
   google_maps_url?: string;
   region?: string;

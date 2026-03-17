@@ -29,6 +29,8 @@ apiClient.interceptors.response.use(
         for (const key in data) {
           if (['thumbnail', 'url', 'img', 'bg', 'cover_image_url', 'author_avatar_url', 'image_url'].includes(key) && typeof data[key] === 'string' && data[key].startsWith('/')) {
             data[key] = `${baseURL}${data[key]}`;
+          } else if (key === 'gallery_urls' && Array.isArray(data[key])) {
+            data[key] = data[key].map((u: string) => typeof u === 'string' && u.startsWith('/') ? `${baseURL}${u}` : u);
           } else {
             transformData(data[key]);
           }

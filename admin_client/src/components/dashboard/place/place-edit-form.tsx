@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -25,9 +26,10 @@ import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { createPlaceSchema, type CreatePlaceFormValues } from './place-schema';
-import { usePlace, useUpdatePlace, useUploadPlaceImages } from '@/hooks/use-places';
+import { usePlace, useUpdatePlace, useUploadPlaceImages, PLACE_KEYS } from '@/hooks/use-places';
 import { PlaceType } from '@/types/restaurant';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
@@ -57,6 +59,7 @@ interface PlaceEditFormProps {
 
 export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Element {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: place, isLoading: isFetching } = usePlace(placeId);
   const { mutate: updatePlace, isPending, isError, error } = useUpdatePlace(placeId);
   const { mutateAsync: uploadImages } = useUploadPlaceImages();
@@ -122,6 +125,16 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
       setValue('slug', slug);
     }
   }, [titleValue, setValue, place]);
+
+  const handleDeleteExistingImage = async (imageId: string) => {
+    try {
+      const { apiClient } = await import('@/lib/api-client');
+      await apiClient.delete(`/places/images/${imageId}`);
+      queryClient.invalidateQueries({ queryKey: PLACE_KEYS.detail(placeId) });
+    } catch (err) {
+      console.error('Failed to delete image', err);
+    }
+  };
 
   function onSubmit(values: CreatePlaceFormValues) {
     updatePlace(values, {
@@ -348,6 +361,40 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
           <CardHeader title="Şəkillər" />
           <Divider />
           <CardContent>
+            <Box sx={{ mb: 3 }}>
+              {place?.images && place.images.length > 0 && (
+                <>
+                  <Typography variant="subtitle2" sx={{ mb: 1 }}>Cari Şəkillər</Typography>
+                  <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
+                    {place.images.map((img: any, idx: number) => (
+                      <Box key={img.id || idx} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
+                        <img
+                          src={img.url}
+                          alt={`existing-${idx}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                        <IconButton
+                            size="small"
+                            onClick={() => handleDeleteExistingImage(img.id)}
+                            sx={{
+                              position: 'absolute',
+                              top: 4,
+                              right: 4,
+                              bgcolor: 'background.paper',
+                              width: 20,
+                              height: 20,
+                              '&:hover': { bgcolor: 'error.main', color: 'white' },
+                            }}
+                          >
+                            <TrashIcon size={12} weight="bold" />
+                          </IconButton>
+                      </Box>
+                    ))}
+                  </Stack>
+                </>
+              )}
+            </Box>
+
             <Button variant="outlined" component="label">
               Yeni Şəkil Əlavə Et
               <input

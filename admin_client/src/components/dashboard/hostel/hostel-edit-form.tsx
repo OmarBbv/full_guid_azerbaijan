@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import { useForm, Controller } from 'react-hook-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Alert from '@mui/material/Alert';
 import Box from '@mui/material/Box';
@@ -25,9 +26,10 @@ import IconButton from '@mui/material/IconButton';
 import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { createHostelSchema, type CreateHostelFormValues } from './hostel-schema';
-import { useUpdateHostel, useUploadHostelImages, useHostel } from '@/hooks/use-hostels';
+import { useUpdateHostel, useUploadHostelImages, useHostel, HOSTEL_KEYS } from '@/hooks/use-hostels';
 import { HostelType } from '@/types/hostel';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
@@ -46,6 +48,7 @@ export interface HostelEditFormProps {
 
 export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Element {
   const router = useRouter();
+  const queryClient = useQueryClient();
 
   const { data: hostel, isLoading: isFetching } = useHostel(hostelId);
   const { mutate: updateHostel, isPending, isError, error } = useUpdateHostel(hostelId);
@@ -113,6 +116,16 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
     }
   }, [hostel, reset]);
 
+  const handleDeleteExistingImage = async (imageId: string) => {
+    try {
+      // Need to import apiClient if not imported
+      const { apiClient } = await import('@/lib/api-client');
+      await apiClient.delete(`/places/images/${imageId}`);
+      queryClient.invalidateQueries({ queryKey: HOSTEL_KEYS.detail(hostelId) });
+    } catch (err) {
+      console.error('Failed to delete image', err);
+    }
+  };
 
   function onSubmit(values: CreateHostelFormValues) {
     updateHostel(values, {
@@ -139,7 +152,6 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
     );
   }
 
-  // @ts-expect-error - place image type 
   const existingImages = hostel.place?.images || [];
 
   return (
@@ -319,7 +331,6 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
                 <>
                   <Typography variant="subtitle2" sx={{ mb: 1 }}>Cari Şəkillər</Typography>
                   <Stack direction="row" spacing={1} sx={{ overflowX: 'auto', py: 1 }}>
-                    {/* @ts-expect-error - unk image prop */}
                     {existingImages.map((img, idx: number) => (
                       <Box key={img.id || idx} sx={{ width: 80, height: 80, borderRadius: 1, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
                         <img
@@ -327,6 +338,21 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
                           alt={`existing-${idx}`}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
+                        <IconButton
+                          size="small"
+                          onClick={() => handleDeleteExistingImage(img.id)}
+                          sx={{
+                            position: 'absolute',
+                            top: 4,
+                            right: 4,
+                            bgcolor: 'background.paper',
+                            width: 20,
+                            height: 20,
+                            '&:hover': { bgcolor: 'error.main', color: 'white' },
+                          }}
+                        >
+                          <TrashIcon size={12} weight="bold" />
+                        </IconButton>
                       </Box>
                     ))}
                   </Stack>

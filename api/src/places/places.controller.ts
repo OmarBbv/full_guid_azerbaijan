@@ -53,6 +53,11 @@ export class PlacesController {
     return this.placesService.remove(id);
   }
 
+  @Delete('images/:imageId')
+  removeImage(@Param('imageId') imageId: string) {
+    return this.placesService.removeImage(imageId);
+  }
+
   @Post(':id/images')
   @UseInterceptors(FilesInterceptor('images', 10, multerOptions))
   uploadImages(
