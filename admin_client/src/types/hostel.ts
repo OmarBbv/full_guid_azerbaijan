@@ -55,7 +55,7 @@ export interface CreateHostelDto {
   slug: string;
   short_description: string;
   detailed_description?: string;
-  whatsapp_number: string;
+  whatsapp_number?: string;
   address?: string;
   city?: string;
   phone_number?: string;
@@ -74,6 +74,8 @@ export interface CreateHostelDto {
   has_free_breakfast?: boolean;
   has_bar?: boolean;
   has_laundry?: boolean;
+  language?: string;
+  status?: string;
 }
 
 export type UpdateHostelDto = Partial<CreateHostelDto>;

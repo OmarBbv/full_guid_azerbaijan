@@ -30,7 +30,7 @@ import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 
 import { createPlaceSchema, type CreatePlaceFormValues } from './place-schema';
 import { usePlace, useUpdatePlace, useUploadPlaceImages, PLACE_KEYS } from '@/hooks/use-places';
-import { PlaceType } from '@/types/restaurant';
+import { PlaceType, PlaceStatus } from '@/types/restaurant';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
 
@@ -85,6 +85,8 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
         type: PlaceType.LANDMARK,
         is_featured: false,
         show_in_hero: false,
+        language: 'az',
+        status: PlaceStatus.ACTIVE,
       },
     });
 
@@ -108,6 +110,8 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
         google_maps_url: (place as any).google_maps_url || '',
         is_featured: place.is_featured || false,
         show_in_hero: place.show_in_hero || false,
+        language: (place as any).language || 'az',
+        status: place.status || PlaceStatus.ACTIVE,
       });
     }
   }, [place, reset]);
@@ -115,16 +119,16 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
   const titleValue = watch('title');
 
   React.useEffect(() => {
-    if (!place) {
-      const slug = titleValue
+    if (titleValue && place && titleValue !== place.title) {
+        const slug = titleValue
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, '')
         .replace(/\s+/g, '-')
         .replace(/-+/g, '-')
         .trim();
-      setValue('slug', slug);
+        setValue('slug', slug);
     }
-  }, [titleValue, setValue, place]);
+  }, [titleValue, place, setValue]);
 
   const handleDeleteExistingImage = async (imageId: string) => {
     try {
@@ -245,7 +249,7 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
         </Card>
 
         <Card>
-          <CardHeader title="Məkan Növü və Xüsusiyyətləri" />
+          <CardHeader title="Məkan Növü və Status" />
           <Divider />
           <CardContent>
             <Grid container spacing={3}>
@@ -267,6 +271,41 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
               </Grid>
               <Grid size={{ xs: 12, md: 4 }}>
                 <Controller
+                  name="status"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth error={Boolean(errors.status)}>
+                      <InputLabel>Status</InputLabel>
+                      <Select {...field} label="Status">
+                        <MenuItem value={PlaceStatus.ACTIVE}>Aktiv</MenuItem>
+                        <MenuItem value={PlaceStatus.PENDING}>Gözləmədə</MenuItem>
+                        <MenuItem value={PlaceStatus.INACTIVE}>Deaktiv</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Controller
+                  name="language"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth error={Boolean(errors.language)}>
+                      <InputLabel>Məzmun dili</InputLabel>
+                      <Select {...field} label="Məzmun dili">
+                        <MenuItem value="az">🇦🇿 Azərbaycan dili</MenuItem>
+                        <MenuItem value="en">🇬🇧 English</MenuItem>
+                        <MenuItem value="ru">🇷🇺 Русский</MenuItem>
+                        <MenuItem value="tr">🇹🇷 Türkçe</MenuItem>
+                        <MenuItem value="ar">🇸🇦 العربية</MenuItem>
+                        <MenuItem value="hi">🇮🇳 हिन्दी</MenuItem>
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
                   name="is_featured"
                   control={control}
                   render={({ field }) => (
@@ -278,7 +317,7 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
                   )}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Controller
                   name="show_in_hero"
                   control={control}
@@ -313,7 +352,6 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
                       }}
                       label="WhatsApp nömrəsi"
                       fullWidth
-                      required
                       placeholder="+994 50 123 45 67"
                       InputLabelProps={{ shrink: true }}
                       error={Boolean(errors.whatsapp_number)}

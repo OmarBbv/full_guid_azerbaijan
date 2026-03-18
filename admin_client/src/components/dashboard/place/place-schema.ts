@@ -10,7 +10,7 @@ export const createPlaceSchema = z.object({
   subtitle: z.string().optional(),
   accent_color: z.string().optional(),
   type: z.nativeEnum(PlaceType),
-  whatsapp_number: z.string().min(1, 'WhatsApp nömrəsi mütləqdir'),
+  whatsapp_number: z.string().optional().or(z.literal('')),
   phone_number: z.string().optional(),
   email: z.string().email('Düzgün e-poçt deyil').optional().or(z.literal('')),
   city: z.string().optional(),

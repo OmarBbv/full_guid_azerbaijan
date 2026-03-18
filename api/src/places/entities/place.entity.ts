@@ -97,8 +97,8 @@ export class Place {
   @Column({ type: 'enum', enum: PlaceStatus, default: PlaceStatus.ACTIVE })
   status: PlaceStatus;
 
-  @Column({ type: 'varchar', length: 50 })
-  whatsapp_number: string;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  whatsapp_number: string | null;
 
   /**
    * Pre-filled message template.

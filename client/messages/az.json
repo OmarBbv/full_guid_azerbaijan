@@ -1,4 +1,16 @@
 {
+  "Profile": {
+    "title": "Profilim",
+    "subtitle": "Şəxsi məlumatlarınızı idarə edin",
+    "first_name": "Ad",
+    "last_name": "Soyad",
+    "email": "E-poçt",
+    "save_changes": "Dəyişiklikləri yadda saxla",
+    "saving": "Yadda saxlanılır...",
+    "success_message": "Profiliniz uğurla yeniləndi",
+    "error_message": "Profil yenilənərkən xəta baş verdi",
+    "role": "Status"
+  },
   "Index": {
     "title": "Ana səhifə"
   },
@@ -320,7 +332,7 @@
     "load_more": "Daha çox yüklə",
     "restaurants_title": "Əsl Azərbaycan Ləzzətləri",
     "restaurants_subtitle": "Milli mətbəximizin şah əsərlərini təqdim edən ən populyar və keyfiyyətli restoranlar",
-    "hotels_title": "Rahat Qonaklama",
+    "hotels_title": "Rahat Qonaqlamalar",
     "hotels_subtitle": "Azərbaycanda rahat və unudulmaz qalmaq üçün ən yaxşı otellər",
     "hostels_title": "Büdcə Dostu Hostellər",
     "hostels_subtitle": "Səyahətçilər üçün rahat və əlçatan hostellər",

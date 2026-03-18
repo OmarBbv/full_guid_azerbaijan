@@ -31,6 +31,7 @@ export class PlacesService {
     showInHero?: boolean,
     type?: string,
     language?: string,
+    isFeatured?: boolean,
   ): Promise<Place[]> {
     const where: any = {};
     if (excludeTypes && excludeTypes.length > 0) {
@@ -38,6 +39,9 @@ export class PlacesService {
     }
     if (showInHero !== undefined) {
       where.show_in_hero = showInHero;
+    }
+    if (isFeatured !== undefined) {
+      where.is_featured = isFeatured;
     }
     if (type) {
       where.type = type;

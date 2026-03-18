@@ -9,6 +9,7 @@ import Navbar from '@/components/shared/Navbar';
 import Footer from '@/components/shared/Footer';
 import WhatsAppButton from '@/components/shared/WhatsAppButton';
 import { QueryProvider } from '@/providers/query-provider';
+import { Toaster } from 'sonner';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -40,6 +41,7 @@ export default async function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <QueryProvider>
+            <Toaster position="top-right" richColors />
             <div className="flex flex-col min-h-screen">
               <Navbar />
               <main className="flex-1">

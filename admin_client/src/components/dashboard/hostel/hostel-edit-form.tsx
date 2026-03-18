@@ -110,8 +110,7 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
         organizes_tours: hostel.organizes_tours || false,
         has_24h_security: hostel.has_24h_security || false,
         is_featured: hostel.place?.is_featured || false,
-        // @ts-expect-error - language missing
-        language: hostel.place?.language || 'az',
+        language: (hostel.place as any)?.language || 'az',
       });
     }
   }, [hostel, reset]);
@@ -218,7 +217,6 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
                       }}
                       label="WhatsApp nömrəsi"
                       fullWidth
-                      required
                       placeholder="+994 50 123 45 67"
                       error={Boolean(errors.whatsapp_number)}
                       helperText={errors.whatsapp_number?.message ?? 'Nümunə: +994 xx xxx xx xx'}

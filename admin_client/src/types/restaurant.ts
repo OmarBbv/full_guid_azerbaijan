@@ -65,7 +65,7 @@ export interface Place {
   accent_color: string | null;
   type: PlaceType;
   status: PlaceStatus;
-  whatsapp_number: string;
+  whatsapp_number?: string;
   whatsapp_message_template: string | null;
   phone_number: string | null;
   email: string | null;
@@ -124,7 +124,7 @@ export interface CreatePlaceDto {
   accent_color?: string;
   type?: PlaceType;
   status?: PlaceStatus;
-  whatsapp_number: string;
+  whatsapp_number?: string;
   whatsapp_message_template?: string;
   phone_number?: string;
   email?: string;
@@ -145,7 +145,7 @@ export interface CreateRestaurantDto {
   slug: string;
   short_description: string;
   detailed_description?: string;
-  whatsapp_number: string;
+  whatsapp_number?: string;
   whatsapp_message_template?: string;
   phone_number?: string;
   email?: string;

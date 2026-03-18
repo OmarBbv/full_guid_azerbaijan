@@ -9,10 +9,7 @@ export const createLandmarkSchema = z.object({
     .regex(/^[a-z0-9-]+$/, 'Slug yalnız kiçik hərf, rəqəm və tire ola bilər'),
   short_description: z.string().min(1, 'Qısa təsvir tələb olunur'),
   detailed_description: z.string().optional(),
-  whatsapp_number: z
-    .string()
-    .min(1, 'WhatsApp nömrəsi tələb olunur')
-    .regex(/^\+?[0-9\s-]{10,20}$/, 'WhatsApp düzgün formatda deyil'),
+  whatsapp_number: z.string().optional().or(z.literal('')),
   phone_number: z.string().optional(),
   email: z.string().email().optional().or(z.literal('')),
   address: z.string().min(1, 'Ünvan tələb olunur'),

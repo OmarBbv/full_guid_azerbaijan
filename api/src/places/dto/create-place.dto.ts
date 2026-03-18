@@ -41,7 +41,8 @@ export class CreatePlaceDto {
   type?: PlaceType;
 
   @IsString()
-  whatsapp_number: string;
+  @IsOptional()
+  whatsapp_number?: string;
 
   @IsString()
   @IsOptional()
@@ -62,6 +63,10 @@ export class CreatePlaceDto {
   @IsUUID()
   @IsOptional()
   city_id?: string;
+
+  @IsString()
+  @IsOptional()
+  city?: string;
 
   @IsUUID()
   @IsOptional()

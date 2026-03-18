@@ -32,8 +32,9 @@ export class CreateHotelDto {
   detailed_description?: string;
 
   @IsString()
+  @IsOptional()
   @MaxLength(50)
-  whatsapp_number: string;
+  whatsapp_number?: string;
 
   @IsString()
   @IsOptional()

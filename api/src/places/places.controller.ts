@@ -29,13 +29,16 @@ export class PlacesController {
   findAll(
     @Query('exclude_types') excludeTypes?: string,
     @Query('show_in_hero') showInHero?: string,
+    @Query('is_featured') isFeatured?: string,
     @Query('type') type?: string,
     @Query('language') language?: string,
   ) {
     const exclude = excludeTypes ? excludeTypes.split(',') : undefined;
     const isHero =
       showInHero === 'true' ? true : showInHero === 'false' ? false : undefined;
-    return this.placesService.findAll(exclude, isHero, type, language);
+    const featured =
+      isFeatured === 'true' ? true : isFeatured === 'false' ? false : undefined;
+    return this.placesService.findAll(exclude, isHero, type, language, featured);
   }
 
   @Get(':id')

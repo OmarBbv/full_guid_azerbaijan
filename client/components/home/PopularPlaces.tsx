@@ -14,6 +14,8 @@ export default function PopularPlaces() {
     is_featured: true
   });
 
+  if (!isLoading && (!places || places.length === 0)) return null;
+
   return (
     <section className="py-24 relative overflow-hidden">
       <div className="absolute rounded-full blur-[80px] opacity-[0.06] pointer-events-none w-[500px] h-[500px] bg-[#3b9cf5] -top-[100px] -right-[100px]" />
@@ -55,7 +57,7 @@ export default function PopularPlaces() {
               <div key={i} className="bg-muted/50 rounded-3xl h-[450px] animate-pulse" />
             ))
           ) : (
-            (places && places.length > 0 ? places.slice(0, 6) : PLACES.slice(0, 6)).map((place, i) => (
+            places?.slice(0, 6).map((place, i) => (
               <PlaceCard key={place.id} place={place} index={i} />
             ))
           )}

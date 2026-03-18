@@ -1,4 +1,16 @@
 {
+  "Profile": {
+    "title": "Profilim",
+    "subtitle": "Kişisel bilgilerinizi yönetin",
+    "first_name": "Ad",
+    "last_name": "Soyad",
+    "email": "E-posta",
+    "save_changes": "Değişiklikleri Kaydet",
+    "saving": "Kaydediliyor...",
+    "success_message": "Profil başarıyla güncellendi",
+    "error_message": "Profil güncellenirken bir hata oluştu",
+    "role": "Rol"
+  },
   "Index": {
     "title": "Ana sayfa"
   },

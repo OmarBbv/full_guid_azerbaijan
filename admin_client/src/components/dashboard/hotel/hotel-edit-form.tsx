@@ -235,7 +235,7 @@ export function HotelEditForm({ id }: HotelEditFormProps): React.JSX.Element {
                       onChange={(e) => field.onChange(formatPhoneNumber(e.target.value))}
                       label="WhatsApp nömrəsi"
                       fullWidth
-                      required
+                      
                       placeholder="+994 50 123 45 67"
                       error={Boolean(errors.whatsapp_number)}
                       helperText={errors.whatsapp_number?.message}

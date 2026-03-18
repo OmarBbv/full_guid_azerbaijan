@@ -56,7 +56,7 @@ export interface CreateHotelDto {
   slug: string;
   short_description: string;
   detailed_description?: string;
-  whatsapp_number: string;
+  whatsapp_number?: string;
   address?: string;
   city?: string;
   google_maps_url?: string;
@@ -75,6 +75,8 @@ export interface CreateHotelDto {
   has_gym?: boolean;
   has_restaurant?: boolean;
   accepts_cards?: boolean;
+  language?: string;
+  status?: string;
 }
 
 export type UpdateHotelDto = Partial<CreateHotelDto>;

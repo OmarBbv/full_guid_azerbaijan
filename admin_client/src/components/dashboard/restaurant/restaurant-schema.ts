@@ -11,10 +11,7 @@ export const createRestaurantSchema = z.object({
     .regex(/^[a-z0-9-]+$/, 'Slug yalnız kiçik hərf, rəqəm və tire ola bilər'),
   short_description: z.string().min(1, 'Qısa təsvir tələb olunur'),
   detailed_description: z.string().optional(),
-  whatsapp_number: z
-    .string()
-    .min(1, 'WhatsApp nömrəsi tələb olunur')
-    .regex(/^\+?[0-9\s-]{10,20}$/, 'WhatsApp düzgün formatda deyil'),
+  whatsapp_number: z.string().optional().or(z.literal('')),
   whatsapp_message_template: z.string().optional(),
   phone_number: z.string().optional(),
   email: z.string().email('Düzgün e-poçt daxil edin').optional().or(z.literal('')),

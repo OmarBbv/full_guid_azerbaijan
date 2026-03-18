@@ -1,4 +1,16 @@
 {
+  "Profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your personal information",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "email": "Email Address",
+    "save_changes": "Save Changes",
+    "saving": "Saving...",
+    "success_message": "Profile updated successfully",
+    "error_message": "An error occurred while updating profile",
+    "role": "Role"
+  },
   "Index": {
     "title": "Home page"
   },

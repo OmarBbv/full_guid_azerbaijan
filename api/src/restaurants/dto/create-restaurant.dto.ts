@@ -18,8 +18,6 @@ import {
 } from '../entities/restaurant.entity';
 
 export class CreateRestaurantDto {
-  // ─── Place (base) fields ────────────────────────────────────────────────
-
   @IsString()
   @MaxLength(255)
   title: string;
@@ -36,8 +34,9 @@ export class CreateRestaurantDto {
   detailed_description?: string;
 
   @IsString()
+  @IsOptional()
   @MaxLength(50)
-  whatsapp_number: string;
+  whatsapp_number?: string;
 
   @IsString()
   @IsOptional()
