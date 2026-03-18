@@ -56,6 +56,7 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
       address: '',
       city: '',
       district: '',
+      googleMapsUrl: '',
       phone: '',
       whatsapp: '',
       website: '',
@@ -74,6 +75,7 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
         address: venue.address || '',
         city: venue.city || '',
         district: venue.district || '',
+        googleMapsUrl: (venue as any).googleMapsUrl || '',
         phone: venue.phone || '',
         whatsapp: venue.whatsapp || '',
         website: venue.website || '',
@@ -285,6 +287,16 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
                 <TextField {...register('district')} label="Rayon / Region" fullWidth />
+              </Grid>
+              <Grid size={{ xs: 12 }}>
+                <TextField
+                  {...register('googleMapsUrl')}
+                  label="Google Maps URL"
+                  fullWidth
+                  placeholder="https://goo.gl/maps/..."
+                  error={Boolean(errors.googleMapsUrl)}
+                  helperText={errors.googleMapsUrl?.message}
+                />
               </Grid>
             </Grid>
           </CardContent>

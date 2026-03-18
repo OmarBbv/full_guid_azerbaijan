@@ -65,7 +65,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
           <div>
             <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('location')}</p>
             <p className="font-semibold text-sm leading-relaxed">
-              {place.address || place.city || "Məlumat yoxdur"}
+              {place.address || place.city || t('no_info')}
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
           <div>
             <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('working_hours')}</p>
             <p className="font-semibold text-sm">
-              {place.working_hours.display || "Məlumat yoxdur"}
+              {place.working_hours.display || t('no_info')}
             </p>
           </div>
         </div>

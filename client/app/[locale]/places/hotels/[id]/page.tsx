@@ -125,8 +125,8 @@ export default function HotelDetailPage() {
                     ₼
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Qiymət</span>
-                    <span className="font-bold text-sm tracking-tight">{(hotel as any).price_from_azn} AZN - dan</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('price')}</span>
+                    <span className="font-bold text-sm tracking-tight">{t('price_from', { price: (hotel as any).price_from_azn })}</span>
                   </div>
                 </div>
               )}
@@ -137,8 +137,8 @@ export default function HotelDetailPage() {
                     <Bed className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Otaq sayı</span>
-                    <span className="font-bold text-sm tracking-tight">{(hotel as any).total_rooms} otaq</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('room_count')}</span>
+                    <span className="font-bold text-sm tracking-tight">{t('rooms', { count: (hotel as any).total_rooms })}</span>
                   </div>
                 </div>
               )}
@@ -159,25 +159,25 @@ export default function HotelDetailPage() {
               {(hotel as any).has_pool && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Waves className="w-8 h-8 rounded-lg bg-blue-400/10 p-1.5 text-blue-400" />
-                  <span className="font-bold text-sm">Hovuz</span>
+                  <span className="font-bold text-sm">{t('pool')}</span>
                 </div>
               )}
               {(hotel as any).has_spa && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Zap className="w-8 h-8 rounded-lg bg-purple-500/10 p-1.5 text-purple-500" />
-                  <span className="font-bold text-sm">SPA & Wellness</span>
+                  <span className="font-bold text-sm">{t('pool_spa')}</span>
                 </div>
               )}
               {(hotel as any).has_gym && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Dumbbell className="w-8 h-8 rounded-lg bg-orange-500/10 p-1.5 text-orange-500" />
-                  <span className="font-bold text-sm">İdman zalı</span>
+                  <span className="font-bold text-sm">{t('gym')}</span>
                 </div>
               )}
               {(hotel as any).has_restaurant && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Utensils className="w-8 h-8 rounded-lg bg-amber-500/10 p-1.5 text-amber-500" />
-                  <span className="font-bold text-sm">Restoran</span>
+                  <span className="font-bold text-sm">{t('restaurant')}</span>
                 </div>
               )}
               {(hotel as any).accepts_cards && (
@@ -189,7 +189,7 @@ export default function HotelDetailPage() {
               {(hotel as any).pets_allowed && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Users className="w-8 h-8 rounded-lg bg-rose-500/10 p-1.5 text-rose-500" />
-                  <span className="font-bold text-sm">Ev heyvanları</span>
+                  <span className="font-bold text-sm">{t('pets_allowed')}</span>
                 </div>
               )}
 

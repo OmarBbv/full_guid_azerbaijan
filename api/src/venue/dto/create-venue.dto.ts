@@ -53,8 +53,14 @@ export class CreateVenueDto {
   @IsOptional() @IsString()
   district?: string;
 
+  @IsOptional() @IsString() @MaxLength(500)
+  googleMapsUrl?: string;
+
   @IsOptional() @IsString()
   phone?: string;
+
+  @IsOptional() @IsString()
+  whatsapp?: string;
 
   @IsOptional() @IsString()
   website?: string;

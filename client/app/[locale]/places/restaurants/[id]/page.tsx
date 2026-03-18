@@ -131,7 +131,7 @@ export default function RestaurantDetailPage() {
                     <UtensilsCrossed className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Mətbəx</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('cuisine')}</span>
                     <span className="font-bold text-sm tracking-tight">{(restaurant as any).cuisine_type}</span>
                   </div>
                 </div>
@@ -143,7 +143,7 @@ export default function RestaurantDetailPage() {
                     <UtensilsCrossed className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Stil</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('style')}</span>
                     <span className="font-bold text-sm tracking-tight">{(restaurant as any).dining_style}</span>
                   </div>
                 </div>
@@ -155,8 +155,8 @@ export default function RestaurantDetailPage() {
                     ₼
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Ortalama Hesab</span>
-                    <span className="font-bold text-sm tracking-tight">{(restaurant as any).avg_bill_per_person_azn} AZN</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('avg_bill')}</span>
+                    <span className="font-bold text-sm tracking-tight">{t('price_from', { price: (restaurant as any).avg_bill_per_person_azn }).replace(' - dan', '')}</span>
                   </div>
                 </div>
               )}
@@ -191,7 +191,7 @@ export default function RestaurantDetailPage() {
                   <div className="w-8 h-8 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
                     <Waves className="w-4 h-4" />
                   </div>
-                  <span className="font-bold text-sm">Açıq oturma yeri</span>
+                  <span className="font-bold text-sm">{t('outdoor_seating')}</span>
                 </div>
               )}
               {(restaurant as any).has_private_rooms && (
@@ -199,7 +199,7 @@ export default function RestaurantDetailPage() {
                   <div className="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500">
                     <Bed className="w-4 h-4" />
                   </div>
-                  <span className="font-bold text-sm">Xüsusi otaqlar</span>
+                  <span className="font-bold text-sm">{t('private_rooms')}</span>
                 </div>
               )}
             </div>

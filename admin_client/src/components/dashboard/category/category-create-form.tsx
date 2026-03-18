@@ -33,6 +33,7 @@ export function CategoryCreateForm(): React.JSX.Element {
     resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: '',
+      slug: '',
       icon: '',
       language: 'az',
     },
@@ -100,6 +101,18 @@ export function CategoryCreateForm(): React.JSX.Element {
                   required
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}
+                />
+              </Grid>
+
+              {/* Slug */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  {...register('slug')}
+                  label="Slug"
+                  fullWidth
+                  required
+                  error={Boolean(errors.slug)}
+                  helperText={errors.slug?.message}
                 />
               </Grid>
 

@@ -22,6 +22,7 @@ export interface Venue {
   address: string;
   city?: string;
   district?: string;
+  googleMapsUrl?: string;
   phone?: string;
   whatsapp?: string;
   website?: string;
@@ -45,6 +46,7 @@ export interface CreateVenueDto {
   address: string;
   city?: string;
   district?: string;
+  googleMapsUrl?: string;
   phone?: string;
   whatsapp?: string;
   website?: string;

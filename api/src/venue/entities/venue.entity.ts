@@ -57,9 +57,15 @@ export class Venue {
   @Column({ type: 'varchar', length: 100, nullable: true })
   district: string;
 
+  @Column({ type: 'varchar', length: 500, nullable: true })
+  googleMapsUrl: string;
+
   // ──── Əlaqə ────
-  @Column({ type: 'varchar', length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 50, nullable: true })
   phone: string;
+
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  whatsapp: string;
 
   @Column({ type: 'varchar', length: 300, nullable: true })
   website: string;

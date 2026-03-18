@@ -18,6 +18,7 @@ export const venueSchema = z.object({
   address: z.string().min(1, 'Ünvan tələb olunur'),
   city: z.string().optional(),
   district: z.string().optional(),
+  googleMapsUrl: z.string().url('Düzgün URL daxil edin').optional().or(z.literal('')),
   phone: z.string().optional(),
   whatsapp: z.string().optional(),
   website: z.string().url('Düzgün URL daxil edin').optional().or(z.literal('')),

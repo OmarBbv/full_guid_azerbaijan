@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Backpack, MapPin, ChevronLeft, Wifi, Zap, Shield, Loader2, Camera, Star, Bed, Utensils, Users, Lock, Coffee, Wine, WashingMachine, Luggage, Clock, CheckCircle2 } from 'lucide-react';
+import { Backpack, MapPin, ChevronLeft, Wifi, Shield, Loader2, Camera, Star, Bed, Utensils, Users, Lock, Coffee, Wine, WashingMachine, Luggage, Clock, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
@@ -22,10 +22,10 @@ export default function HostelDetailPage() {
   const idValue = params.id as string;
 
   const isIdUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(idValue);
-  
+
   const idQuery = useHostelById(isIdUuid ? idValue : '');
   const slugQuery = useHostelBySlug(!isIdUuid ? idValue : '');
-  
+
   const { data: hostel, isLoading } = isIdUuid ? idQuery : slugQuery;
 
   const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
@@ -122,8 +122,8 @@ export default function HostelDetailPage() {
                     €
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Yataq yeri</span>
-                    <span className="font-bold text-sm tracking-tight">{(hostel as any).dorm_price_from_eur} EUR - dan</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('dorm_price')}</span>
+                    <span className="font-bold text-sm tracking-tight">{t('price_from', { price: (hostel as any).dorm_price_from_eur }).replace('AZN', 'EUR')}</span>
                   </div>
                 </div>
               )}
@@ -134,8 +134,8 @@ export default function HostelDetailPage() {
                     <Bed className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Cəmi yataq</span>
-                    <span className="font-bold text-sm tracking-tight">{(hostel as any).dorm_beds_count} yataq</span>
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">{t('room_count')}</span>
+                    <span className="font-bold text-sm tracking-tight">{t('beds', { count: (hostel as any).dorm_beds_count })}</span>
                   </div>
                 </div>
               )}
@@ -150,49 +150,49 @@ export default function HostelDetailPage() {
               {(hostel as any).has_kitchen && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Utensils className="w-8 h-8 rounded-lg bg-amber-500/10 p-1.5 text-amber-500" />
-                  <span className="font-bold text-sm">Mətbəx</span>
+                  <span className="font-bold text-sm">{t('kitchen')}</span>
                 </div>
               )}
               {(hostel as any).has_common_room && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Users className="w-8 h-8 rounded-lg bg-blue-500/10 p-1.5 text-blue-500" />
-                  <span className="font-bold text-sm">Ümumi otaq</span>
+                  <span className="font-bold text-sm">{t('common_room')}</span>
                 </div>
               )}
               {(hostel as any).has_lockers && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Lock className="w-8 h-8 rounded-lg bg-rose-500/10 p-1.5 text-rose-500" />
-                  <span className="font-bold text-sm">Kilit qutusu</span>
+                  <span className="font-bold text-sm">{t('lockers')}</span>
                 </div>
               )}
               {(hostel as any).has_free_breakfast && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Coffee className="w-8 h-8 rounded-lg bg-amber-600/10 p-1.5 text-amber-600" />
-                  <span className="font-bold text-sm">Pulsuz səhər yeməyi</span>
+                  <span className="font-bold text-sm">{t('free_breakfast')}</span>
                 </div>
               )}
               {(hostel as any).has_bar && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Wine className="w-8 h-8 rounded-lg bg-purple-500/10 p-1.5 text-purple-500" />
-                  <span className="font-bold text-sm">Bar</span>
+                  <span className="font-bold text-sm">{t('bar')}</span>
                 </div>
               )}
               {(hostel as any).has_laundry && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <WashingMachine className="w-8 h-8 rounded-lg bg-sky-500/10 p-1.5 text-sky-500" />
-                  <span className="font-bold text-sm">Camaşırxana</span>
+                  <span className="font-bold text-sm">{t('laundry')}</span>
                 </div>
               )}
               {(hostel as any).has_luggage_storage && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Luggage className="w-8 h-8 rounded-lg bg-orange-500/10 p-1.5 text-orange-500" />
-                  <span className="font-bold text-sm">Yük saxlama</span>
+                  <span className="font-bold text-sm">{t('luggage_storage')}</span>
                 </div>
               )}
               {(hostel as any).has_24h_reception && (
                 <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
                   <Clock className="w-8 h-8 rounded-lg bg-teal-500/10 p-1.5 text-teal-500" />
-                  <span className="font-bold text-sm">24 saat qeydiyyat</span>
+                  <span className="font-bold text-sm">{t('reception_24h')}</span>
                 </div>
               )}
 

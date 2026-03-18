@@ -24,7 +24,7 @@ export class CategoryService {
   async create(dto: CreateCategoryDto) {
     const category = this.categoryRepo.create({
       ...dto,
-      slug: this.generateSlug(dto.name),
+      slug: dto.slug || this.generateSlug(dto.name),
     });
     return this.categoryRepo.save(category);
   }
@@ -47,7 +47,7 @@ export class CategoryService {
   async update(id: number, dto: UpdateCategoryDto) {
     await this.findOne(id);
     const updateData: any = { ...dto };
-    if (dto.name) {
+    if (!dto.slug && dto.name) {
       updateData.slug = this.generateSlug(dto.name);
     }
     await this.categoryRepo.update(id, updateData);

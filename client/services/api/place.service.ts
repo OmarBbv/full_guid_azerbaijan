@@ -64,6 +64,10 @@ class PlaceService implements IPlaceService {
             average_rating: venue.rating || 0,
             review_count: venue.reviewCount || 0,
             thumbnail: venue.thumbnail,
+            whatsapp_number: venue.whatsapp,
+            phone_number: venue.phone,
+            website_url: venue.website,
+            google_maps_url: venue.googleMapsUrl,
             isPlaceEntity: false
           } as unknown as Place;
         }

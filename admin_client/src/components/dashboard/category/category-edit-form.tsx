@@ -40,6 +40,7 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
     resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: '',
+      slug: '',
       icon: '',
       language: 'az',
     },
@@ -49,6 +50,7 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
     if (category) {
       reset({
         name: category.name || '',
+        slug: category.slug || '',
         icon: category.icon || '',
         language: category.language || 'az',
       });
@@ -133,6 +135,18 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
                   required
                   error={Boolean(errors.name)}
                   helperText={errors.name?.message}
+                />
+              </Grid>
+
+              {/* Slug */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <TextField
+                  {...register('slug')}
+                  label="Slug"
+                  fullWidth
+                  required
+                  error={Boolean(errors.slug)}
+                  helperText={errors.slug?.message}
                 />
               </Grid>
 

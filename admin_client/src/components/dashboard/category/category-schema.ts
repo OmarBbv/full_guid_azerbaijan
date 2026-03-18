@@ -11,6 +11,7 @@ export const CATEGORY_LANGUAGES = [
 
 export const categorySchema = z.object({
   name: z.string().min(1, 'Ad tələb olunur').max(100),
+  slug: z.string().min(1, 'Slug tələb olunur').max(100),
   icon: z.string().optional().or(z.literal('')),
   language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
 });

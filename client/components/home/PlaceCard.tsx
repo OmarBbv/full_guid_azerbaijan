@@ -28,7 +28,6 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
   const { data: status } = useStatus(place.id, targetType);
   const [localLiked, setLocalLiked] = useState<boolean>(false);
 
-  // Sync like status from API or LocalStorage
   useEffect(() => {
     if (status !== undefined) {
       setLocalLiked(status.isFavorite);
@@ -41,7 +40,6 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
     }
   }, [status, place.id]);
 
-  // Reset img src if place changes
   useEffect(() => {
     setImgSrc(getImageUrl(place));
   }, [place]);
@@ -59,10 +57,10 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
     e.stopPropagation();
     e.preventDefault();
 
-    toggleMutation.mutate({ 
-      targetId: place.id, 
-      targetType: targetType, 
-      isFavorite: localLiked 
+    toggleMutation.mutate({
+      targetId: place.id,
+      targetType: targetType,
+      isFavorite: localLiked
     }, {
       onSuccess: () => {
         setLocalLiked(!localLiked);
@@ -90,7 +88,7 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
 
   const slug = (place as any).slug || place.id;
   const type = place.type?.toLowerCase();
-  
+
   let baseLoc = "/mekanlar";
   if (type === "restaurant") baseLoc = "/places/restaurants";
   else if (type === "hotel") baseLoc = "/places/hotels";
@@ -142,15 +140,14 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
           />
         </button>
 
-        {/* Tag (Type) */}
-        {place.type && (
+        {/* {place.type && (
           <div
             className="absolute bottom-4 left-4 px-3 py-1 rounded-full text-[11px] font-medium text-white/80"
             style={{ background: "rgba(0,0,0,0.4)", backdropFilter: "blur(6px)" }}
           >
             {t(`types.${place.type.toLowerCase()}`) || place.type}
           </div>
-        )}
+        )} */}
       </div>
 
       {/* Content */}
