@@ -2,29 +2,29 @@
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Search, MapPin, Star, ArrowRight, X } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "@/hooks/use-debounce";
 
-const TYPE_OPTIONS = [
-  { value: "", label: "Hamısı", icon: "✨" },
-  { value: "restaurant", label: "Restoranlar", icon: "🍴" },
-  { value: "hotel", label: "Otellər", icon: "🏨" },
-  { value: "hostel", label: "Hostellər", icon: "🛌" },
-  { value: "venue", label: "Məkanlar", icon: "📍" },
-  { value: "landmark", label: "Tarixi", icon: "🏛️" },
-  { value: "nature", label: "Təbiət", icon: "🌿" },
-];
-
-
-
 export default function SearchResultsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const locale = useLocale();
+  const t = useTranslations("SearchResults");
+  const th = useTranslations("HeroSearch");
+
+  const TYPE_OPTIONS = [
+    { value: "", label: th("type_all"), icon: "✨" },
+    { value: "restaurant", label: th("type_restaurant"), icon: "🍴" },
+    { value: "hotel", label: th("type_hotel"), icon: "🏨" },
+    { value: "hostel", label: th("type_hostel"), icon: "🛌" },
+    { value: "venue", label: th("type_venue"), icon: "📍" },
+    { value: "landmark", label: th("type_landmark"), icon: "🏛️" },
+    { value: "nature", label: th("type_nature"), icon: "🌿" },
+  ];
 
   const initialQ = searchParams.get("q") ?? "";
   const initialCity = searchParams.get("city") ?? "";
@@ -86,14 +86,14 @@ export default function SearchResultsContent() {
         <div className="absolute bottom-0 right-1/4 w-96 h-96 rounded-full bg-indigo-600/15 blur-[100px] pointer-events-none" />
 
         <h1 className="text-3xl md:text-5xl font-black text-white mb-2 tracking-tight text-center">
-          Axtarış Nəticələri
+          {t("title")}
         </h1>
         <p className="text-white/50 text-base mb-10 text-center">
           {isLoading || isFetching
-            ? "Axtarılır..."
+            ? t("searching")
             : total > 0
-              ? `${total} nəticə tapıldı`
-              : "Heç bir nəticə tapılmadı"}
+              ? t("found_results", { total })
+              : t("no_results_found")}
         </p>
 
         {/* ── Big Search Bar ── */}
@@ -112,7 +112,7 @@ export default function SearchResultsContent() {
               type="text"
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="Restoran, otel, məkan..."
+              placeholder={t("placeholder_q")}
               className="w-full bg-transparent text-white placeholder-white/40 text-sm outline-none"
             />
             {q && (
@@ -129,7 +129,7 @@ export default function SearchResultsContent() {
               type="text"
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="Şəhər..."
+              placeholder={t("placeholder_city")}
               className="w-full bg-transparent text-white placeholder-white/40 text-sm outline-none"
             />
           </div>
@@ -140,7 +140,7 @@ export default function SearchResultsContent() {
             style={{ background: "linear-gradient(135deg,#3b9cf5,#1e3a8a)", boxShadow: "0 4px 20px rgba(59,156,245,0.4)" }}
           >
             <Search size={16} />
-            Axtar
+            {t("search_btn")}
           </button>
         </div>
 
@@ -173,23 +173,23 @@ export default function SearchResultsContent() {
         {isLoading || (isFetching && results.length === 0) ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-              <div key={i} className="rounded-3xl bg-muted animate-pulse aspect-[4/5]" />
+              <div key={i} className="rounded-3xl bg-muted animate-pulse aspect-4/5" />
             ))}
           </div>
         ) : results.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-32 text-center">
             <div className="text-6xl mb-4">🔍</div>
-            <h2 className="text-2xl font-bold text-foreground mb-2">Nəticə tapılmadı</h2>
+            <h2 className="text-2xl font-bold text-foreground mb-2">{t("no_results_title")}</h2>
             <p className="text-muted-foreground max-w-sm">
               {q || city || type
-                ? "Bu axtarışa uyğun nəticə yoxdur. Başqa söz sınayın."
-                : "DB-də hələ heç bir məlumat yoxdur."}
+                ? t("no_results_desc")
+                : t("no_data")}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {results.map((item) => {
-              const typeMeta = TYPE_OPTIONS.find(t => t.value === item.type) || { icon: "📍", label: item.type };
+              const typeMeta = TYPE_OPTIONS.find(tItem => tItem.value === item.type) || { icon: "📍", label: item.type };
               return (
                 <div
                   key={`${item.kind}-${item.id}`}
@@ -207,11 +207,11 @@ export default function SearchResultsContent() {
                         unoptimized
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center text-5xl bg-gradient-to-br from-muted to-muted/50">
+                      <div className="w-full h-full flex items-center justify-center text-5xl bg-linear-to-br from-muted to-muted/50">
                         {typeMeta.icon}
                       </div>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
 
                     {/* Type badge */}
                     <div className="absolute top-3 left-3 flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold text-white"
@@ -246,10 +246,10 @@ export default function SearchResultsContent() {
 
                     <div className="mt-4 flex items-center justify-between">
                       <span className="text-xs text-muted-foreground font-medium">
-                        {item.kind === "venue" ? "Məkan" : "Yer"}
+                        {item.kind === "venue" ? t("venue") : t("place")}
                       </span>
                       <span className="text-primary text-xs font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                        Bax <ArrowRight size={12} />
+                        {t("view")} <ArrowRight size={12} />
                       </span>
                     </div>
                   </div>

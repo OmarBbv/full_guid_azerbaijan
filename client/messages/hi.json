@@ -229,7 +229,30 @@
     "city_lankaran": "लन्कन",
     "city_shusha": "शुशा",
     "city_nakhchivan": "नखचिवन",
-    "city_shamakhi": "शामाखी"
+    "city_shamakhi": "शामाखी",
+    "type_placeholder": "सभी प्रकार",
+    "type_all": "सभी प्रकार",
+    "type_restaurant": "रस्तराँ",
+    "type_hotel": "होटल",
+    "type_hostel": "हॉस्टल",
+    "type_venue": "स्थान",
+    "type_landmark": "ऐतिहासिक स्थल",
+    "type_nature": "प्रकृति"
+  },
+  "SearchResults": {
+    "title": "खोज परिणाम",
+    "searching": "खोज की जा रही है...",
+    "found_results": "{total} परिणाम मिले",
+    "no_results_found": "कोई परिणाम नहीं मिला",
+    "placeholder_q": "रस्तराँ, होटल, स्थान...",
+    "placeholder_city": "शहर...",
+    "search_btn": "खोजें",
+    "no_results_title": "कोई परिणाम नहीं मिला",
+    "no_results_desc": "आपके खोज मानदंडों से मेल खाने वाला कोई परिणाम नहीं मिला। कृपया अन्य शब्द आज़माएं।",
+    "no_data": "डेटाबेस में अभी तक कोई डेटा उपलब्ध नहीं है।",
+    "view": "देखें",
+    "venue": "स्थान",
+    "place": "स्थान"
   },
   "HeroDefault": {
     "slide1_country": "अज़रबैजान",

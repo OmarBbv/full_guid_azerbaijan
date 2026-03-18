@@ -8,27 +8,14 @@ import { useLocale, useTranslations } from "next-intl";
 import { useHeroPlaces } from "@/hooks/use-places";
 import { Place } from "@/types/place";
 import { getImageUrl } from "@/lib/utils";
-import HeroSearchBar from "./HeroSearchBar";
 import { useRouter } from "@/i18n/routing";
-import AdBannerComponent from "../shared/AdBanner";
-import un_photo_1448375240586_882707db888b_1e93d564 from "@/assets/unsplash/photo-1448375240586-882707db888b_1e93d564.jpg";
-import un_photo_1448375240586_882707db888b_629753b7 from "@/assets/unsplash/photo-1448375240586-882707db888b_629753b7.jpg";
 import un_photo_1464822759023_fed622ff2c3b_629753b7 from "@/assets/unsplash/photo-1464822759023-fed622ff2c3b_629753b7.jpg";
-import un_photo_1500534314209_a25ddb2bd429_629753b7 from "@/assets/unsplash/photo-1500534314209-a25ddb2bd429_629753b7.jpg";
-import un_photo_1501854140801_50d01698950b_629753b7 from "@/assets/unsplash/photo-1501854140801-50d01698950b_629753b7.jpg";
 import un_photo_1506905925346_21bda4d32df4_629753b7 from "@/assets/unsplash/photo-1506905925346-21bda4d32df4_629753b7.jpg";
-import un_photo_1519681393784_d120267933ba_1e93d564 from "@/assets/unsplash/photo-1519681393784-d120267933ba_1e93d564.jpg";
-import un_photo_1519681393784_d120267933ba_629753b7 from "@/assets/unsplash/photo-1519681393784-d120267933ba_629753b7.jpg";
-import un_photo_1527489377706_5bf97e608852_629753b7 from "@/assets/unsplash/photo-1527489377706-5bf97e608852_629753b7.jpg";
-import un_photo_1534531173927_aeb928d54385_629753b7 from "@/assets/unsplash/photo-1534531173927-aeb928d54385_629753b7.jpg";
-import un_photo_1544735716_392fe2489ffa_1e93d564 from "@/assets/unsplash/photo-1544735716-392fe2489ffa_1e93d564.jpg";
-import un_photo_1544735716_392fe2489ffa_629753b7 from "@/assets/unsplash/photo-1544735716-392fe2489ffa_629753b7.jpg";
-import un_photo_1570168007204_dfb528c6958f_1e93d564 from "@/assets/unsplash/photo-1570168007204-dfb528c6958f_1e93d564.jpg";
 import un_photo_1570168007204_dfb528c6958f_629753b7 from "@/assets/unsplash/photo-1570168007204-dfb528c6958f_629753b7.jpg";
 
 const getDefaultSlides = (tHero: any) => [
   {
-    bg: un_photo_1570168007204_dfb528c6958f_1e93d564,
+    bg: "/assets/cover.jpeg",
     country: tHero ? tHero("slide1_country") : "AZƏRBAYCAN",
     subtitle: tHero ? tHero("slide1_subtitle") : "Şərqin açarı, Qafqazın incisi",
     description: tHero ? tHero("slide1_desc") : "Qədim şəhər küçələrindən buzlaq dağ zirvələrinə, zəngin mədəniyyətdən Xəzərin sahillərinə — Azərbaycan sizi heyrətdə qoyacak.",
@@ -373,7 +360,7 @@ export default function Hero() {
               </button>
             )}
             {!isCardView && (
-              <button 
+              <button
                 onClick={() => {
                   const exploreSection = document.getElementById("explore-destinations");
                   if (exploreSection) exploreSection.scrollIntoView({ behavior: "smooth" });
@@ -423,7 +410,9 @@ export default function Hero() {
               return (
                 <div
                   key={`${current}-${card.name}`}
-                  className="dest-card relative rounded-3xl overflow-hidden cursor-pointer group shrink-0"
+                  className={`dest-card relative rounded-3xl overflow-hidden cursor-pointer group shrink-0 ${idx === 1 ? "hidden min-[1140px]:block" :
+                      idx === 2 ? "hidden 2xl:block" : ""
+                    }`}
                   style={{
                     width: isActive ? 230 : 155,
                     height: isActive ? 400 : 280,

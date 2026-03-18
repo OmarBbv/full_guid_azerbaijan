@@ -263,6 +263,21 @@
     "type_landmark": "Historical Places",
     "type_nature": "Nature"
   },
+  "SearchResults": {
+    "title": "Search Results",
+    "searching": "Searching...",
+    "found_results": "{total} results found",
+    "no_results_found": "No results found",
+    "placeholder_q": "Restaurant, hotel, venue...",
+    "placeholder_city": "City...",
+    "search_btn": "Search",
+    "no_results_title": "No results found",
+    "no_results_desc": "No results matching your search criteria. Please try different keywords.",
+    "no_data": "No data available in DB yet.",
+    "view": "View",
+    "venue": "Venue",
+    "place": "Place"
+  },
   "HeroDefault": {
     "slide1_country": "AZERBAIJAN",
     "slide1_subtitle": "Key to the East, Pearl of the Caucasus",

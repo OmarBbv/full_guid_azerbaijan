@@ -2,29 +2,30 @@
 
 import { useRef, useState } from "react";
 import { Search, MapPin, ChevronDown, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-const TYPES = [
-  { value: "",            label: "Hər şey",   icon: "✨" },
-  { value: "restaurant",  label: "Restoran",  icon: "🍴" },
-  { value: "hotel",       label: "Otel",      icon: "🏨" },
-  { value: "hostel",      label: "Hostel",    icon: "🛌" },
-  { value: "venue",       label: "Məkan",     icon: "📍" },
-  { value: "landmark",    label: "Tarixi",    icon: "🏛️" },
-  { value: "nature",      label: "Təbiət",    icon: "🌿" },
+const getLocalizedTypes = (t: any) => [
+  { value: "",            label: t("type_all"),   icon: "✨" },
+  { value: "restaurant",  label: t("type_restaurant"),  icon: "🍴" },
+  { value: "hotel",       label: t("type_hotel"),      icon: "🏨" },
+  { value: "hostel",      label: t("type_hostel"),    icon: "🛌" },
+  { value: "venue",       label: t("type_venue"),     icon: "📍" },
+  { value: "landmark",    label: t("type_landmark"),    icon: "🏛️" },
+  { value: "nature",      label: t("type_nature"),    icon: "🌿" },
 ];
 
-const CITIES = [
-  { value: "",             label: "Bütün şəhərlər" },
-  { value: "Baku",         label: "Bakı" },
-  { value: "Ganja",        label: "Gəncə" },
-  { value: "Sumgayit",     label: "Sumqayıt" },
-  { value: "Qabala",       label: "Qəbələ" },
-  { value: "Sheki",        label: "Şəki" },
-  { value: "Quba",         label: "Quba" },
-  { value: "Lankaran",     label: "Lənkəran" },
-  { value: "Shusha",       label: "Şuşa" },
-  { value: "Nakhchivan",   label: "Naxçıvan" },
-  { value: "Shamakhi",     label: "Şamaxı" },
+const getLocalizedCities = (t: any) => [
+  { value: "",             label: t("all_cities") },
+  { value: "Baku",         label: t("city_baku") },
+  { value: "Ganja",        label: t("city_ganja") },
+  { value: "Sumgayit",     label: t("city_sumgayit") },
+  { value: "Qabala",       label: t("city_qabala") },
+  { value: "Sheki",        label: t("city_sheki") },
+  { value: "Quba",         label: t("city_quba") },
+  { value: "Lankaran",     label: t("city_lankaran") },
+  { value: "Shusha",       label: t("city_shusha") },
+  { value: "Nakhchivan",   label: t("city_nakhchivan") },
+  { value: "Shamakhi",     label: t("city_shamakhi") },
 ];
 
 interface Props {
@@ -37,22 +38,26 @@ interface Props {
 }
 
 export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, locale }: Props) {
-  const [type, setType]     = useState("");
-  const [city, setCity]     = useState("");
+  const t = useTranslations("HeroSearch");
+  const TYPES = getLocalizedTypes(t);
+  const CITIES = getLocalizedCities(t);
+
+  const [type, setType] = useState("");
+  const [city, setCity] = useState("");
   const [typeOpen, setTypeOpen] = useState(false);
   const [cityOpen, setCityOpen] = useState(false);
 
   const typeRef = useRef<HTMLDivElement>(null);
   const cityRef = useRef<HTMLDivElement>(null);
 
-  const selectedType = TYPES.find(t => t.value === type) ?? TYPES[0];
+  const selectedType = TYPES.find(tItem => tItem.value === type) ?? TYPES[0];
   const selectedCity = CITIES.find(c => c.value === city) ?? CITIES[0];
 
   const handleSubmit = () => {
     const params = new URLSearchParams();
     if (query.trim()) params.set("q", query.trim());
-    if (type)         params.set("type", type);
-    if (city)         params.set("city", city);
+    if (type) params.set("type", type);
+    if (city) params.set("city", city);
     onClose();
     // navigate to /search
     window.location.href = `/${locale}/search?${params.toString()}`;
@@ -78,7 +83,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
           value={query}
           onChange={e => setQuery(e.target.value)}
           onKeyDown={e => { if (e.key === "Enter") handleSubmit(); }}
-          placeholder="Nə axtarırsınız?"
+          placeholder={t("what_placeholder")}
           className="w-full bg-transparent text-white placeholder-white/35 text-[15px] font-medium outline-none"
         />
         {query && (
@@ -121,15 +126,15 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
               backdropFilter: "blur(24px)",
             }}
           >
-            {TYPES.map(t => (
+            {TYPES.map(tItem => (
               <button
-                key={t.value}
+                key={tItem.value}
                 type="button"
-                onClick={() => { setType(t.value); setTypeOpen(false); }}
+                onClick={() => { setType(tItem.value); setTypeOpen(false); }}
                 className="w-full text-left px-4 py-2.5 text-[13px] flex items-center gap-2.5 transition-colors hover:bg-white/8"
-                style={{ color: type === t.value ? "#3b9cf5" : "rgba(255,255,255,0.75)" }}
+                style={{ color: type === tItem.value ? "#3b9cf5" : "rgba(255,255,255,0.75)" }}
               >
-                <span>{t.icon}</span>{t.label}
+                <span>{tItem.icon}</span>{tItem.label}
               </button>
             ))}
           </div>
@@ -196,7 +201,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
           }}
         >
           <Search size={15} />
-          Axtar
+          {t("search_btn")}
         </button>
       </div>
     </div>

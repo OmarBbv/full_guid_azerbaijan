@@ -229,7 +229,30 @@
     "city_lankaran": "Lenkeran",
     "city_shusha": "Şuşa",
     "city_nakhchivan": "Nahçıvan",
-    "city_shamakhi": "Şamahı"
+    "city_shamakhi": "Şamahı",
+    "type_placeholder": "Her şey",
+    "type_all": "Tüm tipler",
+    "type_restaurant": "Restoranlar",
+    "type_hotel": "Oteller",
+    "type_hostel": "Hosteller",
+    "type_venue": "Mekanlar",
+    "type_landmark": "Tarihi Yerler",
+    "type_nature": "Doğa"
+  },
+  "SearchResults": {
+    "title": "Arama Sonuçları",
+    "searching": "Aranıyor...",
+    "found_results": "{total} sonuç bulundu",
+    "no_results_found": "Sonuç bulunamadı",
+    "placeholder_q": "Restoran, otel, mekan...",
+    "placeholder_city": "Şehir...",
+    "search_btn": "Ara",
+    "no_results_title": "Sonuç bulunamadı",
+    "no_results_desc": "Arama kriterlerinize uygun sonuç bulunamadı. Lütfen farklı kelimeler deneyin.",
+    "no_data": "Veritabanında henüz veri bulunmuyor.",
+    "view": "Gör",
+    "venue": "Mekan",
+    "place": "Yer"
   },
   "HeroDefault": {
     "slide1_country": "AZERBAYCAN",

@@ -229,7 +229,30 @@
     "city_lankaran": "لنكران",
     "city_shusha": "شوشا",
     "city_nakhchivan": "نخجوان",
-    "city_shamakhi": "شاماخي"
+    "city_shamakhi": "شاماخي",
+    "type_placeholder": "كل الأنواع",
+    "type_all": "كل الأنواع",
+    "type_restaurant": "مطاعم",
+    "type_hotel": "فنادق",
+    "type_hostel": "نزل",
+    "type_venue": "أماكن",
+    "type_landmark": "مواقع تاريخية",
+    "type_nature": "طبيعة"
+  },
+  "SearchResults": {
+    "title": "نتائج البحث",
+    "searching": "جاري البحث...",
+    "found_results": "تم العثور على {total} من النتائج",
+    "no_results_found": "لم يتم العثور على نتائج",
+    "placeholder_q": "مطعم، فندق، مكان...",
+    "placeholder_city": "مدينة...",
+    "search_btn": "بحث",
+    "no_results_title": "لم يتم العثور على نتائج",
+    "no_results_desc": "لا توجد نتائج تطابق بحثك. يرجى تجربة كلمات أخرى.",
+    "no_data": "لا توجد بيانات في قاعدة البيانات بعد.",
+    "view": "عرض",
+    "venue": "مكان",
+    "place": "مكان"
   },
   "HeroDefault": {
     "slide1_country": "أذربيجان",

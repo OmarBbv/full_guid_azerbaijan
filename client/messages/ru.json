@@ -229,7 +229,30 @@
     "city_lankaran": "Ленкорань",
     "city_shusha": "Шуша",
     "city_nakhchivan": "Нахичевань",
-    "city_shamakhi": "Шамаха"
+    "city_shamakhi": "Шамаха",
+    "type_placeholder": "Все типы",
+    "type_all": "Все типы",
+    "type_restaurant": "Рестораны",
+    "type_hotel": "Отели",
+    "type_hostel": "Хостелы",
+    "type_venue": "Места",
+    "type_landmark": "Исторические места",
+    "type_nature": "Природа"
+  },
+  "SearchResults": {
+    "title": "Результаты поиска",
+    "searching": "Поиск...",
+    "found_results": "Найдено {total} результатов",
+    "no_results_found": "Результаты не найдены",
+    "placeholder_q": "Ресторан, отель, место...",
+    "placeholder_city": "Город...",
+    "search_btn": "Найти",
+    "no_results_title": "Результаты не найдены",
+    "no_results_desc": "По вашему запросу ничего не найдено. Попробуйте другие слова.",
+    "no_data": "В базе данных пока нет информации.",
+    "view": "Смотреть",
+    "venue": "Место",
+    "place": "Место"
   },
   "HeroDefault": {
     "slide1_country": "АЗЕРБАЙДЖАН",

@@ -25,9 +25,9 @@ export default function WhatsAppButton() {
       </svg>
 
       {/* Tooltip */}
-      <span className="absolute right-16 bg-black text-white text-xs py-1 px-3 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
+      {/* <span className="absolute right-16 bg-black text-white text-xs py-1 px-3 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap">
         Bizə yazın
-      </span>
+      </span> */}
     </a>
   );
 }
