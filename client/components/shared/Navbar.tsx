@@ -26,13 +26,26 @@ import { NavSearchPill } from "./NavSearchPill";
 
 const SLUG_TO_MAP_KEY: Record<string, string> = {
   baku: "Bakı",
+  "баку": "Bakı",
   sheki: "Şəki",
+  "шеки": "Şəki",
   qabala: "Qəbələ",
+  "габала": "Qəbələ",
   quba: "Quba",
+  "губа": "Quba",
   shamakhi: "Şamaxı",
+  "шамахи": "Şamaxı",
   lankaran: "Lənkəran",
+  "ленкорань": "Lənkəran",
   ganja: "Gəncə",
+  "гянджа": "Gəncə",
   nakhchivan: "Naxçıvan",
+  "нахчыван": "Naxçıvan",
+  "нахичевань": "Naxçıvan",
+  shusha: "Şuşa",
+  "шуша": "Şuşa",
+  ismayilli: "İsmayıllı",
+  "исмаиллы": "İsmayıllı",
 };
 
 type NavLink = {

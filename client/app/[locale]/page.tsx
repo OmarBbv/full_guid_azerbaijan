@@ -34,7 +34,7 @@ export default function Home() {
         </div>
 
         {/* Interactive Map */}
-        <InteractiveMap />
+        {/* <InteractiveMap /> */}
 
         {/* Populyar Məkanlar */}
         <PopularPlaces />

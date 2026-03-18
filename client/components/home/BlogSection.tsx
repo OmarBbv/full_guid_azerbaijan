@@ -78,7 +78,7 @@ function ArticleCard({ article, index, large = false }: {
         className={`bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition-all duration-300 hover:shadow-[0_16px_40px_rgba(0,0,0,0.12)] group relative rounded-3xl overflow-hidden cursor-pointer ${large ? "h-full flex flex-col" : ""}`}
       >
         {/* Image */}
-        <div className="relative w-full overflow-hidden" style={{ height: large ? 320 : 200 }}>
+        <div className="relative w-full overflow-hidden" style={{ height: large ? 240 : 180 }}>
           <Image
             src={article.img}
             alt={article.title}
@@ -163,7 +163,7 @@ export default function BlogSection() {
     featured: true,
   });
 
-  const articles = (data && data.length > 0 ? data : MOCK_BLOG_POSTS)
+  const articles = (data || [])
     .map(post => mapPostToUi(post as any, locale, t_blog))
     .slice(0, 4);
 

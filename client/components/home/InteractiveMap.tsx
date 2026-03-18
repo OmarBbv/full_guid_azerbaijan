@@ -25,27 +25,27 @@ export default function InteractiveMap() {
   const { data: cities = [] } = useCities({ language: locale, active: true });
 
   const regionDetails: Record<string, { desc: string, img: any, famous: string }> = {
-    [t('baku_name', { fallback: 'Bakı' })]: {
+    "Bakı": {
       desc: t('baku_desc'),
       img: baku_fixed,
       famous: t('baku_famous')
     },
-    [t('sheki_name', { fallback: 'Şəki' })]: {
+    "Şəki": {
       desc: t('sheki_desc'),
       img: sheki_fixed,
       famous: t('sheki_famous')
     },
-    [t('qabala_name', { fallback: 'Qəbələ' })]: {
+    "Qəbələ": {
       desc: t('qabala_desc'),
       img: un_photo_1519681393784_d120267933ba_fec9fe51,
       famous: t('qabala_famous')
     },
-    [t('lankaran_name', { fallback: 'Lənkəran' })]: {
+    "Lənkəran": {
       desc: t('lankaran_desc'),
       img: un_photo_1448375240586_882707db888b_fec9fe51,
       famous: t('lankaran_famous')
     },
-    [t('shusha_name', { fallback: 'Şuşa' })]: {
+    "Şuşa": {
       desc: t('shusha_desc'),
       img: un_photo_1544735716_392fe2489ffa_fec9fe51,
       famous: t('shusha_famous')
@@ -90,13 +90,13 @@ export default function InteractiveMap() {
 
               <div key={activeRegion || "default"} className="animate-in fade-in slide-in-from-left duration-700">
                 <div className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-widest">
-                  <MapPin size={14} /> {activeRegion || t('select_region')}
+                  <MapPin size={14} /> {currentCity?.name || activeRegion || t('select_region')}
                 </div>
 
                 <div className="relative w-full h-64 rounded-[2.5rem] overflow-hidden mb-8 shadow-2xl shadow-black/10">
                   <Image
                     unoptimized
-                    src={currentData.img} alt={activeRegion || t('azerbaijan_name')} fill className="object-cover" />
+                    src={currentData.img} alt={currentCity?.name || activeRegion || t('azerbaijan_name')} fill className="object-cover" />
                   <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent flex items-end p-6">
                     <p className="text-white text-xs font-medium flex items-center gap-2 opacity-90">
                       <Camera size={16} /> {t('famous')}: {currentData.famous}
@@ -105,7 +105,7 @@ export default function InteractiveMap() {
                 </div>
 
                 <h3 className="text-3xl font-black text-foreground mb-4">
-                  {activeRegion ? `${activeRegion} ${t('region_label', { fallback: 'Bölgəsi' })}` : t('ready_to_discover', { fallback: 'Kəşfə Hazırsınız?' })}
+                  {activeRegion ? `${currentCity?.name || activeRegion} ${t('region_label', { fallback: 'Bölgəsi' })}` : t('ready_to_discover', { fallback: 'Kəşfə Hazırsınız?' })}
                 </h3>
 
                 <p className="text-muted-foreground text-lg leading-relaxed mb-10">

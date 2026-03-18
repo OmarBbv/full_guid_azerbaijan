@@ -57,7 +57,7 @@ export default function BlogPostDetail(): React.JSX.Element {
     <div className="min-h-screen bg-background pb-24">
       {/* Post Header Section */}
       <section className="pt-32 pb-12 px-6">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Link
             href="/bloq"
             className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8 group"
@@ -131,7 +131,7 @@ export default function BlogPostDetail(): React.JSX.Element {
 
       {/* Content Section */}
       <section className="px-6 relative">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="prose prose-lg prose-slate dark:prose-invert max-w-none">
             <div
               className="text-foreground leading-relaxed text-lg"

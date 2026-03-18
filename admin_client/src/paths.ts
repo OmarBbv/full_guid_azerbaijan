@@ -20,6 +20,7 @@ export const paths = {
     restaurantsEdit: (id: string | number) => `/dashboard/restaurants/${id}/edit`,
     blog: '/dashboard/blog',
     blogCreate: '/dashboard/blog/create',
+    blogEdit: (id: string) => `/dashboard/blog/${id}/edit`,
     ads: '/dashboard/ads',
     adsCreate: '/dashboard/ads/create',
     adsEdit: (id: string) => `/dashboard/ads/${id}/edit`,
