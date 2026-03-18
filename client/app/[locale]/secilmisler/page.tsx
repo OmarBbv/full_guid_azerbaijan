@@ -1,44 +1,72 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Heart, MapPin, Star, ArrowRight, Search, Info } from "lucide-react";
+import { Heart, MapPin, Star, ArrowRight, Search, Info, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/routing";
 import { PLACES } from "@/constants/places";
 import { PlaceCard } from "@/components/home/PlaceCard";
+import { useWishlist } from "@/hooks/use-wishlist";
+import { useUser } from "@/hooks/use-user";
 
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState<number[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: user } = useUser();
+  const { useUserWishlist } = useWishlist();
+  const { data: apiFavorites, isLoading: isApiLoading } = useUserWishlist();
+  
+  const [localFavorites, setLocalFavorites] = useState<string[]>([]);
+  const [isLocalLoading, setIsLocalLoading] = useState(true);
 
   useEffect(() => {
-    const loadFavorites = () => {
+    const loadLocalFavorites = () => {
       const saved = localStorage.getItem("favorites");
       if (saved) {
-        setFavorites(JSON.parse(saved));
+        setLocalFavorites(JSON.parse(saved));
       } else {
-        setFavorites([]);
+        setLocalFavorites([]);
       }
     };
 
-    loadFavorites();
-    setIsLoading(false);
+    loadLocalFavorites();
+    setIsLocalLoading(false);
 
-    window.addEventListener("storage_favorites_updated", loadFavorites);
-    return () => window.removeEventListener("storage_favorites_updated", loadFavorites);
+    window.addEventListener("storage_favorites_updated", loadLocalFavorites);
+    return () => window.removeEventListener("storage_favorites_updated", loadLocalFavorites);
   }, []);
 
-  const favoritePlaces = PLACES.filter((place) => favorites.includes(place.id));
+  // Merge API favorites and Local favorites
+  const displayPlaces = (() => {
+    if (user && apiFavorites) {
+      return apiFavorites
+        .filter(entry => (entry.targetType === 'PLACE' || entry.targetType === 'VENUE') && entry.item)
+        .map(entry => {
+          const item = entry.item;
+          if (entry.targetType === 'VENUE') {
+            return {
+              ...item,
+              id: item.id.toString(),
+              title: item.name,
+              short_description: item.description || '',
+              type: item.category?.slug || 'other',
+              isPlaceEntity: false
+            };
+          }
+          return { ...item, isPlaceEntity: true };
+        });
+    }
+    
+    return PLACES.filter((place) => localFavorites.includes(place.id)).map(p => ({ ...p, isPlaceEntity: true }));
+  })();
+
+  const isLoading = user ? isApiLoading : isLocalLoading;
 
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/20">
-      {/* Decorative Background Elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
         <div className="absolute top-0 right-[10%] w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute bottom-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-accent/5 blur-[120px]" />
       </div>
 
       <div className="relative z-10">
-        {/* Header Section */}
         <section className="pt-32 pb-16 md:pt-40 md:pb-24 px-6 relative border-b border-border/40" style={{ background: "linear-gradient(180deg, var(--muted) 0%, var(--background) 100%)" }}>
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-10">
             <div className="w-full md:max-w-2xl">
@@ -59,25 +87,28 @@ export default function FavoritesPage() {
               </div>
             </div>
 
-            {/* Stats */}
             <div className="hidden lg:flex flex-col gap-4">
               <div className="bg-card/80 backdrop-blur-xl p-8 rounded-[40px] border border-border shadow-2xl shadow-black/5 text-center px-12">
-                <div className="text-5xl font-black text-red-500 mb-2">{favoritePlaces.length}</div>
+                <div className="text-5xl font-black text-red-500 mb-2">{displayPlaces.length}</div>
                 <div className="text-xs font-bold text-muted-foreground uppercase tracking-widest leading-loose">Saxlanılmış<br />məkan</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Content Section */}
         <section className="py-12 md:py-20 px-6 max-w-7xl mx-auto">
-          {!isLoading && favoritePlaces.length > 0 ? (
+          {isLoading ? (
+            <div className="py-24 flex flex-col items-center justify-center text-center">
+              <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+              <p className="text-muted-foreground font-medium">Yüklənir...</p>
+            </div>
+          ) : displayPlaces.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10">
-              {favoritePlaces.map((place, i) => (
-                <PlaceCard key={place.id} place={place} index={i} />
+              {displayPlaces.map((place, i) => (
+                <PlaceCard key={place.id} place={place as any} index={i} />
               ))}
             </div>
-          ) : !isLoading ? (
+          ) : (
             <div className="py-24 flex flex-col items-center justify-center text-center bg-card/50 backdrop-blur-sm rounded-[40px] border border-border/50 border-dashed">
               <div className="w-24 h-24 bg-muted rounded-3xl flex items-center justify-center mb-8 text-5xl rotate-6 animate-pulse">
                 💝
@@ -93,16 +124,10 @@ export default function FavoritesPage() {
                 Məkanlara Get <ArrowRight size={20} />
               </Link>
             </div>
-          ) : (
-            <div className="py-24 flex flex-col items-center justify-center text-center">
-              <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mb-4" />
-              <p className="text-muted-foreground font-medium">Yüklənir...</p>
-            </div>
           )}
         </section>
       </div>
 
-      {/* Footer Peek for Layout */}
       <div className="max-w-7xl mx-auto px-6 mb-20">
         <div className="bg-linear-to-r from-primary/10 to-accent/10 rounded-[40px] p-10 md:p-16 border border-primary/10 flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="max-w-lg text-center md:text-left">

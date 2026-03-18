@@ -6,6 +6,7 @@ import { Link } from "@/i18n/routing";
 import { useState, useEffect, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { usePlaceById } from "@/hooks/use-places";
+import { useWishlist } from "@/hooks/use-wishlist";
 import un_photo_1526779259212_939e64788e3c_8ece6282 from "@/assets/unsplash/photo-1526779259212-939e64788e3c_8ece6282.jpg";
 
 export default function PlaceDetailPage() {
@@ -16,7 +17,10 @@ export default function PlaceDetailPage() {
   const tp = useTranslations("PlacesPage");
 
   const { data: place, isLoading, isError } = usePlaceById(id, locale);
-  const [liked, setLiked] = useState<boolean>(false);
+  const { useStatus, toggleMutation } = useWishlist();
+  const { data: status } = useStatus(place?.id || '', 'PLACE');
+
+  const [localLiked, setLocalLiked] = useState<boolean>(false);
   const [activeTab, setActiveTab] = useState("about");
 
   const tabs = useMemo(() => [
@@ -25,30 +29,47 @@ export default function PlaceDetailPage() {
     { id: "reviews", label: t("tab_reviews") }
   ], [t]);
 
+  // Sync like status from API or LocalStorage
   useEffect(() => {
-    const saved = localStorage.getItem("favorites");
-    if (saved && place) {
-      const favorites = JSON.parse(saved) as (number | string)[];
-      setLiked(favorites.includes(place.id));
+    if (status !== undefined) {
+      setLocalLiked(status.isFavorite);
+    } else if (place) {
+      const saved = localStorage.getItem("favorites");
+      if (saved) {
+        const favorites = JSON.parse(saved) as (number | string)[];
+        setLocalLiked(favorites.includes(place.id));
+      }
     }
-  }, [place?.id]);
+  }, [status, place?.id]);
 
   const toggleLike = () => {
     if (!place) return;
 
-    const saved = localStorage.getItem("favorites");
-    let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
+    toggleMutation.mutate({ 
+      targetId: place.id, 
+      targetType: 'PLACE', 
+      isFavorite: localLiked 
+    }, {
+      onSuccess: () => {
+        setLocalLiked(!localLiked);
+      },
+      onError: () => {
+        // Fallback or guest logic
+        const saved = localStorage.getItem("favorites");
+        let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
 
-    if (favorites.includes(place.id)) {
-      favorites = favorites.filter(fid => fid !== place.id);
-      setLiked(false);
-    } else {
-      favorites.push(place.id);
-      setLiked(true);
-    }
+        if (favorites.includes(place.id)) {
+          favorites = favorites.filter(fid => fid !== place.id);
+          setLocalLiked(false);
+        } else {
+          favorites.push(place.id);
+          setLocalLiked(true);
+        }
 
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    window.dispatchEvent(new Event("storage_favorites_updated"));
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        window.dispatchEvent(new Event("storage_favorites_updated"));
+      }
+    });
   };
 
   if (isLoading) {
@@ -100,9 +121,9 @@ export default function PlaceDetailPage() {
             <div className="flex gap-3">
               <button
                 onClick={toggleLike}
-                className={`w-12 h-12 rounded-full backdrop-blur-xl border border-white/20 flex items-center justify-center transition-all active:scale-90 ${liked ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/40' : 'bg-white/10 text-white hover:bg-white/20'}`}
+                className={`w-12 h-12 rounded-full backdrop-blur-xl border border-white/20 flex items-center justify-center transition-all active:scale-90 ${localLiked ? 'bg-red-500 text-white border-red-500 shadow-lg shadow-red-500/40' : 'bg-white/10 text-white hover:bg-white/20'}`}
               >
-                <Heart size={22} className={liked ? "fill-current" : ""} />
+                <Heart size={22} className={localLiked ? "fill-current" : ""} />
               </button>
               <button className="w-12 h-12 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center text-white hover:bg-white/20 transition-all active:scale-90">
                 <Share2 size={22} />
@@ -325,4 +346,3 @@ export default function PlaceDetailPage() {
     </div>
   );
 }
-

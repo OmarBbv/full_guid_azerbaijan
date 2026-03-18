@@ -11,7 +11,8 @@ export default function PopularPlaces() {
   const locale = useLocale();
   const { data: places, isLoading } = usePlaces({
     language: locale,
-    is_featured: true
+    is_featured: true,
+    exclude_types: ['RESTAURANT', 'HOTEL', 'HOSTEL']
   });
 
   if (!isLoading && (!places || places.length === 0)) return null;

@@ -5,7 +5,7 @@ import { useParams } from 'next/navigation';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { useBlogPost } from '@/hooks/use-blog';
-import { Clock, Calendar, ArrowLeft, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { Clock, Calendar, ArrowLeft, Share2 } from 'lucide-react';
 import { Link } from '@/i18n/routing';
 
 export default function BlogPostDetail(): React.JSX.Element {
@@ -13,6 +13,22 @@ export default function BlogPostDetail(): React.JSX.Element {
   const locale = useLocale();
   const t = useTranslations('Blog');
   const { data: post, isLoading, isError } = useBlogPost(slug, locale);
+  
+  const handleShare = () => {
+    if (typeof window === 'undefined') return;
+    const url = window.location.href;
+    const title = post?.title || 'Full Guide Azerbaijan';
+
+    if (navigator.share) {
+      navigator.share({
+        title: title,
+        url: url,
+      }).catch(console.error);
+    } else {
+      navigator.clipboard.writeText(url);
+      alert('Link kopyalandı!');
+    }
+  };
 
   if (isLoading) {
     return (
@@ -99,14 +115,11 @@ export default function BlogPostDetail(): React.JSX.Element {
             </div>
 
             <div className="flex items-center gap-3">
-              <button className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted-foreground hover:text-white transition-all cursor-pointer">
+              <button 
+                onClick={handleShare}
+                className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:bg-muted-foreground hover:text-white transition-all cursor-pointer"
+              >
                 <Share2 size={18} />
-              </button>
-              <button className="w-10 h-10 rounded-full bg-[#1877F2]/10 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2] hover:text-white transition-all cursor-pointer">
-                <Facebook size={18} />
-              </button>
-              <button className="w-10 h-10 rounded-full bg-[#1DA1F2]/10 flex items-center justify-center text-[#1DA1F2] hover:bg-[#1DA1F2] hover:text-white transition-all cursor-pointer">
-                <Twitter size={18} />
               </button>
             </div>
           </div>
@@ -139,15 +152,6 @@ export default function BlogPostDetail(): React.JSX.Element {
             />
           </div>
 
-          <div className="mt-20 p-8 rounded-3xl bg-muted/30 border border-border/50 text-center">
-            <h3 className="text-xl font-bold mb-2">Bu məqaləni bəyəndiniz?</h3>
-            <p className="text-muted-foreground mb-6">Sosial şəbəkələrdə paylaşaraq bizə dəstək ola bilərsiniz.</p>
-            <div className="flex justify-center gap-4">
-              <button className="bg-[#1877f2] text-white px-6 py-2 rounded-full font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer">Facebook</button>
-              <button className="bg-[#1da1f2] text-white px-6 py-2 rounded-full font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer">Twitter</button>
-              <button className="bg-[#0077b5] text-white px-6 py-2 rounded-full font-bold transition-all hover:scale-105 active:scale-95 cursor-pointer">LinkedIn</button>
-            </div>
-          </div>
         </div>
       </section>
     </div>

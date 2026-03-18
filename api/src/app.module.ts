@@ -24,6 +24,7 @@ import { SearchModule } from './search/search.module';
 import { CityModule } from './city/city.module';
 import { AboutPageModule } from './about-page/about-page.module';
 import { GuidePageModule } from './guide-page/guide-page.module';
+import { WishlistModule } from './wishlist/wishlist.module';
 
 @Module({
   imports: [
@@ -73,6 +74,7 @@ import { GuidePageModule } from './guide-page/guide-page.module';
     CityModule,
     AboutPageModule,
     GuidePageModule,
+    WishlistModule,
   ],
   controllers: [AppController],
   providers: [AppService],

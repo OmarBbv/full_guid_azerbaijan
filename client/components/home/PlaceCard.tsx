@@ -7,6 +7,7 @@ import { Link } from "@/i18n/routing";
 import { Place } from "@/types/place";
 import { useTranslations } from "next-intl";
 import { getImageUrl } from "@/lib/utils";
+import { useWishlist } from "@/hooks/use-wishlist";
 
 import fallbackImage from "@/assets/unsplash/photo-1514933651103-005eec06c04b_3224055e.jpg";
 
@@ -17,10 +18,28 @@ interface PlaceCardProps {
 
 export function PlaceCard({ place, index }: PlaceCardProps) {
   const t = useTranslations('Home');
-  const [liked, setLiked] = useState<boolean>(false);
   const ref = useRef<HTMLAnchorElement>(null);
   const [visible, setVisible] = useState(false);
   const [imgSrc, setImgSrc] = useState<any>(getImageUrl(place));
+
+  const targetType = (place as any).isPlaceEntity === false ? 'VENUE' : 'PLACE';
+
+  const { useStatus, toggleMutation } = useWishlist();
+  const { data: status } = useStatus(place.id, targetType);
+  const [localLiked, setLocalLiked] = useState<boolean>(false);
+
+  // Sync like status from API or LocalStorage
+  useEffect(() => {
+    if (status !== undefined) {
+      setLocalLiked(status.isFavorite);
+    } else {
+      const saved = localStorage.getItem("favorites");
+      if (saved) {
+        const favorites = JSON.parse(saved) as (number | string)[];
+        setLocalLiked(favorites.includes(place.id));
+      }
+    }
+  }, [status, place.id]);
 
   // Reset img src if place changes
   useEffect(() => {
@@ -28,12 +47,6 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
   }, [place]);
 
   useEffect(() => {
-    const saved = localStorage.getItem("favorites");
-    if (saved) {
-      const favorites = JSON.parse(saved) as (number | string)[];
-      setLiked(favorites.includes(place.id));
-    }
-
     const observer = new IntersectionObserver(
       ([e]) => { if (e.isIntersecting) setVisible(true); },
       { threshold: 0.1 }
@@ -46,26 +59,47 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
     e.stopPropagation();
     e.preventDefault();
 
-    const saved = localStorage.getItem("favorites");
-    let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
+    toggleMutation.mutate({ 
+      targetId: place.id, 
+      targetType: targetType, 
+      isFavorite: localLiked 
+    }, {
+      onSuccess: () => {
+        setLocalLiked(!localLiked);
+      },
+      onError: () => {
+        // Fallback for guests or API error
+        const saved = localStorage.getItem("favorites");
+        let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
 
-    if (favorites.includes(place.id)) {
-      favorites = favorites.filter(id => id !== place.id);
-      setLiked(false);
-    } else {
-      favorites.push(place.id);
-      setLiked(true);
-    }
+        if (favorites.includes(place.id)) {
+          favorites = favorites.filter(id => id !== place.id);
+          setLocalLiked(false);
+        } else {
+          favorites.push(place.id);
+          setLocalLiked(true);
+        }
 
-    localStorage.setItem("favorites", JSON.stringify(favorites));
-    window.dispatchEvent(new Event("storage_favorites_updated"));
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        window.dispatchEvent(new Event("storage_favorites_updated"));
+      }
+    });
   };
 
   const accentColor = place.accent_color || "#3b9cf5";
 
+  const slug = (place as any).slug || place.id;
+  const type = place.type?.toLowerCase();
+  
+  let baseLoc = "/mekanlar";
+  if (type === "restaurant") baseLoc = "/places/restaurants";
+  else if (type === "hotel") baseLoc = "/places/hotels";
+  else if (type === "hostel") baseLoc = "/places/hostels";
+  else if (type === "landmark") baseLoc = "/places/landmarks";
+
   return (
     <Link
-      href={`/mekanlar/${(place as any).slug || place.id}`}
+      href={`${baseLoc}/${slug}`}
       ref={ref}
       className="group block relative rounded-3xl overflow-hidden cursor-pointer bg-card border border-border shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.13)] h-full"
       style={{
@@ -91,30 +125,20 @@ export function PlaceCard({ place, index }: PlaceCardProps) {
           }}
         />
 
-        {/* Badge */}
-        {place.is_featured && (
-          <div
-            className="absolute top-4 left-4 px-3 py-1.5 rounded-full text-[11px] font-bold text-white uppercase tracking-wider"
-            style={{ background: `${accentColor}dd`, backdropFilter: "blur(8px)" }}
-          >
-            {t('top_label') || "TOP"}
-          </div>
-        )}
-
         {/* Like button */}
         <button
           onClick={toggleLike}
           className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-200 hover:scale-110 z-10"
           style={{
-            background: liked ? "#ef4444" : "rgba(255,255,255,0.18)",
+            background: localLiked ? "#ef4444" : "rgba(255,255,255,0.18)",
             backdropFilter: "blur(8px)",
-            border: liked ? "none" : "1px solid rgba(255,255,255,0.2)",
-            boxShadow: liked ? "0 4px 12px rgba(239, 68, 68, 0.4)" : "none"
+            border: localLiked ? "none" : "1px solid rgba(255,255,255,0.2)",
+            boxShadow: localLiked ? "0 4px 12px rgba(239, 68, 68, 0.4)" : "none"
           }}
         >
           <Heart
             size={15}
-            className={liked ? "fill-white text-white" : "text-white"}
+            className={localLiked ? "fill-white text-white" : "text-white"}
           />
         </button>
 

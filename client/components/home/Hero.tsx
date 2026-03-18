@@ -419,7 +419,7 @@ export default function Hero() {
                     animationDelay: `${idx * 0.12}s`,
                     transition: "width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.4s ease",
                     boxShadow: isActive
-                      ? `0 28px 70px rgba(0,0,0,0.65), 0 0 0 2px ${slide.accent}66`
+                      ? `0 28px 70px rgba(0,0,0,0.65)`
                       : "0 12px 30px rgba(0,0,0,0.4)",
                   }}
                   onClick={() => handleCardClick(idx)}
@@ -445,13 +445,6 @@ export default function Hero() {
                     }}
                   />
 
-                  {/* Active card accent glow top */}
-                  {isActive && (
-                    <div
-                      className="absolute top-0 left-0 right-0 h-1 card-glow-in"
-                      style={{ background: slide.accent, borderRadius: "0" }}
-                    />
-                  )}
 
                   {/* Save Button */}
                   <button
@@ -514,12 +507,6 @@ export default function Hero() {
                       >
                         <MapPin size={11} className="text-white/40" />
                         <span className="text-white/40 text-[11px]">{card.region}, {locale === 'az' ? 'Azərbaycan' : 'Azerbaijan'}</span>
-                        <span
-                          className="ml-auto text-[10px] font-bold px-2 py-0.5 rounded-full"
-                          style={{ background: `${slide.accent}33`, color: slide.accent }}
-                        >
-                          {t('top')}
-                        </span>
                       </div>
                     )}
                   </div>
