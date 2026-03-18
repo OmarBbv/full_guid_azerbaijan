@@ -10,7 +10,6 @@ import Footer from '@/components/shared/Footer';
 import WhatsAppButton from '@/components/shared/WhatsAppButton';
 import { QueryProvider } from '@/providers/query-provider';
 
-// Şəkildəki HelveticaNeueLT vizual olaraq tam bu formada olacaq:
 const inter = Inter({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],

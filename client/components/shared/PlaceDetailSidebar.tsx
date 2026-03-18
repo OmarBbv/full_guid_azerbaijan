@@ -4,6 +4,7 @@ import {
   MapPin, Clock, Globe, Phone, Mail,
   Instagram, Youtube, Facebook,
 } from "lucide-react";
+import { useTranslations } from 'next-intl';
 import { Place } from "@/types/place";
 import AdBannerComponent from "./AdBanner";
 
@@ -29,6 +30,7 @@ interface Props {
 }
 
 export default function PlaceDetailSidebar({ place }: Props) {
+  const t = useTranslations('VenueDetail');
   const whatsappNum = place.whatsapp_number || (place as any).whatsapp;
   const phoneNum = place.phone_number || (place as any).phone;
 
@@ -61,7 +63,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             <MapPin className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Ünvan</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('location')}</p>
             <p className="font-semibold text-sm leading-relaxed">
               {place.address || place.city || "Məlumat yoxdur"}
             </p>
@@ -76,7 +78,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             <Clock className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">İş Saatları</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('working_hours')}</p>
             <p className="font-semibold text-sm">
               {place.working_hours.display || "Məlumat yoxdur"}
             </p>
@@ -90,7 +92,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             <Phone className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Telefon</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('phone')}</p>
             <a
               href={`tel:${phoneNum}`}
               className="font-semibold text-sm text-primary hover:underline"
@@ -108,7 +110,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             <Globe className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">Veb Sayt</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('website')}</p>
             <a
               href={place.website_url}
               target="_blank"
@@ -128,7 +130,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             <Mail className="w-5 h-5" />
           </div>
           <div>
-            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">E-mail</p>
+            <p className="text-xs text-muted-foreground uppercase font-bold mb-1">{t('email')}</p>
             <a
               href={`mailto:${place.email}`}
               className="font-semibold text-sm text-primary hover:underline"
@@ -142,7 +144,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
       {/* Social Media */}
       {social && (social.instagram || social.facebook || social.youtube || social.tiktok) && (
         <div>
-          <p className="text-xs text-muted-foreground uppercase font-bold mb-3">Sosial Media</p>
+          <p className="text-xs text-muted-foreground uppercase font-bold mb-3">{t('social_media')}</p>
           <div className="flex items-center gap-3 flex-wrap">
             {social.instagram && (
               <a
@@ -210,7 +212,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             style={{ background: "#25D366", boxShadow: "0 8px 24px rgba(37,211,102,0.35)" }}
           >
             <WhatsAppIcon size={22} />
-            WhatsApp ilə Yaz
+            {t('whatsapp_action')}
           </a>
         )}
 
@@ -224,7 +226,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             style={{ boxShadow: "0 8px 24px rgba(30,58,138,0.25)" }}
           >
             <MapPin className="w-5 h-5" />
-            Xəritədə Göstər
+            {t('show_on_map')}
           </a>
         )}
 
@@ -234,7 +236,7 @@ export default function PlaceDetailSidebar({ place }: Props) {
             className="flex items-center justify-center gap-3 w-full py-4 bg-primary text-primary-foreground rounded-2xl font-black text-base hover:opacity-90 active:scale-95 transition-all shadow-lg"
           >
             <MapPin className="w-5 h-5" />
-            Xəritədə Yol Tap
+            {t('find_route_on_map')}
           </button>
         )}
       </div>

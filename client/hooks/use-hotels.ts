@@ -19,7 +19,14 @@ export function useHotels(params: any = {}) {
 export function useHotelById(id: string) {
   return useQuery({
     queryKey: HOTEL_KEYS.detail(id),
-    queryFn: () => hotelService.getHotelById(id),
+    queryFn: async () => {
+      const data: any = await hotelService.getHotelById(id);
+      if (data && data.place) {
+        const { place, ...hotelFields } = data;
+        return { ...place, ...hotelFields };
+      }
+      return data;
+    },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });
@@ -28,7 +35,14 @@ export function useHotelById(id: string) {
 export function useHotelBySlug(slug: string) {
   return useQuery({
     queryKey: HOTEL_KEYS.slug(slug),
-    queryFn: () => hotelService.getHotelBySlug(slug),
+    queryFn: async () => {
+      const data: any = await hotelService.getHotelBySlug(slug);
+      if (data && data.place) {
+        const { place, ...hotelFields } = data;
+        return { ...place, ...hotelFields };
+      }
+      return data;
+    },
     enabled: !!slug,
     staleTime: 5 * 60 * 1000,
   });

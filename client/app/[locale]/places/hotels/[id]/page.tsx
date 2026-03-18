@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Bed, Star, ChevronLeft, Wifi, Waves, Globe, ShieldCheck, Loader2, Camera } from 'lucide-react';
+import { Bed, Star, ChevronLeft, Wifi, Waves, Globe, ShieldCheck, Loader2, Camera, ParkingCircle, CreditCard, Dumbbell, Utensils, Zap, Users, CheckCircle2, XCircle } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { usePlaceById } from '@/hooks/use-places';
+import { useHotelById, useHotelBySlug } from '@/hooks/use-hotels';
 import { getImageUrl } from '@/lib/utils';
 import ImageLightbox from '@/components/shared/ImageLightbox';
 import PlaceDetailSidebar from '@/components/shared/PlaceDetailSidebar';
@@ -18,8 +18,14 @@ export default function HotelDetailPage() {
   const t = useTranslations('VenueDetail');
   const tCommon = useTranslations('Navbar');
   const tPlaces = useTranslations('PlacesPage');
-  const id = params.id as string;
-  const { data: hotel, isLoading } = usePlaceById(id, locale);
+  const idValue = params.id as string;
+
+  const isIdUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(idValue);
+  
+  const idQuery = useHotelById(isIdUuid ? idValue : '');
+  const slugQuery = useHotelBySlug(!isIdUuid ? idValue : '');
+  
+  const { data: hotel, isLoading } = isIdUuid ? idQuery : slugQuery;
 
   const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
 
@@ -73,15 +79,19 @@ export default function HotelDetailPage() {
           </Link>
 
           <div className="flex items-center gap-2 text-yellow-500 mb-4 bg-yellow-500/10 backdrop-blur-md px-4 py-1 rounded-full border border-yellow-500/20">
-            <Star className="w-4 h-4 fill-yellow-500" />
-            <span className="font-bold">{Number(hotel.average_rating || 5).toFixed(1)}</span>
+            <div className="flex">
+              {[...Array((hotel as any).star_rating || 5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-500" />
+              ))}
+            </div>
+            <span className="font-bold">{(hotel as any).star_rating || 5}.0</span>
             <span className="text-white/60 text-sm">({hotel.review_count || 0} {tPlaces('reviews')})</span>
           </div>
           <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl uppercase italic">
             {hotel.title}
           </h1>
           <p className="text-lg md:text-2xl text-white/90 font-medium drop-shadow-md">
-            {hotel.subtitle || ''}
+            {hotel.subtitle || (hotel as any).hotel_type || ''}
           </p>
         </div>
       </section>
@@ -91,35 +101,107 @@ export default function HotelDetailPage() {
         <div className="lg:col-span-2 space-y-12">
           <section>
             <h2 className="text-3xl font-black mb-6">{t('tab_about')}</h2>
-            <p className="text-muted-foreground text-lg leading-relaxed italic whitespace-pre-line">
-              {hotel.detailed_description || hotel.short_description}
-            </p>
+            <div className="space-y-6 italic">
+              {hotel.short_description && (
+                <p className="text-xl font-bold text-foreground leading-relaxed border-l-4 border-primary pl-6">
+                   {hotel.short_description}
+                </p>
+              )}
+              {hotel.detailed_description && (
+                <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
+                  {hotel.detailed_description}
+                </p>
+              )}
+            </div>
           </section>
 
           <section>
             <h2 className="text-3xl font-black mb-8">{t('what_we_offer')}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {((hotel as any).features || []).map((f: string, i: number) => (
-                <div key={i} className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10 hover:border-primary/30 transition-colors">
-                  <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                    <Bed className="w-5 h-5" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {/* Hotel Specific Info */}
+              {(hotel as any).price_from_azn > 0 && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold text-xs">
+                    ₼
                   </div>
-                  <span className="font-bold text-sm leading-tight">{f}</span>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Qiymət</span>
+                    <span className="font-bold text-sm tracking-tight">{(hotel as any).price_from_azn} AZN - dan</span>
+                  </div>
                 </div>
-              ))}
+              )}
 
+              {(hotel as any).total_rooms > 0 && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <Bed className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Otaq sayı</span>
+                    <span className="font-bold text-sm tracking-tight">{(hotel as any).total_rooms} otaq</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Boolean features */}
               {(hotel as any).has_wifi && (
-                <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
-                  <Wifi className="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500" />
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Wifi className="w-8 h-8 rounded-lg bg-emerald-500/10 p-1.5 text-emerald-500" />
                   <span className="font-bold text-sm">{t('fast_internet')}</span>
                 </div>
               )}
-              {((hotel as any).has_pool || (hotel as any).has_outdoor_seating) && (
-                <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
-                  <Waves className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500" />
-                  <span className="font-bold text-sm">{t('pool_spa')}</span>
+              {(hotel as any).has_parking && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <ParkingCircle className="w-8 h-8 rounded-lg bg-blue-500/10 p-1.5 text-blue-500" />
+                  <span className="font-bold text-sm">{t('parking')}</span>
                 </div>
               )}
+              {(hotel as any).has_pool && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Waves className="w-8 h-8 rounded-lg bg-blue-400/10 p-1.5 text-blue-400" />
+                  <span className="font-bold text-sm">Hovuz</span>
+                </div>
+              )}
+              {(hotel as any).has_spa && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Zap className="w-8 h-8 rounded-lg bg-purple-500/10 p-1.5 text-purple-500" />
+                  <span className="font-bold text-sm">SPA & Wellness</span>
+                </div>
+              )}
+              {(hotel as any).has_gym && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Dumbbell className="w-8 h-8 rounded-lg bg-orange-500/10 p-1.5 text-orange-500" />
+                  <span className="font-bold text-sm">İdman zalı</span>
+                </div>
+              )}
+              {(hotel as any).has_restaurant && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Utensils className="w-8 h-8 rounded-lg bg-amber-500/10 p-1.5 text-amber-500" />
+                  <span className="font-bold text-sm">Restoran</span>
+                </div>
+              )}
+              {(hotel as any).accepts_cards && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <CreditCard className="w-8 h-8 rounded-lg bg-indigo-500/10 p-1.5 text-indigo-500" />
+                  <span className="font-bold text-sm">{t('card_payment')}</span>
+                </div>
+              )}
+              {(hotel as any).pets_allowed && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Users className="w-8 h-8 rounded-lg bg-rose-500/10 p-1.5 text-rose-500" />
+                  <span className="font-bold text-sm">Ev heyvanları</span>
+                </div>
+              )}
+
+              {/* Dynamic Features from API */}
+              {((hotel as any).features || []).map((f: string, i: number) => (
+                <div key={i} className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                  <span className="font-bold text-sm tracking-tight">{f}</span>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -174,7 +256,7 @@ export default function HotelDetailPage() {
         </div>
 
         <div>
-          <PlaceDetailSidebar place={hotel} />
+           <PlaceDetailSidebar place={hotel} />
         </div>
       </div>
     </div>

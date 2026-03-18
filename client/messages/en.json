@@ -354,9 +354,9 @@
     "rating": "Rating",
     "about_venue": "About the Venue",
     "photo_gallery": "Photo Gallery",
-    "tab_about": "about",
-    "tab_gallery": "gallery",
-    "tab_reviews": "reviews",
+    "tab_about": "About",
+    "tab_gallery": "Gallery",
+    "tab_reviews": "Reviews",
     "not_found": "Venue not found",
     "not_found_desc": "The venue you are looking for does not exist in our database or might have been deleted.",
     "back_to_venues": "Back to Venues",
@@ -383,7 +383,12 @@
     "free_wifi": "Free Wi-Fi",
     "parking": "Parking",
     "card_payment": "Card Payment",
-    "live_music": "Live Music"
+    "live_music": "Live Music",
+    "working_hours": "Working Hours",
+    "phone": "Phone",
+    "email": "E-mail",
+    "show_on_map": "Show on Map",
+    "find_route_on_map": "Find Route on Map"
   },
   "Auth": {
     "login_title": "Welcome!",

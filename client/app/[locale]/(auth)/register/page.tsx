@@ -278,19 +278,14 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 gap-5">
               <a
                 href="http://localhost:5555/auth/google"
-                className="h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 flex items-center justify-center"
+                className="h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 flex items-center justify-center gap-3 font-bold text-sm"
               >
                 <Chrome size={20} />
+                Google ilə qeydiyyatdan keç
               </a>
-              <button className="h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 flex items-center justify-center text-blue-600">
-                <Facebook size={20} />
-              </button>
-              <button className="h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 flex items-center justify-center">
-                <Github size={20} />
-              </button>
             </div>
           </>
         )}

@@ -94,6 +94,7 @@ export function LandmarksTable({
                 />
               </TableCell>
               <TableCell>Ad</TableCell>
+              <TableCell>Dil</TableCell>
               <TableCell>Şəhər</TableCell>
               <TableCell>Ünvan</TableCell>
               <TableCell>Status</TableCell>
@@ -104,7 +105,7 @@ export function LandmarksTable({
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={8} align="center" sx={{ py: 4 }}>
                   <Typography variant="body2" color="text.secondary">
                     Heç bir landmark tapılmadı
                   </Typography>
@@ -114,6 +115,8 @@ export function LandmarksTable({
               rows.map((row) => {
                 const isSelected = selected?.has(row.id);
                 const status = row.status ?? PlaceStatus.PENDING;
+                const language = row.language || 'az';
+                const languageFlag = language === 'az' ? '🇦🇿' : language === 'en' ? '🇬🇧' : '🇷🇺';
 
                 return (
                   <TableRow hover key={row.id} selected={isSelected}>
@@ -134,6 +137,11 @@ export function LandmarksTable({
                         </Avatar>
                         <Typography variant="subtitle2">{row.title ?? '—'}</Typography>
                       </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {languageFlag} {language.toUpperCase()}
+                      </Typography>
                     </TableCell>
                     <TableCell>{row.city ?? '—'}</TableCell>
                     <TableCell>

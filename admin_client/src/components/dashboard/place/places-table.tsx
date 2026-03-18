@@ -103,6 +103,7 @@ export function PlacesTable({
                 />
               </TableCell>
               <TableCell>Ad</TableCell>
+              <TableCell>Dil</TableCell>
               <TableCell>Şəhər</TableCell>
               <TableCell>Növ</TableCell>
               <TableCell>Status</TableCell>
@@ -115,7 +116,7 @@ export function PlacesTable({
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={10} align="center" sx={{ py: 4 }}>
                   <Typography variant="body2" color="text.secondary">
                     Heç bir məkan tapılmadı
                   </Typography>
@@ -124,6 +125,8 @@ export function PlacesTable({
             ) : (
               rows.map((row) => {
                 const isSelected = selected?.has(row.id);
+                const language = row.language || 'az';
+                const languageFlag = language === 'az' ? '🇦🇿' : language === 'en' ? '🇬🇧' : '🇷🇺';
                 return (
                   <TableRow hover key={row.id} selected={isSelected}>
                     <TableCell padding="checkbox">
@@ -148,6 +151,11 @@ export function PlacesTable({
                           </Typography>
                         </Stack>
                       </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {languageFlag} {language.toUpperCase()}
+                      </Typography>
                     </TableCell>
                     <TableCell>{row.city ?? '—'}</TableCell>
                     <TableCell>

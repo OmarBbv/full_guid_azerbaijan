@@ -354,9 +354,9 @@
     "rating": "Qiymətləndirmə",
     "about_venue": "Məkan Haqqında",
     "photo_gallery": "Foto Qalereya",
-    "tab_about": "haqqında",
-    "tab_gallery": "qalereya",
-    "tab_reviews": "rəylər",
+    "tab_about": "Haqqında",
+    "tab_gallery": "Qalereya",
+    "tab_reviews": "Rəylər",
     "not_found": "Məkan tapılmadı",
     "not_found_desc": "Axtardığınız məkan bazamızda mövcud deyil və ya silinmiş ola bilər.",
     "back_to_venues": "Məkanlara qayıt",
@@ -383,7 +383,12 @@
     "free_wifi": "Pulsuz Wi-Fi",
     "parking": "Dayanacaq",
     "card_payment": "Kartla ödəniş",
-    "live_music": "Canlı musiqi"
+    "live_music": "Canlı musiqi",
+    "working_hours": "İş Saatları",
+    "phone": "Telefon",
+    "email": "E-mail",
+    "show_on_map": "Xəritədə Göstər",
+    "find_route_on_map": "Xəritədə Yol Tap"
   },
   "Auth": {
     "login_title": "Xoş Gəldiniz!",

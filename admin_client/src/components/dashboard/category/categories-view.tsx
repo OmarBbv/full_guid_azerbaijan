@@ -40,8 +40,7 @@ export function CategoriesView(): React.JSX.Element {
   const { mutate: deleteCategory, isPending: isDeleting } = useDeleteCategory();
 
   const handleEdit = (id: number) => {
-    // Edit page not yet created — show a brief notice
-    alert(`Redaktə səhifəsi hazırlanır (ID: ${id})`);
+    router.push(`${paths.dashboard.categories}/${id}`);
   };
 
   const handleDelete = (id: number) => {

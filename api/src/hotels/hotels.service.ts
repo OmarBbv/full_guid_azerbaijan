@@ -101,10 +101,11 @@ export class HotelsService {
 
   async findOne(id: string): Promise<Hotel> {
     const hotel = await this.hotelRepo.findOne({
-      where: { id },
+      where: [{ id }, { place_id: id }],
       relations: ['place', 'place.images', 'place.reviews'],
     });
-    if (!hotel) throw new NotFoundException(`Hotel with ID "${id}" not found.`);
+    if (!hotel)
+      throw new NotFoundException(`Hotel with ID or PlaceID "${id}" not found.`);
     return hotel;
   }
 

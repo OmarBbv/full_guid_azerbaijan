@@ -103,11 +103,11 @@ export class RestaurantsService {
 
   async findOne(id: string): Promise<Restaurant> {
     const restaurant = await this.restaurantRepo.findOne({
-      where: { id },
+      where: [{ id }, { place_id: id }],
       relations: ['place', 'place.images', 'place.reviews'],
     });
     if (!restaurant) {
-      throw new NotFoundException(`Restaurant with ID "${id}" not found.`);
+      throw new NotFoundException(`Restaurant with ID or PlaceID "${id}" not found.`);
     }
     return restaurant;
   }

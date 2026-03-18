@@ -97,12 +97,6 @@ export class Place {
   @Column({ type: 'enum', enum: PlaceStatus, default: PlaceStatus.ACTIVE })
   status: PlaceStatus;
 
-  // ─── WhatsApp CTA (primary contact — no reservation system) ──────────────
-
-  /**
-   * WhatsApp phone number in international format WITHOUT "+" e.g. "994501234567"
-   * The frontend builds the link as: https://wa.me/{whatsapp_number}?text={message}
-   */
   @Column({ type: 'varchar', length: 50 })
   whatsapp_number: string;
 

@@ -14,7 +14,7 @@ export default function AdBannerComponent({ position, className = '' }: AdBanner
 
   if (!ad) return null;
 
-  const aspectRatio = position === 'mekan_sidebar' ? '4/3' : '21/9';
+  const aspectRatio = position === 'mekan_sidebar' ? '10/3' : '35/6';
 
   const content = (
     <div

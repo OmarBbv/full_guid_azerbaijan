@@ -314,7 +314,12 @@
     "hostel_safety_desc": "تم فحص جميع بيوت الشباب لدينا شخصيًا من قبل فريق FGA. النظافة والأمان والود هي أهم مبادئنا. تتوفر خزائن مقفلة لأغراضك الشخصية في كل نزل.",
     "fast_internet": "إنترنت سريع",
     "what_we_offer": "ماذا نقدم؟",
-    "gallery_photo": "صورة"
+    "gallery_photo": "صورة",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "features": "الميزات",
+    "show_on_map": "عرض على الخريطة",
+    "find_route_on_map": "العثور على الطريق على الخريطة"
   },
   "RegionPage": {
     "not_found_title": "لم يتم العثور على المنطقة",
@@ -379,5 +384,43 @@
     "footer_desc": "اتصل بنا للحصول على المساعدة.",
     "contact_us": "اتصل بنا",
     "meta_fallback": "دليل | FullGuide"
+  },
+  "Auth": {
+    "login_title": "مرحباً بكم!",
+    "otp_title": "رمز التحقق",
+    "login_subtitle": "سجل الدخول إلى حساب Full Guide الخاص بك",
+    "otp_subtitle": "لقد أرسلنا رمزاً مكوناً من 6 أرقام إلى {email}",
+    "email_label": "البريد الإلكتروني",
+    "email_placeholder": "example@mail.com",
+    "password_label": "كلمة المرور",
+    "password_placeholder": "••••••••",
+    "forgot_password": "نسيت؟",
+    "continue_btn": "متابعة",
+    "confirm_btn": "تأكيد",
+    "otp_placeholder": "_ _ _ _ _ _",
+    "otp_expiry": "الرمز صالح لمدة 10 دقائق",
+    "back_btn": "الرجوع",
+    "resend_btn": "إعادة إرسال",
+    "social_or": "أو عبر الشبكات الاجتماعية",
+    "no_account": "ليس لديك حساب؟",
+    "register_link": "سجل الآن",
+    "register_title": "حساب جديد",
+    "register_subtitle": "اكتشف سحر آذربيجان معنا",
+    "name_label": "الاسم واللقب",
+    "name_placeholder": "عمر باباييف",
+    "terms_agree_part1": "بإنشاء حساب فإنك توافق على",
+    "terms_agree_part2": " ",
+    "terms_link": "الشروط والأحكام",
+    "register_submit": "إكمال التسجيل",
+    "social_label": "الحسابات الاجتماعية",
+    "already_have_account": "لديك حساب بالفعل؟",
+    "login_link": "سجل دخولك",
+    "errors": {
+      "invalid_credentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "invalid_otp": "رمز التحقق غير صحيح أو منتهي الصلاحية.",
+      "resend_error": "حدث خطأ أثناء إرسال الرمز.",
+      "terms_required": "يجب عليك الموافقة على الشروط والأحكام",
+      "register_failed": "حدث خطأ! قد يكون البريد الإلكتروني مستخدماً بالفعل."
+    }
   }
 }

@@ -8,8 +8,8 @@ export interface RestaurantQueryParams {
 
 export interface IRestaurantService {
   getRestaurants(params?: RestaurantQueryParams): Promise<Place[]>;
-  getRestaurantById(id: string): Promise<Place>;
-  getRestaurantBySlug(slug: string): Promise<Place>;
+  getRestaurantById(id: string, language?: string): Promise<Place>;
+  getRestaurantBySlug(slug: string, language?: string): Promise<Place>;
 }
 
 class RestaurantService implements IRestaurantService {
@@ -25,9 +25,11 @@ class RestaurantService implements IRestaurantService {
     }
   }
 
-  async getRestaurantById(id: string): Promise<Place> {
+  async getRestaurantById(id: string, language?: string): Promise<Place> {
     try {
-      const response = await apiClient.get<Place>(`${this.endpoint}/${id}`);
+      const response = await apiClient.get<Place>(`${this.endpoint}/${id}`, {
+        params: language ? { language } : {}
+      });
       return response.data;
     } catch (error) {
       console.error('[RestaurantService.getRestaurantById]', error);
@@ -35,9 +37,11 @@ class RestaurantService implements IRestaurantService {
     }
   }
 
-  async getRestaurantBySlug(slug: string): Promise<Place> {
+  async getRestaurantBySlug(slug: string, language?: string): Promise<Place> {
     try {
-      const response = await apiClient.get<Place>(`${this.endpoint}/slug/${slug}`);
+      const response = await apiClient.get<Place>(`${this.endpoint}/slug/${slug}`, {
+        params: language ? { language } : {}
+      });
       return response.data;
     } catch (error) {
       console.error('[RestaurantService.getRestaurantBySlug]', error);

@@ -13,7 +13,7 @@ export class PlacesService {
     private readonly placeRepository: Repository<Place>,
     @InjectRepository(PlaceImage)
     private readonly placeImageRepository: Repository<PlaceImage>,
-  ) {}
+  ) { }
 
   async create(createPlaceDto: CreatePlaceDto): Promise<Place> {
     const { images: _images, ...rest } = createPlaceDto as CreatePlaceDto & {

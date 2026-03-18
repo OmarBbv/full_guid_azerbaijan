@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Backpack, MapPin, ChevronLeft, Wifi, Zap, Shield, Loader2, Camera, Star } from 'lucide-react';
+import { Backpack, MapPin, ChevronLeft, Wifi, Zap, Shield, Loader2, Camera, Star, Bed, Utensils, Users, Lock, Coffee, Wine, WashingMachine, Luggage, Clock, CheckCircle2 } from 'lucide-react';
 import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
-import { usePlaceById } from '@/hooks/use-places';
+import { useHostelById, useHostelBySlug } from '@/hooks/use-hostels';
 import { getImageUrl } from '@/lib/utils';
 import ImageLightbox from '@/components/shared/ImageLightbox';
 import PlaceDetailSidebar from '@/components/shared/PlaceDetailSidebar';
@@ -19,8 +19,14 @@ export default function HostelDetailPage() {
   const t = useTranslations('VenueDetail');
   const tCommon = useTranslations('Navbar');
   const tPlaces = useTranslations('PlacesPage');
-  const id = params.id as string;
-  const { data: hostel, isLoading } = usePlaceById(id, locale);
+  const idValue = params.id as string;
+
+  const isIdUuid = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(idValue);
+  
+  const idQuery = useHostelById(isIdUuid ? idValue : '');
+  const slugQuery = useHostelBySlug(!isIdUuid ? idValue : '');
+  
+  const { data: hostel, isLoading } = isIdUuid ? idQuery : slugQuery;
 
   const [lightbox, setLightbox] = useState({ isOpen: false, index: 0 });
 
@@ -78,11 +84,11 @@ export default function HostelDetailPage() {
             <span className="font-bold">{Number(hostel.average_rating || 5).toFixed(1)}</span>
             <span className="text-white/60 text-sm">({hostel.review_count || 0} {tPlaces('reviews')})</span>
           </div>
-          <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl">
+          <h1 className="text-4xl md:text-7xl font-black tracking-tight text-white mb-4 drop-shadow-2xl italic">
             {hostel.title}
           </h1>
           <p className="text-lg md:text-2xl text-white/90 font-medium drop-shadow-md">
-            {hostel.subtitle || ''}
+            {hostel.subtitle || (hostel as any).hostel_type || ''}
           </p>
         </div>
       </section>
@@ -92,31 +98,113 @@ export default function HostelDetailPage() {
         <div className="lg:col-span-2 space-y-12">
           <section>
             <h2 className="text-3xl font-black mb-6">{t('tab_about')}</h2>
-            <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
-              {hostel.detailed_description || hostel.short_description}
-            </p>
+            <div className="space-y-6 italic">
+              {hostel.short_description && (
+                <p className="text-xl font-bold text-foreground leading-relaxed border-l-4 border-emerald-500 pl-6">
+                  {hostel.short_description}
+                </p>
+              )}
+              {hostel.detailed_description && (
+                <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-line">
+                  {hostel.detailed_description}
+                </p>
+              )}
+            </div>
           </section>
 
           <section>
             <h2 className="text-3xl font-black mb-8">{t('what_we_offer')}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-              {((hostel as any).features || []).map((f: string, i: number) => (
-                <div key={i} className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10 hover:shadow-lg transition-all group">
-                  <div className="w-10 h-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-500 group-hover:text-white transition-colors">
-                    <Zap className="w-5 h-5" />
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {/* Hostel Specific Info */}
+              {(hostel as any).dorm_price_from_eur > 0 && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 font-bold text-xs">
+                    €
                   </div>
-                  <span className="font-bold text-sm leading-tight">{f}</span>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Yataq yeri</span>
+                    <span className="font-bold text-sm tracking-tight">{(hostel as any).dorm_price_from_eur} EUR - dan</span>
+                  </div>
                 </div>
-              ))}
+              )}
 
-              {(hostel as any).has_wifi && (
-                <div className="flex flex-col gap-3 bg-card p-6 rounded-3xl border border-border/10">
-                  <div className="w-10 h-10 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500">
-                    <Wifi className="w-5 h-5" />
+              {(hostel as any).dorm_beds_count > 0 && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <Bed className="w-4 h-4" />
                   </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold leading-none mb-1">Cəmi yataq</span>
+                    <span className="font-bold text-sm tracking-tight">{(hostel as any).dorm_beds_count} yataq</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Boolean features */}
+              {(hostel as any).has_wifi && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Wifi className="w-8 h-8 rounded-lg bg-emerald-500/10 p-1.5 text-emerald-500" />
                   <span className="font-bold text-sm">{t('fast_internet')}</span>
                 </div>
               )}
+              {(hostel as any).has_kitchen && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Utensils className="w-8 h-8 rounded-lg bg-amber-500/10 p-1.5 text-amber-500" />
+                  <span className="font-bold text-sm">Mətbəx</span>
+                </div>
+              )}
+              {(hostel as any).has_common_room && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Users className="w-8 h-8 rounded-lg bg-blue-500/10 p-1.5 text-blue-500" />
+                  <span className="font-bold text-sm">Ümumi otaq</span>
+                </div>
+              )}
+              {(hostel as any).has_lockers && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Lock className="w-8 h-8 rounded-lg bg-rose-500/10 p-1.5 text-rose-500" />
+                  <span className="font-bold text-sm">Kilit qutusu</span>
+                </div>
+              )}
+              {(hostel as any).has_free_breakfast && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Coffee className="w-8 h-8 rounded-lg bg-amber-600/10 p-1.5 text-amber-600" />
+                  <span className="font-bold text-sm">Pulsuz səhər yeməyi</span>
+                </div>
+              )}
+              {(hostel as any).has_bar && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Wine className="w-8 h-8 rounded-lg bg-purple-500/10 p-1.5 text-purple-500" />
+                  <span className="font-bold text-sm">Bar</span>
+                </div>
+              )}
+              {(hostel as any).has_laundry && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <WashingMachine className="w-8 h-8 rounded-lg bg-sky-500/10 p-1.5 text-sky-500" />
+                  <span className="font-bold text-sm">Camaşırxana</span>
+                </div>
+              )}
+              {(hostel as any).has_luggage_storage && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Luggage className="w-8 h-8 rounded-lg bg-orange-500/10 p-1.5 text-orange-500" />
+                  <span className="font-bold text-sm">Yük saxlama</span>
+                </div>
+              )}
+              {(hostel as any).has_24h_reception && (
+                <div className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <Clock className="w-8 h-8 rounded-lg bg-teal-500/10 p-1.5 text-teal-500" />
+                  <span className="font-bold text-sm">24 saat qeydiyyat</span>
+                </div>
+              )}
+
+              {/* Dynamic Features from API */}
+              {((hostel as any).features || []).map((f: string, i: number) => (
+                <div key={i} className="flex items-center gap-3 bg-card p-4 rounded-2xl border border-border/10">
+                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+                    <CheckCircle2 className="w-4 h-4" />
+                  </div>
+                  <span className="font-bold text-sm tracking-tight">{f}</span>
+                </div>
+              ))}
             </div>
           </section>
 
@@ -161,7 +249,7 @@ export default function HostelDetailPage() {
               <Shield className="text-emerald-500 w-10 h-10" />
               <h2 className="text-2xl font-bold italic">{t('safety_guarantee')}</h2>
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground italic">
               {t('hostel_safety_desc')}
             </p>
           </section>

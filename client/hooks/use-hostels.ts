@@ -19,7 +19,14 @@ export function useHostels(params: any = {}) {
 export function useHostelById(id: string) {
   return useQuery({
     queryKey: HOSTEL_KEYS.detail(id),
-    queryFn: () => hostelService.getHostelById(id),
+    queryFn: async () => {
+      const data: any = await hostelService.getHostelById(id);
+      if (data && data.place) {
+        const { place, ...hostelFields } = data;
+        return { ...place, ...hostelFields };
+      }
+      return data;
+    },
     enabled: !!id,
     staleTime: 5 * 60 * 1000,
   });
@@ -28,7 +35,14 @@ export function useHostelById(id: string) {
 export function useHostelBySlug(slug: string) {
   return useQuery({
     queryKey: HOSTEL_KEYS.slug(slug),
-    queryFn: () => hostelService.getHostelBySlug(slug),
+    queryFn: async () => {
+      const data: any = await hostelService.getHostelBySlug(slug);
+      if (data && data.place) {
+        const { place, ...hostelFields } = data;
+        return { ...place, ...hostelFields };
+      }
+      return data;
+    },
     enabled: !!slug,
     staleTime: 5 * 60 * 1000,
   });

@@ -255,7 +255,6 @@ export default function LoginPage() {
           </form>
         )}
 
-        {/* Divider — only on credentials step */}
         {step === "credentials" && (
           <>
             <div className="relative my-10">
@@ -267,19 +266,14 @@ export default function LoginPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <a
                 href="http://localhost:5555/auth/google"
-                className="flex items-center justify-center h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors"
+                className="flex items-center justify-center h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors gap-3 font-bold text-sm"
               >
                 <Chrome size={20} className="text-foreground" />
+                Google ilə daxil ol
               </a>
-              <button className="flex items-center justify-center h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors">
-                <Facebook size={20} className="text-blue-600" />
-              </button>
-              <button className="flex items-center justify-center h-14 rounded-2xl border border-border/50 bg-muted/30 hover:bg-muted/50 transition-colors">
-                <Github size={20} className="text-foreground" />
-              </button>
             </div>
           </>
         )}

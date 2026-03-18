@@ -46,7 +46,11 @@ export class CategoryService {
 
   async update(id: number, dto: UpdateCategoryDto) {
     await this.findOne(id);
-    await this.categoryRepo.update(id, dto);
+    const updateData: any = { ...dto };
+    if (dto.name) {
+      updateData.slug = this.generateSlug(dto.name);
+    }
+    await this.categoryRepo.update(id, updateData);
     return this.findOne(id);
   }
 

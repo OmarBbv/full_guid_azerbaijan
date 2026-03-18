@@ -314,7 +314,12 @@
     "hostel_safety_desc": "हमारे सभी हॉस्टल की व्यक्तिगत रूप से FGA टीम द्वारा जांच की गई है। स्वच्छता, सुरक्षा और मित्रता हमारे सबसे महत्वपूर्ण सिद्धांत हैं। प्रत्येक हॉस्टल में आपके व्यक्तिगत सामान के लिए लॉक किए गए लॉकर उपलब्ध हैं।",
     "fast_internet": "तेज इंटरनेट",
     "what_we_offer": "हम क्या पेशकश करते हैं?",
-    "gallery_photo": "फोटो"
+    "gallery_photo": "फोटो",
+    "phone": "फ़ोन",
+    "email": "ईमेल",
+    "features": "विशेषताएं",
+    "show_on_map": "मानचित्र पर दिखाएं",
+    "find_route_on_map": "मानचित्र पर मार्ग खोजें"
   },
   "RegionPage": {
     "not_found_title": "क्षेत्र नहीं मिला",
@@ -379,5 +384,43 @@
     "footer_desc": "मदद के लिए हमसे संपर्क करें।",
     "contact_us": "संपर्क करें",
     "meta_fallback": "गाइड | FullGuide"
+  },
+  "Auth": {
+    "login_title": "स्वागत है!",
+    "otp_title": "सत्यापन कोड",
+    "login_subtitle": "अपने Full Guide खाते में लॉग इन करें",
+    "otp_subtitle": "हमने {email} पर 6 अंकों का कोड भेजा है",
+    "email_label": "ईमेल",
+    "email_placeholder": "example@mail.com",
+    "password_label": "पासवर्ड",
+    "password_placeholder": "••••••••",
+    "forgot_password": "भुल गए?",
+    "continue_btn": "जारी रखें",
+    "confirm_btn": "पुष्टि करें",
+    "otp_placeholder": "_ _ _ _ _ _",
+    "otp_expiry": "कोड 10 मिनट के लिए मान्य है",
+    "back_btn": "पीछे जाएं",
+    "resend_btn": "पुनः भेजें",
+    "social_or": "या सोशल मीडिया के साथ",
+    "no_account": "खाता नहीं है?",
+    "register_link": "पंजीकरण करें",
+    "register_title": "नया खाता",
+    "register_subtitle": "हमारे साथ अज़रबैजान के जादू की खोज करें",
+    "name_label": "पूरा नाम",
+    "name_placeholder": "उमर बाबायेव",
+    "terms_agree_part1": "खाता बनाकर आप",
+    "terms_agree_part2": "से सहमत होते हैं।",
+    "terms_link": "नियम और शर्तें",
+    "register_submit": "पंजीकरण पूरा करें",
+    "social_label": "सोशल खाते",
+    "already_have_account": "पहले से ही एक खाता है?",
+    "login_link": "लॉग इन करें",
+    "errors": {
+      "invalid_credentials": "ईमेल या पासवर्ड गलत है।",
+      "invalid_otp": "ओटीपी कोड गलत है या समाप्त हो गया है।",
+      "resend_error": "कोड भेजते समय त्रुटि हुई।",
+      "terms_required": "आपको नियमों और शर्तों से सहमत होना होगा",
+      "register_failed": "एक त्रुटि हुई! ईमेल पहले से ही उपयोग में हो सकता है।"
+    }
   }
 }

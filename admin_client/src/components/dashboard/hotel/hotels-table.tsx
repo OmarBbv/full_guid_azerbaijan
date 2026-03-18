@@ -95,6 +95,7 @@ export function HotelsTable({
                 />
               </TableCell>
               <TableCell>Ad</TableCell>
+              <TableCell>Dil</TableCell>
               <TableCell>Şəhər</TableCell>
               <TableCell>Ulduz</TableCell>
               <TableCell>Növ</TableCell>
@@ -107,7 +108,7 @@ export function HotelsTable({
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={10} align="center" sx={{ py: 4 }}>
                   <Typography variant="body2" color="text.secondary">
                     Heç bir otel tapılmadı
                   </Typography>
@@ -117,6 +118,8 @@ export function HotelsTable({
               rows.map((row) => {
                 const isSelected = selected?.has(row.id);
                 const status = row.place?.status ?? PlaceStatus.PENDING;
+                const language = row.place?.language || 'az';
+                const languageFlag = language === 'az' ? '🇦🇿' : language === 'en' ? '🇬🇧' : '🇷🇺';
 
                 return (
                   <TableRow hover key={row.id} selected={isSelected}>
@@ -137,6 +140,11 @@ export function HotelsTable({
                         </Avatar>
                         <Typography variant="subtitle2">{row.place?.title ?? '—'}</Typography>
                       </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {languageFlag} {language.toUpperCase()}
+                      </Typography>
                     </TableCell>
                     <TableCell>{row.place?.city ?? '—'}</TableCell>
                     <TableCell>

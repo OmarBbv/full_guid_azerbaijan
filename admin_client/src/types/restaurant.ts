@@ -58,6 +58,7 @@ export interface Place {
   id: string;
   title: string;
   slug: string;
+  language: string;
   short_description: string;
   detailed_description: string | null;
   subtitle: string | null;

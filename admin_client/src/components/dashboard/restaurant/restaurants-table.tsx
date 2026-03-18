@@ -113,6 +113,7 @@ export function RestaurantsTable({
                 />
               </TableCell>
               <TableCell>Ad</TableCell>
+              <TableCell>Dil</TableCell>
               <TableCell>Şəhər</TableCell>
               <TableCell>Mətbəx</TableCell>
               <TableCell>Qiymət</TableCell>
@@ -125,7 +126,7 @@ export function RestaurantsTable({
           <TableBody>
             {rows.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
+                <TableCell colSpan={10} align="center" sx={{ py: 4 }}>
                   <Typography variant="body2" color="text.secondary">
                     Heç bir restoran tapılmadı
                   </Typography>
@@ -138,6 +139,8 @@ export function RestaurantsTable({
                 const title = row.place?.title ?? '—';
                 const city = row.place?.city ?? '—';
                 const status = row.place?.status ?? PlaceStatus.PENDING;
+                const language = row.place?.language || 'az';
+                const languageFlag = language === 'az' ? '🇦🇿' : language === 'en' ? '🇬🇧' : '🇷🇺';
 
                 return (
                   <TableRow hover key={row.id} selected={isSelected}>
@@ -160,6 +163,11 @@ export function RestaurantsTable({
                         </Avatar>
                         <Typography variant="subtitle2">{title}</Typography>
                       </Stack>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2">
+                        {languageFlag} {language.toUpperCase()}
+                      </Typography>
                     </TableCell>
                     <TableCell>{city}</TableCell>
                     <TableCell>
