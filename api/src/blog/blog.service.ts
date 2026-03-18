@@ -61,25 +61,22 @@ export class BlogService {
     featured?: string;
     published?: string;
   }): Promise<BlogPost[]> {
-    const where: FindOptionsWhere<BlogPost> = {};
+    const qb = this.blogRepo.createQueryBuilder('post');
 
     if (params?.language) {
-      where.language = params.language;
+      qb.andWhere('post.language = :language', { language: params.language });
     }
     if (params?.category) {
-      where.category = params.category;
+      qb.andWhere('post.category = :category', { category: params.category });
     }
     if (params?.featured === 'true') {
-      where.is_featured = true;
+      qb.andWhere('post.is_featured = :featured', { featured: true });
     }
     if (params?.published === 'true') {
-      where.is_published = true;
+      qb.andWhere('post.is_published = :published', { published: true });
     }
 
-    const qb = this.blogRepo
-      .createQueryBuilder('post')
-      .where(where)
-      .orderBy('post.published_at', 'DESC', 'NULLS LAST')
+    qb.orderBy('post.published_at', 'DESC', 'NULLS LAST')
       .addOrderBy('post.created_at', 'DESC');
 
     if (params?.search) {
