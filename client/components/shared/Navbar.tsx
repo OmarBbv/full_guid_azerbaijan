@@ -7,7 +7,7 @@ import {
   ChevronRight,
   Globe,
   Heart,
-  Map,
+  Map as LucideMap,
   MapPin,
   Menu,
   Search,
@@ -52,8 +52,17 @@ type NavLink = {
   id: string;
   label: string;
   href?: string;
-  subLinks?: { label: string; href: string; mapKey?: string }[];
+  subLinks?: NavSubLink[];
   isMega?: boolean;
+};
+
+type NavSubLink = {
+  label: string;
+  href: string;
+  mapKey?: string;
+  id?: number;
+  children?: NavSubLink[];
+  icon?: string;
 };
 
 export default function Navbar() {
@@ -73,6 +82,7 @@ export default function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [expandedCats, setExpandedCats] = useState<number[]>([]);
   const langRef = useRef<HTMLDivElement>(null);
   const userRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
@@ -99,6 +109,32 @@ export default function Navbar() {
   ];
   const currentLang = LANGUAGES.find((l) => l.code === locale) ?? LANGUAGES[0];
 
+  const buildCategoryHierarchy = () => {
+    const categoryMap = new Map<number, NavSubLink>();
+    
+    dynamicCategories.forEach((cat: any) => {
+      categoryMap.set(cat.id, { 
+        label: cat.name,
+        href: `/mekanlar?category=${cat.slug}`,
+        id: cat.id,
+        icon: cat.icon || "📍",
+        children: [] 
+      });
+    });
+
+    const hierarchy: NavSubLink[] = [];
+    dynamicCategories.forEach((cat: any) => {
+      const item = categoryMap.get(cat.id)!;
+      if (cat.parentId && categoryMap.has(cat.parentId)) {
+        categoryMap.get(cat.parentId)!.children?.push(item);
+      } else {
+        hierarchy.push(item);
+      }
+    });
+
+    return hierarchy;
+  };
+
   const navLinks: NavLink[] = [
     { id: "home", label: t("home"), href: "/" },
     {
@@ -123,14 +159,11 @@ export default function Navbar() {
       id: "destinations",
       label: t("destinations"),
       subLinks: [
-        { label: t("landmarks"), href: "/places/landmarks" },
-        { label: t("restaurants"), href: "/places/restaurants" },
-        { label: t("hotels"), href: "/places/hotels" },
-        { label: t("hostels"), href: "/places/hostels" },
-        ...dynamicCategories.map((cat) => ({
-          label: cat.name,
-          href: `/mekanlar?category=${cat.slug}`,
-        })),
+        { label: t("landmarks"), href: "/places/landmarks", icon: "🏛️" },
+        { label: t("restaurants"), href: "/places/restaurants", icon: "🍴" },
+        { label: t("hotels"), href: "/places/hotels", icon: "🏨" },
+        { label: t("hostels"), href: "/places/hostels", icon: "🛌" },
+        ...buildCategoryHierarchy(),
       ],
     },
     {
@@ -381,16 +414,55 @@ export default function Navbar() {
                         ) : (
                           /* ── Sadə dropdown ── */
                           link.subLinks?.map((sub) => (
-                            <Link
-                              key={sub.href}
-                              href={sub.href}
-                              className={`block px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 hover:text-white hover:bg-white/5 ${pathname === sub.href
-                                ? "text-white bg-white/10"
-                                : ""
-                                }`}
-                            >
-                              {sub.label}
-                            </Link>
+                            <div key={sub.href}>
+                              <div className="flex items-center hover:bg-white/5 group/sub">
+                                <Link
+                                  href={sub.href}
+                                  className={`flex-1 px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 group-hover/sub:text-white ${pathname === sub.href
+                                    ? "text-white bg-white/10"
+                                    : ""
+                                    }`}
+                                >
+                                  <span className="flex items-center">
+                                    {sub.label}
+                                  </span>
+                                </Link>
+                                {sub.children && sub.children.length > 0 && (
+                                  <button
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      if (sub.id) {
+                                        setExpandedCats(prev =>
+                                          prev.includes(sub.id!) ? prev.filter(id => id !== sub.id) : [...prev, sub.id!]
+                                        );
+                                      }
+                                    }}
+                                    className="p-3 text-white/30 hover:text-white/60 transition-colors"
+                                  >
+                                    <ChevronRight
+                                      size={14}
+                                      className={`transition-transform duration-200 ${sub.id && expandedCats.includes(sub.id) ? "rotate-90" : ""}`}
+                                    />
+                                  </button>
+                                )}
+                              </div>
+                              {sub.children && sub.children.length > 0 && sub.id && expandedCats.includes(sub.id) && (
+                                <div className="bg-white/5 border-l-2 border-blue-500/30 ml-4 py-1">
+                                  {sub.children.map((child) => (
+                                    <Link
+                                      key={child.href}
+                                      href={child.href}
+                                      className="block px-6 py-2 text-[12.5px] text-white/60 hover:text-white transition-colors"
+                                    >
+                                      <span className="flex items-center">
+                                        {child.label}
+                                      </span>
+                                    </Link>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
                           ))
                         )}
                       </div>
@@ -736,7 +808,7 @@ export default function Navbar() {
             {/* Quick actions grid */}
             <div className="mt-8 grid grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-xl overflow-hidden shadow-sm">
               <button className="bg-[#0A0C16] flex flex-col items-center justify-center py-8 px-4 gap-3 hover:bg-white/5 transition-colors group">
-                <Map
+                <LucideMap
                   className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-transform"
                   strokeWidth={1.5}
                 />

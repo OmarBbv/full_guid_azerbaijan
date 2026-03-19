@@ -26,13 +26,31 @@ apiClient.interceptors.response.use(
       if (Array.isArray(data)) {
         data.forEach(item => transformData(item));
       } else if (typeof data === 'object') {
+        // Fallback for missing thumbnail from images or gallery
+        if (!data.thumbnail && data.images && Array.isArray(data.images) && data.images.length > 0) {
+          data.thumbnail = data.images[0].url || data.images[0].image_url;
+        }
+        if (!data.thumbnail && data.gallery_urls && Array.isArray(data.gallery_urls) && data.gallery_urls.length > 0) {
+          data.thumbnail = data.gallery_urls[0];
+        }
+
         for (const key in data) {
-          if (['thumbnail', 'url', 'img', 'bg', 'cover_image_url', 'author_avatar_url', 'image_url'].includes(key) && typeof data[key] === 'string' && data[key].startsWith('/')) {
-            data[key] = `${baseURL}${data[key]}`;
-          } else if (key === 'gallery_urls' && Array.isArray(data[key])) {
-            data[key] = data[key].map((u: string) => typeof u === 'string' && u.startsWith('/') ? `${baseURL}${u}` : u);
+          const value = data[key];
+          if (['thumbnail', 'url', 'img', 'bg', 'cover_image_url', 'author_avatar_url', 'image_url'].includes(key) && typeof value === 'string') {
+            if (value.startsWith('/') || value.startsWith('uploads/')) {
+              const cleanPath = value.startsWith('/') ? value : `/${value}`;
+              data[key] = `${baseURL}${cleanPath}`;
+            }
+          } else if (key === 'gallery_urls' && Array.isArray(value)) {
+            data[key] = value.map((u: string) => {
+              if (typeof u === 'string' && (u.startsWith('/') || u.startsWith('uploads/'))) {
+                const cleanPath = u.startsWith('/') ? u : `/${u}`;
+                return `${baseURL}${cleanPath}`;
+              }
+              return u;
+            });
           } else {
-            transformData(data[key]);
+            transformData(value);
           }
         }
       }

@@ -6,6 +6,7 @@ export interface Category {
   slug: string;
   icon?: string;
   language?: string;
+  parentId?: number | null;
 }
 
 class CategoryService {

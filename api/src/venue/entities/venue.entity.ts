@@ -9,7 +9,6 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
-  Index
 } from "typeorm";
 
 export enum VenueStatus {

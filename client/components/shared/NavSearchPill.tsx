@@ -4,16 +4,10 @@ import { useRef, useState } from "react";
 import { Search, MapPin, ChevronDown, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCities } from "@/hooks/use-cities";
+import { useCategories } from "@/hooks/use-categories";
+import { ChevronRight } from "lucide-react";
 
-const getLocalizedTypes = (t: any) => [
-  { value: "", label: t("type_all"), icon: "✨" },
-  { value: "restaurant", label: t("type_restaurant"), icon: "🍴" },
-  { value: "hotel", label: t("type_hotel"), icon: "🏨" },
-  { value: "hostel", label: t("type_hostel"), icon: "🛌" },
-  { value: "venue", label: t("type_venue"), icon: "📍" },
-  { value: "landmark", label: t("type_landmark"), icon: "🏛️" },
-  { value: "nature", label: t("type_nature"), icon: "🌿" },
-];
+// Removed hardcoded localized functions as they are replaced by API hooks and dynamic builders
 
 interface Props {
   inputRef: React.RefObject<HTMLInputElement | null>;
@@ -26,9 +20,9 @@ interface Props {
 
 export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, locale }: Props) {
   const t = useTranslations("HeroSearch");
-  const TYPES = getLocalizedTypes(t);
 
   const { data: apiCities = [] } = useCities({ language: locale, active: true });
+  const { data: categories = [] } = useCategories(locale);
 
   const CITIES = [
     { value: "", label: t("all_cities") },
@@ -38,7 +32,40 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
     })),
   ];
 
+  // Organize categories into hierarchy
+  const buildCategoryHierarchy = () => {
+    const root: any[] = [{ value: "", label: t("type_all"), icon: "✨", id: -1, children: [] }];
+    
+    // Add default types first if they should be there
+    const categoryMap = new Map<number, any>();
+    
+    categories.forEach((cat: any) => {
+      categoryMap.set(cat.id, { 
+        value: cat.slug, 
+        label: cat.name, 
+        icon: cat.icon || "📍", 
+        id: cat.id, 
+        children: [] 
+      });
+    });
+
+    const hierarchy: any[] = [];
+    categories.forEach((cat: any) => {
+      const item = categoryMap.get(cat.id);
+      if (cat.parentId && categoryMap.has(cat.parentId)) {
+        categoryMap.get(cat.parentId).children.push(item);
+      } else {
+        hierarchy.push(item);
+      }
+    });
+
+    return [...root, ...hierarchy];
+  };
+
+  const TYPES = buildCategoryHierarchy();
+
   const [type, setType] = useState("");
+  const [expandedCats, setExpandedCats] = useState<number[]>([]);
   const [city, setCity] = useState("");
   const [typeOpen, setTypeOpen] = useState(false);
   const [cityOpen, setCityOpen] = useState(false);
@@ -100,7 +127,6 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
           className="flex items-center gap-2 px-4 py-3.5 text-[14px] font-medium whitespace-nowrap"
           style={{ color: type ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)" }}
         >
-          <span>{selectedType.icon}</span>
           <span>{selectedType.label}</span>
           <ChevronDown
             size={13}
@@ -114,7 +140,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
 
         {typeOpen && (
           <div
-            className="absolute top-full mt-1.5 left-0 rounded-xl overflow-hidden z-50 min-w-[170px]"
+            className="absolute top-full mt-1.5 left-0 rounded-xl overflow-hidden z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
             style={{
               background: "rgba(12,14,26,0.97)",
               border: "1px solid rgba(255,255,255,0.1)",
@@ -123,15 +149,51 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
             }}
           >
             {TYPES.map(tItem => (
-              <button
-                key={tItem.value}
-                type="button"
-                onClick={() => { setType(tItem.value); setTypeOpen(false); }}
-                className="w-full text-left px-4 py-2.5 text-[13px] flex items-center gap-2.5 transition-colors hover:bg-white/8"
-                style={{ color: type === tItem.value ? "#3b9cf5" : "rgba(255,255,255,0.75)" }}
-              >
-                <span>{tItem.icon}</span>{tItem.label}
-              </button>
+              <div key={tItem.value || "all"}>
+                <div className="flex items-center hover:bg-white/8 group">
+                  <button
+                    type="button"
+                    onClick={() => { setType(tItem.value); setTypeOpen(false); }}
+                    className="flex-1 text-left px-4 py-2.5 text-[13px] flex items-center transition-colors"
+                    style={{ color: type === tItem.value ? "#3b9cf5" : "rgba(255,255,255,0.75)" }}
+                  >
+                    <span className="truncate">{tItem.label}</span>
+                  </button>
+                  {tItem.children && tItem.children.length > 0 && (
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setExpandedCats(prev => 
+                          prev.includes(tItem.id) ? prev.filter(id => id !== tItem.id) : [...prev, tItem.id]
+                        );
+                      }}
+                      className="p-2 mr-1 text-white/30 hover:text-white/60 transition-colors"
+                    >
+                      <ChevronRight 
+                        size={14} 
+                        className={`transition-transform duration-200 ${expandedCats.includes(tItem.id) ? "rotate-90" : ""}`}
+                      />
+                    </button>
+                  )}
+                </div>
+                
+                {tItem.children && tItem.children.length > 0 && expandedCats.includes(tItem.id) && (
+                  <div className="bg-white/5 border-l border-white/10 ml-4">
+                    {tItem.children.map((child: any) => (
+                      <button
+                        key={child.value}
+                        type="button"
+                        onClick={() => { setType(child.value); setTypeOpen(false); }}
+                        className="w-full text-left px-4 py-2 text-[12px] flex items-center transition-colors hover:bg-white/8"
+                        style={{ color: type === child.value ? "#3b9cf5" : "rgba(255,255,255,0.6)" }}
+                      >
+                        <span className="truncate">{child.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         )}
