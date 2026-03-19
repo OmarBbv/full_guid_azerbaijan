@@ -47,15 +47,22 @@ export class Venue {
   @Column({ nullable: true })
   categoryId: number;
 
+  @ManyToOne(() => Category, {
+    onDelete: 'SET NULL',
+    nullable: true
+  })
+  @JoinColumn({ name: 'subCategoryId' })
+  subCategory: Category;
+
+  @Column({ nullable: true })
+  subCategoryId: number;
+
   // ──── Ünvan ────
   @Column({ type: 'varchar', length: 500 })
   address: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   city: string;
-
-  @Column({ type: 'varchar', length: 100, nullable: true })
-  district: string;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   googleMapsUrl: string;

@@ -23,7 +23,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 
 import { categorySchema, CATEGORY_LANGUAGES, type CategoryFormValues } from './category-schema';
-import { useCategory, useUpdateCategory } from '@/hooks/use-categories';
+import { useCategory, useUpdateCategory, useCategories } from '@/hooks/use-categories';
 import { paths } from '@/paths';
 
 interface CategoryEditFormProps {
@@ -32,19 +32,26 @@ interface CategoryEditFormProps {
 
 export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Element {
   const router = useRouter();
-  
+
   const { data: category, isLoading: isFetching, isError: isFetchError } = useCategory(id);
   const { mutate: updateCategory, isPending, isError, error } = useUpdateCategory(id);
+  const { data: allCategories = [], isLoading: isLoadingCategories } = useCategories();
 
-  const { register, handleSubmit, control, reset, formState: { errors } } = useForm<CategoryFormValues>({
+  const { register, handleSubmit, control, reset, watch, formState: { errors } } = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: '',
       slug: '',
       icon: '',
       language: 'az',
+      parentId: null,
     },
   });
+
+  const selectedLanguage = watch('language');
+  const parentCandidates = allCategories.filter(
+    (cat) => !cat.parentId && (!cat.language || cat.language === selectedLanguage) && cat.id !== id
+  );
 
   React.useEffect(() => {
     if (category) {
@@ -52,7 +59,8 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
         name: category.name || '',
         slug: category.slug || '',
         icon: category.icon || '',
-        language: category.language || 'az',
+        language: (category.language as any) || 'az',
+        parentId: category.parentId || null,
       });
     }
   }, [category, reset]);
@@ -85,9 +93,9 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
     <form onSubmit={handleSubmit(onSubmit as any)} noValidate>
       <Stack spacing={4}>
         <Stack direction="row" spacing={2} alignItems="center">
-          <Button 
-            startIcon={<ArrowLeftIcon />} 
-            variant="text" 
+          <Button
+            startIcon={<ArrowLeftIcon />}
+            variant="text"
             onClick={() => router.push(paths.dashboard.categories)}
           >
             Geri
@@ -150,6 +158,32 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
                 />
               </Grid>
 
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="parentId"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel id="parent-label">Üst Kateqoriya (Opsional)</InputLabel>
+                      <Select
+                        labelId="parent-label"
+                        {...field}
+                        label="Üst Kateqoriya (Opsional)"
+                        value={field.value || ''}
+                        disabled={isLoadingCategories}
+                      >
+                        <MenuItem value="">Yoxdur (Ana Kateqoriya)</MenuItem>
+                        {parentCandidates.map((cat) => (
+                          <MenuItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+
               {/* Icon */}
               <Grid size={{ xs: 12 }}>
                 <TextField
@@ -166,15 +200,15 @@ export function CategoryEditForm({ id }: CategoryEditFormProps): React.JSX.Eleme
         </Card>
 
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2 }}>
-          <Button 
-            variant="outlined" 
+          <Button
+            variant="outlined"
             onClick={() => router.push(paths.dashboard.categories)}
           >
             Ləğv et
           </Button>
-          <Button 
-            type="submit" 
-            variant="contained" 
+          <Button
+            type="submit"
+            variant="contained"
             disabled={isPending}
           >
             {isPending ? 'Saxlanılır...' : 'Yadda saxla'}

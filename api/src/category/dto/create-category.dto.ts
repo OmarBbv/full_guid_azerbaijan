@@ -1,4 +1,4 @@
-import { IsString, MaxLength, IsOptional, IsIn } from 'class-validator';
+import { IsString, MaxLength, IsOptional, IsIn, IsNumber } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -18,4 +18,16 @@ export class CreateCategoryDto {
   @IsString()
   @IsIn(['az', 'en', 'ru', 'tr', 'ar', 'hi'])
   language?: string;
+
+  @IsOptional()
+  @IsNumber()
+  parentId?: number;
+
+  @IsOptional()
+  @IsNumber()
+  depth?: number;
+
+  @IsOptional()
+  @IsNumber()
+  sortOrder?: number;
 }

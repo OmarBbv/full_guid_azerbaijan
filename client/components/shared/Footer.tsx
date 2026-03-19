@@ -77,14 +77,16 @@ export default function Footer() {
             <div className="flex flex-col gap-6">
               <h3 className="text-foreground">{t('contact')}</h3>
               <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li>E-mail: <a href="mailto:info@fullguide.az" className="hover:text-primary transition-colors">info@fullguide.az</a></li>
+                <li>E-mail: <a href="mailto:fullguideazerbaijan@gmail.com" className="hover:text-primary transition-colors">fullguideazerbaijan@gmail.com</a></li>
               </ul>
 
               <h3 className="text-foreground mt-4">{t('social_networks')}</h3>
               <ul className="flex flex-col gap-4 text-muted-foreground font-medium normal-case text-sm">
-                <li><a href="https://instagram.com/fullguide.az" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Instagram</a></li>
-                <li><a href="https://facebook.com/fullguide.az" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Facebook</a></li>
-                <li><a href="https://youtube.com/@fullguideaz" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">YouTube</a></li>
+                <li><a href="https://instagram.com/fullguideazerbaijan/" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Instagram</a></li>
+                <li><a href="https://facebook.com/fullguideazerbaijan" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">Facebook</a></li>
+                <li><a href="https://www.youtube.com/@fullguideazerbaijan" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">YouTube</a></li>
+                <li><a href="https://www.tiktok.com/@fullguideazerbaijan" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">TikTok</a></li>
+                <li><a href="https://wa.me/994514151107" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors">WhatsApp</a></li>
               </ul>
             </div>
           </div>

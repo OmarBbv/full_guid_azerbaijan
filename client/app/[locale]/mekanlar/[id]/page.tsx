@@ -45,10 +45,10 @@ export default function PlaceDetailPage() {
   const toggleLike = () => {
     if (!place) return;
 
-    toggleMutation.mutate({ 
-      targetId: place.id, 
-      targetType: 'PLACE', 
-      isFavorite: localLiked 
+    toggleMutation.mutate({
+      targetId: place.id,
+      targetType: 'PLACE',
+      isFavorite: localLiked
     }, {
       onSuccess: () => {
         setLocalLiked(!localLiked);
@@ -151,7 +151,7 @@ export default function PlaceDetailPage() {
             <div className="flex flex-wrap items-center gap-6 text-white/90">
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10">
                 <MapPin size={18} className="text-primary" />
-                <span className="font-semibold">{place.city}</span>
+                <span className="font-semibold">{place.city}{place.district ? `, ${place.district}` : ""}</span>
               </div>
               <div className="flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10">
                 <Star size={18} className="text-yellow-400 fill-yellow-400" />
@@ -269,7 +269,11 @@ export default function PlaceDetailPage() {
                       {place.address && (
                         <div className="flex items-start gap-3">
                           <MapPin size={20} className="text-primary shrink-0 mt-0.5" />
-                          <span className="text-muted-foreground font-medium leading-relaxed">{place.address}</span>
+                          <span className="text-muted-foreground font-medium leading-relaxed">
+                            {place.address}
+                            {place.district ? `, ${place.district}` : ""}
+                            {place.city ? `, ${place.city}` : ""}
+                          </span>
                         </div>
                       )}
                       {(place as any).google_maps_url && (

@@ -31,6 +31,7 @@ import { HostelType } from '@/types/hostel';
 import { paths } from '@/paths';
 import { PlaceStatus } from '@/types/restaurant';
 import { formatPhoneNumber } from '@/lib/format-phone';
+import { CitySelect } from '@/components/core/city-select';
 
 const hostelTypeLabels: Record<HostelType, string> = {
   [HostelType.PARTY_HOSTEL]: 'Party Hostel',
@@ -205,7 +206,17 @@ export function HostelCreateForm(): React.JSX.Element {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('city')} label="Şəhər" fullWidth />
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CitySelect
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      language={watch('language')}
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth />

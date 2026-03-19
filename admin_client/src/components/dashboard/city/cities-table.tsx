@@ -23,6 +23,7 @@ import { PencilSimple as PencilSimpleIcon } from '@phosphor-icons/react/dist/ssr
 import { Trash as TrashIcon } from '@phosphor-icons/react/dist/ssr/Trash';
 import { MapPin as MapPinIcon } from '@phosphor-icons/react/dist/ssr/MapPin';
 import { Star as StarIcon } from '@phosphor-icons/react/dist/ssr/Star';
+import { ArrowSquareOut as ArrowSquareOutIcon } from '@phosphor-icons/react/dist/ssr/ArrowSquareOut';
 import dayjs from 'dayjs';
 
 import { useSelection } from '@/hooks/use-selection';
@@ -39,6 +40,7 @@ interface CitiesTableProps {
   onRowsPerPageChange: (rowsPerPage: number) => void;
   onDelete?: (id: string) => void;
   onEdit?: (id: string) => void;
+  clientBaseUrl?: string;
 }
 
 export function CitiesTable({
@@ -52,6 +54,7 @@ export function CitiesTable({
   onRowsPerPageChange,
   onDelete,
   onEdit,
+  clientBaseUrl = 'http://localhost:3333',
 }: CitiesTableProps): React.JSX.Element {
   const rowIds = React.useMemo(() => rows.map((r) => r.id), [rows]);
   const { selectAll, deselectAll, selectOne, deselectOne, selected } = useSelection(rowIds);
@@ -159,6 +162,18 @@ export function CitiesTable({
                     </TableCell>
                     <TableCell align="right">
                       <Stack direction="row" spacing={0.5} justifyContent="flex-end">
+                        <Tooltip title={`Klientdə bax (${row.language?.toUpperCase() || 'AZ'})`}>
+                          <IconButton
+                            size="small"
+                            color="info"
+                            onClick={() => {
+                              const locale = row.language || 'az';
+                              window.open(`${clientBaseUrl}/${locale}/regions/${row.id}`, '_blank', 'noopener,noreferrer');
+                            }}
+                          >
+                            <ArrowSquareOutIcon size={16} />
+                          </IconButton>
+                        </Tooltip>
                         <Tooltip title="Düzəliş et">
                           <IconButton size="small" onClick={() => onEdit?.(row.id)}>
                             <PencilSimpleIcon size={16} />

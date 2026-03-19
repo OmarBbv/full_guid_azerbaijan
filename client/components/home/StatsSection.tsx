@@ -99,10 +99,10 @@ export default function StatsSection() {
         <div className="bg-card/50 backdrop-blur-xl rounded-[3rem] border border-border shadow-2xl shadow-black/5 overflow-hidden">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 divide-y sm:divide-y-0 lg:divide-x divide-border/50">
             {[
-              { icon: Users, value: 120000, suffix: "+", label: t('active_visitors'), color: "#3b9cf5" },
-              { icon: MapPin, value: 340, suffix: "+", label: t('unique_places'), color: "#4dd9ac" },
+              { icon: Users, value: 5000, suffix: "+", label: t('active_visitors'), color: "#3b9cf5" },
+              { icon: MapPin, value: 120, suffix: "+", label: t('unique_places'), color: "#4dd9ac" },
               { icon: Star, value: 4.9, suffix: "", label: t('average_rating'), color: "#f5a623", decimal: true },
-              { icon: Globe, value: 60, suffix: "+", label: t('tourists_nations'), color: "#e06cfe" },
+              { icon: Globe, value: 30, suffix: "+", label: t('tourists_nations'), color: "#e06cfe" },
             ].map((stat, i, arr) => (
               <StatCard key={i} stat={stat} active={active} index={i} isLast={i === arr.length - 1} />
             ))}

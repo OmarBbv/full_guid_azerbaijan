@@ -33,6 +33,7 @@ import { usePlace, useUpdatePlace, useUploadPlaceImages, PLACE_KEYS } from '@/ho
 import { PlaceType, PlaceStatus } from '@/types/restaurant';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
+import { CitySelect } from '@/components/core/city-select';
 
 const placeTypeLabels: Record<PlaceType, string> = {
   [PlaceType.RESTAURANT]: 'Restoran',
@@ -383,7 +384,17 @@ export function PlaceEditForm({ placeId }: PlaceEditFormProps): React.JSX.Elemen
                 <TextField {...register('email')} label="E-poçt" type="email" fullWidth InputLabelProps={{ shrink: true }} error={Boolean(errors.email)} helperText={errors.email?.message} />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('city')} label="Şəhər" fullWidth InputLabelProps={{ shrink: true }} />
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CitySelect
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      language={watch('language')}
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth required InputLabelProps={{ shrink: true }} error={Boolean(errors.address)} helperText={errors.address?.message} />

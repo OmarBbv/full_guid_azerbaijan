@@ -32,6 +32,7 @@ import { useCategories } from '@/hooks/use-categories';
 import { paths } from '@/paths';
 import { VenueStatus } from '@/types/venue';
 import { apiClient } from '@/lib/api-client';
+import { CitySelect } from '@/components/core/city-select';
 
 interface VenueEditFormProps {
   id: number;
@@ -55,13 +56,13 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
       categoryId: 0,
       address: '',
       city: '',
-      district: '',
       googleMapsUrl: '',
       phone: '',
       whatsapp: '',
       website: '',
       thumbnail: '',
       status: VenueStatus.ACTIVE,
+      subCategoryId: null,
     },
   });
 
@@ -74,13 +75,13 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
         categoryId: venue.categoryId || 0,
         address: venue.address || '',
         city: venue.city || '',
-        district: venue.district || '',
         googleMapsUrl: (venue as any).googleMapsUrl || '',
         phone: venue.phone || '',
         whatsapp: venue.whatsapp || '',
         website: venue.website || '',
         thumbnail: venue.thumbnail || '',
         status: venue.status || VenueStatus.ACTIVE,
+        subCategoryId: venue.subCategoryId || null,
       });
       if (venue.thumbnail) {
         setPreviewUrl(venue.thumbnail);
@@ -89,7 +90,15 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
   }, [venue, reset]);
 
   const selectedLanguage = watch('language');
-  const categories = allCategories.filter((cat) => !cat.language || cat.language === selectedLanguage);
+  const selectedCategoryId = watch('categoryId');
+
+  const mainCategories = allCategories.filter(
+    (cat) => (!cat.language || cat.language === selectedLanguage) && !cat.parentId
+  );
+
+  const subCategories = allCategories.filter(
+    (cat) => cat.parentId === selectedCategoryId
+  );
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -196,15 +205,45 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
                         {...field}
                         label="Kateqoriya"
                         disabled={isLoadingCategories}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setValue('subCategoryId', null); // Reset subcategory when category changes
+                        }}
                       >
                         <MenuItem value={0} disabled>Seçin</MenuItem>
-                        {categories.map((cat) => (
+                        {mainCategories.map((cat) => (
                           <MenuItem key={cat.id} value={cat.id}>
                             {cat.name}
                           </MenuItem>
                         ))}
                       </Select>
                       {errors.categoryId && <FormHelperText>{errors.categoryId.message}</FormHelperText>}
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="subCategoryId"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth error={Boolean(errors.subCategoryId)}>
+                      <InputLabel id="subcategory-label">Alt Kateqoriya (Opsiyonel)</InputLabel>
+                      <Select
+                        labelId="subcategory-label"
+                        {...field}
+                        label="Alt Kateqoriya (Opsiyonel)"
+                        disabled={isLoadingCategories || subCategories.length === 0}
+                        value={field.value || ''}
+                      >
+                        <MenuItem value="">Yoxdur</MenuItem>
+                        {subCategories.map((cat) => (
+                          <MenuItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {errors.subCategoryId && <FormHelperText>{errors.subCategoryId.message}</FormHelperText>}
                     </FormControl>
                   )}
                 />
@@ -283,10 +322,17 @@ export function VenueEditForm({ id }: VenueEditFormProps): React.JSX.Element {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('city')} label="Şəhər" fullWidth />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('district')} label="Rayon / Region" fullWidth />
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CitySelect
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      language={watch('language')}
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField

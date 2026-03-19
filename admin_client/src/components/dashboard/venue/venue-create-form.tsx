@@ -29,6 +29,7 @@ import { useCategories } from '@/hooks/use-categories';
 import { paths } from '@/paths';
 import { VenueStatus } from '@/types/venue';
 import { apiClient } from '@/lib/api-client';
+import { CitySelect } from '@/components/core/city-select';
 
 export function VenueCreateForm(): React.JSX.Element {
   const router = useRouter();
@@ -45,9 +46,9 @@ export function VenueCreateForm(): React.JSX.Element {
       language: 'az',
       description: '',
       categoryId: 0,
+      subCategoryId: null,
       address: '',
       city: '',
-      district: '',
       googleMapsUrl: '',
       phone: '',
       whatsapp: '',
@@ -58,7 +59,15 @@ export function VenueCreateForm(): React.JSX.Element {
   });
 
   const selectedLanguage = watch('language');
-  const categories = allCategories.filter((cat) => !cat.language || cat.language === selectedLanguage);
+  const selectedCategoryId = watch('categoryId');
+
+  const mainCategories = allCategories.filter(
+    (cat) => (!cat.language || cat.language === selectedLanguage) && !cat.parentId
+  );
+
+  const subCategories = allCategories.filter(
+    (cat) => cat.parentId === selectedCategoryId
+  );
 
   const thumbnailValue = watch('thumbnail');
 
@@ -154,15 +163,45 @@ export function VenueCreateForm(): React.JSX.Element {
                         {...field}
                         label="Kateqoriya"
                         disabled={isLoadingCategories}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          setValue('subCategoryId', null); // Reset subcategory when category changes
+                        }}
                       >
                         <MenuItem value={0} disabled>Seçin</MenuItem>
-                        {categories.map((cat) => (
+                        {mainCategories.map((cat) => (
                           <MenuItem key={cat.id} value={cat.id}>
                             {cat.name}
                           </MenuItem>
                         ))}
                       </Select>
                       {errors.categoryId && <FormHelperText>{errors.categoryId.message}</FormHelperText>}
+                    </FormControl>
+                  )}
+                />
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="subCategoryId"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth error={Boolean(errors.subCategoryId)}>
+                      <InputLabel id="subcategory-label">Alt Kateqoriya (Opsiyonel)</InputLabel>
+                      <Select
+                        labelId="subcategory-label"
+                        {...field}
+                        label="Alt Kateqoriya (Opsiyonel)"
+                        disabled={isLoadingCategories || subCategories.length === 0}
+                        value={field.value || ''}
+                      >
+                        <MenuItem value="">Yoxdur</MenuItem>
+                        {subCategories.map((cat) => (
+                          <MenuItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                      {errors.subCategoryId && <FormHelperText>{errors.subCategoryId.message}</FormHelperText>}
                     </FormControl>
                   )}
                 />
@@ -239,10 +278,17 @@ export function VenueCreateForm(): React.JSX.Element {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('city')} label="Şəhər" fullWidth />
-              </Grid>
-              <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('district')} label="Rayon / Region" fullWidth />
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CitySelect
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      language={watch('language')}
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField

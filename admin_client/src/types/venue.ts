@@ -21,7 +21,6 @@ export interface Venue {
   description?: string;
   address: string;
   city?: string;
-  district?: string;
   googleMapsUrl?: string;
   phone?: string;
   whatsapp?: string;
@@ -33,6 +32,8 @@ export interface Venue {
   thumbnail?: string;
   categoryId: number;
   category?: Category;
+  subCategoryId?: number | null;
+  subCategory?: Category;
   images?: VenueImage[];
   createdAt: string;
   updatedAt: string;
@@ -43,9 +44,9 @@ export interface CreateVenueDto {
   language?: string;
   description?: string;
   categoryId: number;
+  subCategoryId?: number | null;
   address: string;
   city?: string;
-  district?: string;
   googleMapsUrl?: string;
   phone?: string;
   whatsapp?: string;

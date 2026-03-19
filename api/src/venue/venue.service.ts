@@ -56,10 +56,14 @@ export class VenueService {
     const qb = this.venueRepo
       .createQueryBuilder('venue')
       .leftJoinAndSelect('venue.category', 'category')
+      .leftJoinAndSelect('venue.subCategory', 'subCategory')
       .leftJoinAndSelect('venue.images', 'images');
 
     if (categoryId) {
       qb.andWhere('venue.categoryId = :categoryId', { categoryId });
+    }
+    if (query.subCategoryId) {
+      qb.andWhere('venue.subCategoryId = :subCategoryId', { subCategoryId: query.subCategoryId });
     }
     if (city) {
       qb.andWhere('venue.city = :city', { city });
@@ -99,7 +103,7 @@ export class VenueService {
   async findOne(id: number): Promise<Venue> {
     const venue = await this.venueRepo.findOne({
       where: { id },
-      relations: ['category', 'images'],
+      relations: ['category', 'subCategory', 'images'],
     });
     if (!venue) throw new NotFoundException('Məkan tapılmadı');
     return venue;
@@ -109,7 +113,7 @@ export class VenueService {
   async findBySlug(slug: string): Promise<Venue> {
     const venue = await this.venueRepo.findOne({
       where: { slug, status: VenueStatus.ACTIVE },
-      relations: ['category', 'images'],
+      relations: ['category', 'subCategory', 'images'],
     });
     if (!venue) throw new NotFoundException('Məkan tapılmadı');
     return venue;

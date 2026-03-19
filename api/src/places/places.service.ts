@@ -32,6 +32,7 @@ export class PlacesService {
     type?: string,
     language?: string,
     isFeatured?: boolean,
+    city?: string,
   ): Promise<Place[]> {
     const where: any = {};
     if (excludeTypes && excludeTypes.length > 0) {
@@ -48,6 +49,9 @@ export class PlacesService {
     }
     if (language) {
       where.language = language;
+    }
+    if (city) {
+      where.city = city;
     }
     return await this.placeRepository.find({
       where,

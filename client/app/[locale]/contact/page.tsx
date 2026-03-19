@@ -61,7 +61,7 @@ export default function ContactPage() {
                     <div>
                       <h4 className="font-bold text-foreground mb-1">{t("email_title")}</h4>
                       <p className="text-muted-foreground mb-1">{t("email_desc")}</p>
-                      <a href="mailto:info@fullguide.az" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">info@fullguide.az</a>
+                      <a href="mailto:fullguideazerbaijan@gmail.com" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">fullguideazerbaijan@gmail.com</a>
                     </div>
                   </div>
 
@@ -72,7 +72,7 @@ export default function ContactPage() {
                     <div>
                       <h4 className="font-bold text-foreground mb-1">{t("phone_title")}</h4>
                       <p className="text-muted-foreground mb-1">{t("phone_desc")}</p>
-                      <a href="tel:+994501234567" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">+994 50 123 45 67</a>
+                      <a href="tel:+994514151107" className="text-primary font-semibold hover:underline decoration-2 underline-offset-4">+994 51 415 11 07</a>
                     </div>
                   </div>
 

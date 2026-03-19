@@ -22,22 +22,27 @@ import Typography from '@mui/material/Typography';
 import { ArrowLeft as ArrowLeftIcon } from '@phosphor-icons/react/dist/ssr/ArrowLeft';
 
 import { categorySchema, CATEGORY_LANGUAGES, type CategoryFormValues } from './category-schema';
-import { useCreateCategory } from '@/hooks/use-categories';
+import { useCreateCategory, useCategories } from '@/hooks/use-categories';
 import { paths } from '@/paths';
 
 export function CategoryCreateForm(): React.JSX.Element {
   const router = useRouter();
   const { mutate: createCategory, isPending, isError, error } = useCreateCategory();
+  const { data: allCategories = [], isLoading: isLoadingCategories } = useCategories();
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<CategoryFormValues>({
+  const { register, handleSubmit, control, watch, setValue, formState: { errors } } = useForm<CategoryFormValues>({
     resolver: zodResolver(categorySchema) as any,
     defaultValues: {
       name: '',
       slug: '',
       icon: '',
       language: 'az',
+      parentId: null,
     },
   });
+
+  const selectedLanguage = watch('language');
+  const parentCandidates = allCategories.filter((cat) => !cat.parentId && (!cat.language || cat.language === selectedLanguage));
 
   function onSubmit(values: CategoryFormValues) {
     createCategory(values as any, {
@@ -113,6 +118,33 @@ export function CategoryCreateForm(): React.JSX.Element {
                   required
                   error={Boolean(errors.slug)}
                   helperText={errors.slug?.message}
+                />
+              </Grid>
+
+              {/* Parent Category */}
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Controller
+                  name="parentId"
+                  control={control}
+                  render={({ field }) => (
+                    <FormControl fullWidth>
+                      <InputLabel id="parent-label">Üst Kateqoriya (Opsional)</InputLabel>
+                      <Select 
+                        labelId="parent-label" 
+                        {...field} 
+                        label="Üst Kateqoriya (Opsional)"
+                        value={field.value || ''}
+                        disabled={isLoadingCategories}
+                      >
+                        <MenuItem value="">Yoxdur (Ana Kateqoriya)</MenuItem>
+                        {parentCandidates.map((cat) => (
+                          <MenuItem key={cat.id} value={cat.id}>
+                            {cat.name}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}
                 />
               </Grid>
 

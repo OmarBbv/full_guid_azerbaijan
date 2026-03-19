@@ -4,20 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Search, MapPin, ChevronDown, Tag } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
-
-const getLocalizedCities = (t: any) => [
-  { key: "city_all", value: "", label: t("all_cities") },
-  { key: "city_baku", value: "Baku", label: t("city_baku") },
-  { key: "city_ganja", value: "Ganja", label: t("city_ganja") },
-  { key: "city_sumgayit", value: "Sumgayit", label: t("city_sumgayit") },
-  { key: "city_qabala", value: "Qabala", label: t("city_qabala") },
-  { key: "city_sheki", value: "Sheki", label: t("city_sheki") },
-  { key: "city_quba", value: "Quba", label: t("city_quba") },
-  { key: "city_lankaran", value: "Lankaran", label: t("city_lankaran") },
-  { key: "city_shusha", value: "Shusha", label: t("city_shusha") },
-  { key: "city_nakhchivan", value: "Nakhchivan", label: t("city_nakhchivan") },
-  { key: "city_shamakhi", value: "Shamakhi", label: t("city_shamakhi") },
-];
+import { useCities } from "@/hooks/use-cities";
 
 const getLocalizedTypes = (t: any) => [
   { value: "", label: t("type_all"), icon: "✨" },
@@ -34,7 +21,16 @@ export default function HeroSearchBar() {
   const router = useRouter();
   const t = useTranslations("HeroSearch");
 
-  const CITIES = getLocalizedCities(t);
+  const { data: apiCities = [] } = useCities({ language: locale, active: true });
+
+  const CITIES = [
+    { value: "", label: t("all_cities") },
+    ...apiCities.map((c: any) => ({
+      value: c.id,
+      label: c.name,
+    })),
+  ];
+
   const TYPES = getLocalizedTypes(t);
 
   const [query, setQuery] = useState("");
@@ -165,7 +161,7 @@ export default function HeroSearchBar() {
           >
             {CITIES.map((c) => (
               <button
-                key={c.key}
+                key={c.value}
                 type="button"
                 onClick={() => { setCity(c.value); setCityOpen(false); }}
                 className="w-full text-left px-4 py-2.5 text-sm transition-colors hover:bg-white/10"

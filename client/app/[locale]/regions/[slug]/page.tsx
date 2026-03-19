@@ -3,6 +3,9 @@ import { Link } from "@/i18n/routing";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { regionService } from "@/services/api/region.service";
+import { placeService } from "@/services/api/place.service";
+import { venueService } from "@/services/api/venue.service";
+import { RegionPlaces } from "./region-places";
 
 export async function generateMetadata({
   params,
@@ -38,14 +41,12 @@ export default async function RegionPage({
 }) {
   const { slug, locale } = await params;
   const t = await getTranslations({ locale, namespace: 'RegionPage' });
-  
+
   let region;
   try {
-    // Try ID first, with language so we get the correct translation
     region = await regionService.getRegionById(slug, locale);
   } catch {
     try {
-      // Fallback: try treating the param as a slug
       region = await regionService.getRegionBySlug(slug, locale);
     } catch {
       return (
@@ -65,13 +66,36 @@ export default async function RegionPage({
     }
   }
 
+  let cityPlaces: Awaited<ReturnType<typeof placeService.getPlaces>> = [];
+  try {
+    const [placesRes, venuesRes] = await Promise.all([
+      placeService.getPlaces({ language: locale, city: region.name }).catch(() => []),
+      venueService.getAll({ language: locale, city: region.name }).catch(() => ({ data: [], meta: {} }))
+    ]);
+
+    const mappedVenues = (venuesRes.data || []).map((v) => ({
+      id: v.slug || v.id.toString(),
+      title: v.name,
+      slug: v.slug,
+      type: v.category?.name || 'Digər Məkan',
+      is_venue: true,
+      address: v.address || v.city || '',
+      short_description: v.description,
+      thumbnail: v.thumbnail,
+      average_rating: (v as any).rating || 0,
+      review_count: (v as any).reviewCount || 0,
+    } as any));
+
+    cityPlaces = [...(placesRes || []), ...mappedVenues];
+  } catch {
+    cityPlaces = [];
+  }
+
   const heroImage = region.cover_image_url || region.image_url || "https://images.unsplash.com/photo-1606775791264-b333a5cf05cc?q=80&w=2070&auto=format&fit=crop";
 
   return (
     <div className="bg-background">
-      {/* Hero Section */}
       <section className="relative w-full h-[90dvh] min-h-[600px] overflow-hidden">
-        {/* Background Image with Parallax-like feel */}
         <div className="absolute inset-0 z-0">
           <img
             src={heroImage}
@@ -79,7 +103,7 @@ export default async function RegionPage({
             className="w-full h-full object-cover scale-105"
             style={{ filter: "brightness(0.65)" }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-background" />
+          <div className="absolute inset-0 bg-linear-to-b from-black/60 via-black/20 to-background" />
         </div>
 
         {/* Hero Content */}
@@ -88,24 +112,23 @@ export default async function RegionPage({
             <Globe className="w-4 h-4 text-primary" />
             <span>{region.region || 'Azərbaycan'}</span>
           </div>
-          
+
           <h1 className="text-6xl md:text-8xl font-black tracking-tighter text-white mb-8 drop-shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-1000 delay-200">
             {region.name}
           </h1>
-          
+
           <p className="text-xl md:text-2xl text-white/90 font-medium max-w-3xl leading-relaxed drop-shadow-md animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300">
             {region.description?.slice(0, 180)}...
           </p>
 
           <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/50 animate-bounce">
             <span className="text-[10px] font-bold uppercase tracking-widest text-white/70">{t("scroll_down")}</span>
-            <div className="w-px h-12 bg-gradient-to-b from-white to-transparent" />
+            <div className="w-px h-12 bg-linear-to-b from-white to-transparent" />
           </div>
         </div>
       </section>
 
       <main className="relative z-20">
-        {/* About & Stats */}
         <section className="py-24 px-6 max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-12 gap-16 items-start">
             <div className="lg:col-span-7">
@@ -153,7 +176,7 @@ export default async function RegionPage({
                   <Star className="w-6 h-6 text-yellow-500 fill-yellow-500" />
                   {t("must_see")}
                 </h3>
-                
+
                 <div className="space-y-4">
                   {region.attractions && region.attractions.length > 0 ? (
                     region.attractions.map((attr, idx) => (
@@ -207,16 +230,15 @@ export default async function RegionPage({
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                 {region.gallery_urls.map((url, i) => (
-                  <div 
-                    key={i} 
-                    className={`group relative overflow-hidden rounded-3xl bg-muted ${
-                      i === 0 ? 'col-span-2 row-span-2 aspect-square md:aspect-auto' : 'aspect-square'
-                    }`}
+                  <div
+                    key={i}
+                    className={`group relative overflow-hidden rounded-3xl bg-muted ${i === 0 ? 'col-span-2 row-span-2 aspect-square md:aspect-auto' : 'aspect-square'
+                      }`}
                   >
-                    <img 
-                      src={url} 
-                      alt={`${region.name} gallery ${i}`} 
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                    <img
+                      src={url}
+                      alt={`${region.name} gallery ${i}`}
+                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
                       <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center border border-white/30">
@@ -230,6 +252,9 @@ export default async function RegionPage({
           </section>
         )}
 
+        {/* Places in this Region */}
+        <RegionPlaces places={cityPlaces} regionName={region.name} />
+
         {/* CTA */}
         <section className="py-32 px-6">
           <div className="max-w-5xl mx-auto">
@@ -237,7 +262,7 @@ export default async function RegionPage({
               {/* Background Shapes */}
               <div className="absolute top-0 left-0 w-64 h-64 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2 blur-3xl" />
               <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/30 rounded-full translate-x-1/2 translate-y-1/2 blur-3xl" />
-              
+
               <div className="relative z-10">
                 <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter">
                   {t("plan_trip", { name: region.name })}

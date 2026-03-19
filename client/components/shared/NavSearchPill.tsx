@@ -3,29 +3,16 @@
 import { useRef, useState } from "react";
 import { Search, MapPin, ChevronDown, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useCities } from "@/hooks/use-cities";
 
 const getLocalizedTypes = (t: any) => [
-  { value: "",            label: t("type_all"),   icon: "✨" },
-  { value: "restaurant",  label: t("type_restaurant"),  icon: "🍴" },
-  { value: "hotel",       label: t("type_hotel"),      icon: "🏨" },
-  { value: "hostel",      label: t("type_hostel"),    icon: "🛌" },
-  { value: "venue",       label: t("type_venue"),     icon: "📍" },
-  { value: "landmark",    label: t("type_landmark"),    icon: "🏛️" },
-  { value: "nature",      label: t("type_nature"),    icon: "🌿" },
-];
-
-const getLocalizedCities = (t: any) => [
-  { value: "",             label: t("all_cities") },
-  { value: "Baku",         label: t("city_baku") },
-  { value: "Ganja",        label: t("city_ganja") },
-  { value: "Sumgayit",     label: t("city_sumgayit") },
-  { value: "Qabala",       label: t("city_qabala") },
-  { value: "Sheki",        label: t("city_sheki") },
-  { value: "Quba",         label: t("city_quba") },
-  { value: "Lankaran",     label: t("city_lankaran") },
-  { value: "Shusha",       label: t("city_shusha") },
-  { value: "Nakhchivan",   label: t("city_nakhchivan") },
-  { value: "Shamakhi",     label: t("city_shamakhi") },
+  { value: "", label: t("type_all"), icon: "✨" },
+  { value: "restaurant", label: t("type_restaurant"), icon: "🍴" },
+  { value: "hotel", label: t("type_hotel"), icon: "🏨" },
+  { value: "hostel", label: t("type_hostel"), icon: "🛌" },
+  { value: "venue", label: t("type_venue"), icon: "📍" },
+  { value: "landmark", label: t("type_landmark"), icon: "🏛️" },
+  { value: "nature", label: t("type_nature"), icon: "🌿" },
 ];
 
 interface Props {
@@ -40,7 +27,16 @@ interface Props {
 export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, locale }: Props) {
   const t = useTranslations("HeroSearch");
   const TYPES = getLocalizedTypes(t);
-  const CITIES = getLocalizedCities(t);
+
+  const { data: apiCities = [] } = useCities({ language: locale, active: true });
+
+  const CITIES = [
+    { value: "", label: t("all_cities") },
+    ...apiCities.map((c: any) => ({
+      value: c.id,
+      label: c.name,
+    })),
+  ];
 
   const [type, setType] = useState("");
   const [city, setCity] = useState("");

@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Star, Map, SlidersHorizontal, Loader2 } from "lucide-react";
+import { Search, Star, Map, SlidersHorizontal, Loader2, ChevronDown, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PlaceCard } from "@/components/home/PlaceCard";
 import { usePlaces } from "@/hooks/use-places";
 import { useCategories } from "@/hooks/use-categories";
+import { useCities } from "@/hooks/use-cities";
 import { useVenues } from "@/hooks/use-venues";
 import { useLocale } from "next-intl";
 import { useSearchParams } from "next/navigation";
@@ -26,12 +27,16 @@ export default function PlacesPage() {
   const locale = useLocale();
   const searchParams = useSearchParams();
   const categoryParam = searchParams.get("category");
+  const cityParam = searchParams.get("city");
   const queryParam = searchParams.get("q");
 
   const [activeCategory, setActiveCategory] = useState(categoryParam || "hamısı");
+  const [activeCity, setActiveCity] = useState(cityParam || "ALL");
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(queryParam || "");
 
   const { data: dynamicCategories = [] } = useCategories(locale);
+  const { data: cities = [] } = useCities({ language: locale, active: true });
   const { data: allPlaces, isLoading: isLoadingPlaces } = usePlaces({
     language: locale
   });
@@ -86,24 +91,25 @@ export default function PlacesPage() {
       item.city?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       item.short_description?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCategory && matchesSearch;
+    let matchesCity = true;
+    if (activeCity !== "ALL") {
+      matchesCity = item.city === activeCity;
+    }
+
+    return matchesCategory && matchesSearch && matchesCity;
   });
 
   return (
     <div className="min-h-screen bg-background relative selection:bg-primary/20">
 
-      {/* Decorative Background Elements */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }}>
         <div className="absolute top-0 right-[10%] w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute bottom-[20%] left-[-10%] w-[500px] h-[500px] rounded-full bg-accent/5 blur-[120px]" />
       </div>
 
       <div className="relative z-10">
-        {/* Header Section */}
-        {/* Simplified Header / Search Section */}
         <section className="pt-32 pb-8 px-6 relative">
           <div className="max-w-7xl mx-auto">
-            {/* Search Box - Moved and simplified */}
             <div className="relative flex items-center w-full max-w-2xl mx-auto shadow-xl shadow-primary/5 rounded-2xl bg-card border border-border/50 group hover:border-primary/50 transition-colors">
               <div className="pl-5 pr-2 py-4 text-muted-foreground group-focus-within:text-primary transition-colors">
                 <Search size={22} />
@@ -160,9 +166,58 @@ export default function PlacesPage() {
                 <><span className="text-foreground font-bold">{filteredItems.length}</span> {t("found_count")}</>
               )}
             </p>
-            {/* Sort Dropdown Placeholder */}
-            <div className="flex items-center gap-2 text-sm font-medium hover:text-foreground cursor-pointer transition-colors">
-              {t('sort_by')} {t('by_popularity')} <Star size={14} />
+            {/* City Dropdown Filter */}
+            <div className="relative z-20">
+              <button
+                onClick={() => setCityDropdownOpen((v) => !v)}
+                className="flex items-center gap-3 px-5 py-2.5 bg-card border border-border rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all min-w-[160px] justify-between"
+              >
+                <span className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-primary" />
+                  {activeCity === 'ALL' ? 'Bütün Şəhərlər' : activeCity}
+                </span>
+                <ChevronDown
+                  className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${cityDropdownOpen ? 'rotate-180' : ''}`}
+                />
+              </button>
+
+              {/* Dropdown Menu */}
+              {cityDropdownOpen && (
+                <div className="absolute right-0 top-full mt-2 w-56 max-h-64 overflow-y-auto bg-card border border-border rounded-xl shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
+                  <button
+                    onClick={() => { setActiveCity('ALL'); setCityDropdownOpen(false); }}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-sm font-semibold transition-colors ${activeCity === 'ALL'
+                      ? 'bg-primary text-primary-foreground focus:bg-primary'
+                      : 'hover:bg-muted text-foreground'
+                      }`}
+                  >
+                    <span>Bütün Şəhərlər</span>
+                    <span className="text-xs bg-muted/30 px-2 py-0.5 rounded-full border border-border/50">
+                      {normalizedPlaces.length}
+                    </span>
+                  </button>
+                  {cities.map((city) => {
+                    const isActive = activeCity === city.name;
+                    // Count items in this city
+                    const count = normalizedPlaces.filter(p => p.city === city.name).length;
+                    return (
+                      <button
+                        key={city.id}
+                        onClick={() => { setActiveCity(city.name); setCityDropdownOpen(false); }}
+                        className={`w-full flex items-center justify-between px-4 py-3 text-sm font-semibold transition-colors border-t border-border/50 ${isActive
+                          ? 'bg-primary text-primary-foreground'
+                          : 'hover:bg-muted text-foreground'
+                          }`}
+                      >
+                        <span className="truncate">{city.name}</span>
+                        <span className="text-xs bg-muted/30 px-2 py-0.5 rounded-full border border-border/50">
+                          {count}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
           </div>
 

@@ -1,7 +1,7 @@
 "use client";
 
 export default function WhatsAppButton() {
-  const whatsappNumber = "994508000909";
+  const whatsappNumber = "994514151107";
   const message = "Salam, Full Guide Azerbaijan ilə əlaqə saxlamaq istəyirəm.";
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

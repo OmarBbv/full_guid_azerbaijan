@@ -33,6 +33,7 @@ import { useUpdateHostel, useUploadHostelImages, useHostel, HOSTEL_KEYS } from '
 import { HostelType } from '@/types/hostel';
 import { paths } from '@/paths';
 import { formatPhoneNumber } from '@/lib/format-phone';
+import { CitySelect } from '@/components/core/city-select';
 
 const hostelTypeLabels: Record<HostelType, string> = {
   [HostelType.PARTY_HOSTEL]: 'Party Hostel',
@@ -226,7 +227,17 @@ export function HostelEditForm({ hostelId }: HostelEditFormProps): React.JSX.Ele
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('city')} label="Şəhər" fullWidth InputLabelProps={{ shrink: true }} />
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CitySelect
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      language={watch('language')}
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth InputLabelProps={{ shrink: true }} />

@@ -34,6 +34,7 @@ import { HotelType } from '@/types/hotel';
 import { paths } from '@/paths';
 import { PlaceStatus } from '@/types/restaurant';
 import { formatPhoneNumber } from '@/lib/format-phone';
+import { CitySelect } from '@/components/core/city-select';
 
 interface HotelEditFormProps {
   id: string;
@@ -244,7 +245,17 @@ export function HotelEditForm({ id }: HotelEditFormProps): React.JSX.Element {
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }}>
-                <TextField {...register('city')} label="Şəhər" fullWidth />
+                <Controller
+                  name="city"
+                  control={control}
+                  render={({ field }) => (
+                    <CitySelect
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      language={watch('language')}
+                    />
+                  )}
+                />
               </Grid>
               <Grid size={{ xs: 12 }}>
                 <TextField {...register('address')} label="Ünvan" fullWidth />

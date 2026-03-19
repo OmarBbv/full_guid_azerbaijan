@@ -9,6 +9,7 @@ export interface PlaceQueryParams {
   is_featured?: boolean;
   exclude_types?: string[];
   limit?: number;
+  city?: string;
 }
 
 export interface IPlaceService {
@@ -59,8 +60,8 @@ class PlaceService implements IPlaceService {
             id: venue.slug || venue.id.toString(),
             title: venue.name,
             short_description: venue.description || '',
-            subtitle: venue.category?.name || '',
-            type: (venue.category?.slug || 'other').toUpperCase(),
+            subtitle: venue.subCategory ? `${venue.category?.name || ''} - ${venue.subCategory.name}` : (venue.category?.name || ''),
+            type: ((venue.subCategory?.slug || venue.category?.slug) || 'other').toUpperCase(),
             average_rating: venue.rating || 0,
             review_count: venue.reviewCount || 0,
             thumbnail: venue.thumbnail,

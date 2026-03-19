@@ -12,6 +12,9 @@ export class QueryVenueDto {
   @IsOptional() @Type(() => Number) @IsNumber()
   categoryId?: number;
 
+  @IsOptional() @Type(() => Number) @IsNumber()
+  subCategoryId?: number;
+
   @IsOptional() @IsString()
   city?: string;
 

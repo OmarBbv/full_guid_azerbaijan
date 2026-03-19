@@ -1,11 +1,13 @@
 "use client";
 
-import { Users, Backpack, MapPin, PiggyBank, ArrowRight } from 'lucide-react';
+import { useState } from "react";
+import { Users, Backpack, MapPin, PiggyBank, ArrowRight, ChevronDown } from 'lucide-react';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 
 import { usePlacesByType } from '@/hooks/use-places';
+import { useCities } from '@/hooks/use-cities';
 import { getImageUrl } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 import un_photo_1555854877_bab0e564b8d5_1934a6f6 from "@/assets/unsplash/photo-1555854877-bab0e564b8d5_1934a6f6.jpg";
@@ -14,7 +16,13 @@ export default function HostelsPage() {
   const t = useTranslations("PlacesPage");
   const { locale } = useParams<{ locale: string }>();
   const { data: hostelsData, isLoading } = usePlacesByType('hostel', locale);
+  const { data: cities = [] } = useCities({ language: locale, active: true });
+  
+  const [activeCity, setActiveCity] = useState("ALL");
+  const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
+
   const hostels = hostelsData || [];
+  const filteredHostels = hostels.filter((h: any) => activeCity === "ALL" ? true : h.city === activeCity);
 
   if (isLoading) {
     return (
@@ -55,13 +63,70 @@ export default function HostelsPage() {
         </div>
       </section>
 
-      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {!hostels || hostels.length === 0 ? (
+      <div className="max-w-7xl mx-auto px-6 mb-8 flex justify-between items-center relative z-30">
+        <h2 className="text-2xl font-bold">{filteredHostels.length} {t("found_count")}</h2>
+        
+        {/* City Dropdown Filter */}
+        <div className="relative">
+          <button
+            onClick={() => setCityDropdownOpen((v) => !v)}
+            className="flex items-center gap-3 px-5 py-2.5 bg-card border border-border rounded-xl text-sm font-bold shadow-sm hover:shadow-md transition-all min-w-[160px] justify-between"
+          >
+            <span className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-primary" />
+              {activeCity === 'ALL' ? 'Bütün Şəhərlər' : activeCity}
+            </span>
+            <ChevronDown
+              className={`w-4 h-4 text-muted-foreground transition-transform duration-200 ${cityDropdownOpen ? 'rotate-180' : ''}`}
+            />
+          </button>
+
+          {/* Dropdown Menu */}
+          {cityDropdownOpen && (
+            <div className="absolute right-0 top-full mt-2 w-56 max-h-64 overflow-y-auto bg-card border border-border rounded-xl shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <button
+                onClick={() => { setActiveCity('ALL'); setCityDropdownOpen(false); }}
+                className={`w-full flex items-center justify-between px-4 py-3 text-sm font-semibold transition-colors ${activeCity === 'ALL'
+                    ? 'bg-primary text-primary-foreground focus:bg-primary'
+                    : 'hover:bg-muted text-foreground'
+                  }`}
+              >
+                <span>Bütün Şəhərlər</span>
+                <span className="text-xs bg-muted/30 px-2 py-0.5 rounded-full border border-border/50">
+                  {hostels.length}
+                </span>
+              </button>
+              {cities.map((city) => {
+                const isActive = activeCity === city.name;
+                const count = hostels.filter((p: any) => p.city === city.name).length;
+                return (
+                  <button
+                    key={city.id}
+                    onClick={() => { setActiveCity(city.name); setCityDropdownOpen(false); }}
+                    className={`w-full flex items-center justify-between px-4 py-3 text-sm font-semibold transition-colors border-t border-border/50 ${isActive
+                        ? 'bg-primary text-primary-foreground'
+                        : 'hover:bg-muted text-foreground'
+                      }`}
+                  >
+                    <span className="truncate">{city.name}</span>
+                    <span className="text-xs bg-muted/30 px-2 py-0.5 rounded-full border border-border/50">
+                      {count}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-20">
+        {!filteredHostels || filteredHostels.length === 0 ? (
           <div className="col-span-full text-center py-20">
             <p className="text-muted-foreground text-xl">{t("no_items")}</p>
           </div>
         ) : (
-          hostels.map((hostel: any, i: number) => (
+          filteredHostels.map((hostel: any, i: number) => (
             <Link
               key={i}
               href={`/places/hostels/${hostel.id}`}

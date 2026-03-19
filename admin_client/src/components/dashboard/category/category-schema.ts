@@ -14,6 +14,7 @@ export const categorySchema = z.object({
   slug: z.string().min(1, 'Slug tələb olunur').max(100),
   icon: z.string().optional().or(z.literal('')),
   language: z.enum(['az', 'en', 'ru', 'tr', 'ar', 'hi']).default('az'),
+  parentId: z.coerce.number().optional().nullable(),
 });
 
 export type CategoryFormValues = z.infer<typeof categorySchema>;
