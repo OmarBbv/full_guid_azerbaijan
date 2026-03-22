@@ -8,6 +8,7 @@ import Image from "next/image";
 import { useRouter } from "@/i18n/routing";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "@/hooks/use-debounce";
+import { useCities } from "@/hooks/use-cities";
 
 export default function SearchResultsContent() {
   const searchParams = useSearchParams();
@@ -15,6 +16,8 @@ export default function SearchResultsContent() {
   const locale = useLocale();
   const t = useTranslations("SearchResults");
   const th = useTranslations("HeroSearch");
+
+  const { data: apiCities = [] } = useCities({ language: locale, active: true });
 
   const TYPE_OPTIONS = [
     { value: "", label: th("type_all"), icon: "✨" },
@@ -123,15 +126,23 @@ export default function SearchResultsContent() {
           </div>
 
           {/* City input */}
-          <div className="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3 sm:w-44">
+          <div className="flex items-center gap-3 bg-white/5 rounded-xl px-4 py-3 sm:w-44 shrink-0 relative">
             <MapPin size={16} className="text-white/50 shrink-0" />
-            <input
-              type="text"
+            <select
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder={t("placeholder_city")}
-              className="w-full bg-transparent text-white placeholder-white/40 text-sm outline-none"
-            />
+              className="w-full bg-transparent text-white text-sm outline-none appearance-none cursor-pointer"
+            >
+              <option value="" className="text-black">{th("all_cities")}</option>
+              {apiCities.map((c: any) => (
+                <option key={c.id} value={c.id} className="text-black">
+                  {c.name}
+                </option>
+              ))}
+            </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg className="w-4 h-4 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+            </div>
           </div>
 
           {/* Search btn */}
