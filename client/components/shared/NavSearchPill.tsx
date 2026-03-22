@@ -88,7 +88,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
 
   return (
     <div
-      className="w-full flex items-stretch rounded-2xl overflow-visible"
+      className="w-full flex flex-col md:flex-row items-stretch rounded-2xl md:rounded-full overflow-visible"
       style={{
         background: "rgba(18,20,32,0.92)",
         backdropFilter: "blur(24px)",
@@ -98,7 +98,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
       }}
     >
       {/* ── Text ── */}
-      <div className="flex-1 flex items-center gap-3 px-4 py-3.5 min-w-0">
+      <div className="flex-1 flex items-center gap-3 px-4 py-3.5 min-w-0 border-b border-white/10 md:border-0">
         <Search size={17} className="text-white/40 shrink-0" />
         <input
           ref={inputRef}
@@ -117,14 +117,14 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
       </div>
 
       {/* ── Divider ── */}
-      <div className="w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
+      <div className="hidden md:block w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
 
       {/* ── Type ── */}
-      <div className="relative shrink-0" ref={typeRef}>
+      <div className="relative shrink-0 border-b border-white/10 md:border-0" ref={typeRef}>
         <button
           type="button"
           onClick={() => { setTypeOpen(o => !o); setCityOpen(false); }}
-          className="flex items-center gap-2 px-4 py-3.5 text-[14px] font-medium whitespace-nowrap"
+          className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2 px-4 py-3.5 text-[14px] font-medium whitespace-nowrap"
           style={{ color: type ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)" }}
         >
           <span>{selectedType.label}</span>
@@ -140,7 +140,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
 
         {typeOpen && (
           <div
-            className="absolute top-full mt-1.5 left-0 rounded-xl overflow-hidden z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
+            className="absolute top-full mt-1.5 md:left-0 left-4 right-4 md:right-auto rounded-xl overflow-hidden z-50 min-w-[200px] max-h-[400px] overflow-y-auto"
             style={{
               background: "rgba(12,14,26,0.97)",
               border: "1px solid rgba(255,255,255,0.1)",
@@ -200,18 +200,20 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
       </div>
 
       {/* ── Divider ── */}
-      <div className="w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
+      <div className="hidden md:block w-px self-stretch my-3" style={{ background: "rgba(255,255,255,0.12)" }} />
 
       {/* ── City ── */}
-      <div className="relative shrink-0" ref={cityRef}>
+      <div className="relative shrink-0 border-b border-white/10 md:border-0" ref={cityRef}>
         <button
           type="button"
           onClick={() => { setCityOpen(o => !o); setTypeOpen(false); }}
-          className="flex items-center gap-2 px-4 py-3.5 text-[14px] font-medium whitespace-nowrap"
+          className="w-full md:w-auto flex items-center justify-between md:justify-start gap-2 px-4 py-3.5 text-[14px] font-medium whitespace-nowrap"
           style={{ color: city ? "rgba(255,255,255,0.9)" : "rgba(255,255,255,0.5)" }}
         >
-          <MapPin size={14} style={{ color: "rgba(255,255,255,0.4)" }} className="shrink-0" />
-          <span>{selectedCity.label}</span>
+          <div className="flex items-center gap-2">
+            <MapPin size={14} style={{ color: "rgba(255,255,255,0.4)" }} className="shrink-0" />
+            <span>{selectedCity.label}</span>
+          </div>
           <ChevronDown
             size={13}
             className="shrink-0 transition-transform duration-200"
@@ -224,7 +226,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
 
         {cityOpen && (
           <div
-            className="absolute top-full mt-1.5 right-0 rounded-xl overflow-hidden z-50 min-w-[190px] max-h-64 overflow-y-auto"
+            className="absolute top-full mt-1.5 md:right-0 right-4 left-4 md:left-auto rounded-xl overflow-hidden z-50 min-w-[190px] max-h-64 overflow-y-auto"
             style={{
               background: "rgba(12,14,26,0.97)",
               border: "1px solid rgba(255,255,255,0.1)",
@@ -252,7 +254,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
         <button
           type="button"
           onClick={handleSubmit}
-          className="flex items-center gap-2 px-6 py-2.5 rounded-[14px] font-bold text-[14px] text-white transition-all active:scale-95 hover:brightness-110"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 md:py-2.5 rounded-[12px] md:rounded-[14px] font-bold text-[14px] text-white transition-all active:scale-95 hover:brightness-110"
           style={{
             background: "linear-gradient(135deg, #3b9cf5, #1e3a8a)",
             boxShadow: "0 4px 20px rgba(59,156,245,0.35)",

@@ -26,7 +26,6 @@ apiClient.interceptors.response.use(
       if (Array.isArray(data)) {
         data.forEach(item => transformData(item));
       } else if (typeof data === 'object') {
-        // Fallback for missing thumbnail from images or gallery
         if (!data.thumbnail && data.images && Array.isArray(data.images) && data.images.length > 0) {
           data.thumbnail = data.images[0].url || data.images[0].image_url;
         }

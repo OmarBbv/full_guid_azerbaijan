@@ -111,14 +111,14 @@ export default function Navbar() {
 
   const buildCategoryHierarchy = () => {
     const categoryMap = new Map<number, NavSubLink>();
-    
+
     dynamicCategories.forEach((cat: any) => {
-      categoryMap.set(cat.id, { 
+      categoryMap.set(cat.id, {
         label: cat.name,
         href: `/mekanlar?category=${cat.slug}`,
         id: cat.id,
         icon: cat.icon || "📍",
-        children: [] 
+        children: []
       });
     });
 
@@ -341,7 +341,7 @@ export default function Navbar() {
                         group-hover/nav-item:pointer-events-auto transition-all duration-300`}
                     >
                       <div
-                        className={`rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] overflow-hidden ${link.isMega ? "p-12" : "py-2"
+                        className={`rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.25)] ${link.isMega ? "overflow-hidden p-12" : "py-2"
                           }`}
                         style={{
                           background: "rgba(15, 18, 25, 0.98)",
@@ -406,64 +406,55 @@ export default function Navbar() {
                                 />
 
                                 <div className="absolute inset-0 pointer-events-none">
-                                  {/* Map over SVG routes and markers was removed here */}
                                 </div>
                               </div>
                             </div>
                           </div>
                         ) : (
                           /* ── Sadə dropdown ── */
-                          link.subLinks?.map((sub) => (
-                            <div key={sub.href}>
-                              <div className="flex items-center hover:bg-white/5 group/sub">
-                                <Link
-                                  href={sub.href}
-                                  className={`flex-1 px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 group-hover/sub:text-white ${pathname === sub.href
-                                    ? "text-white bg-white/10"
-                                    : ""
-                                    }`}
-                                >
-                                  <span className="flex items-center">
-                                    {sub.label}
-                                  </span>
-                                </Link>
-                                {sub.children && sub.children.length > 0 && (
-                                  <button
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-                                      if (sub.id) {
-                                        setExpandedCats(prev =>
-                                          prev.includes(sub.id!) ? prev.filter(id => id !== sub.id) : [...prev, sub.id!]
-                                        );
-                                      }
-                                    }}
-                                    className="p-3 text-white/30 hover:text-white/60 transition-colors"
+                          <div className="max-h-[350px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                            {link.subLinks?.map((sub) => (
+                              <div key={sub.href} className="group/nav-sub-item">
+                                <div className="flex items-center hover:bg-white/5 transition-colors relative z-10">
+                                  <Link
+                                    href={sub.href}
+                                    className={`flex-1 px-5 py-3 text-[13.5px] font-medium transition-colors text-white/80 group-hover/nav-sub-item:text-white ${pathname === sub.href
+                                      ? "text-white bg-white/10"
+                                      : ""
+                                      }`}
                                   >
-                                    <ChevronRight
-                                      size={14}
-                                      className={`transition-transform duration-200 ${sub.id && expandedCats.includes(sub.id) ? "rotate-90" : ""}`}
-                                    />
-                                  </button>
+                                    <span className="flex items-center">
+                                      {sub.label}
+                                    </span>
+                                  </Link>
+                                  {sub.children && sub.children.length > 0 && (
+                                    <div className="p-3 text-white/30 group-hover/nav-sub-item:text-white transition-colors cursor-pointer">
+                                      <ChevronRight size={14} className="transition-transform duration-200 group-hover/nav-sub-item:rotate-90" />
+                                    </div>
+                                  )}
+                                </div>
+                                {sub.children && sub.children.length > 0 && (
+                                  <div className="grid grid-rows-[0fr] group-hover/nav-sub-item:grid-rows-[1fr] transition-[grid-template-rows] duration-300 relative z-0">
+                                    <div className="overflow-hidden">
+                                      <div className="bg-white/5 border-l-2 border-blue-500/30 ml-4 py-1 mb-1 shadow-inner">
+                                        {sub.children.map((child) => (
+                                          <Link
+                                            key={child.href}
+                                            href={child.href}
+                                            className={`block px-5 py-2.5 text-[12.5px] transition-colors text-white/60 hover:text-white hover:bg-white/5 ${pathname === child.href ? "text-white bg-white/10" : ""}`}
+                                          >
+                                            <span className="flex items-center">
+                                              {child.label}
+                                            </span>
+                                          </Link>
+                                        ))}
+                                      </div>
+                                    </div>
+                                  </div>
                                 )}
                               </div>
-                              {sub.children && sub.children.length > 0 && sub.id && expandedCats.includes(sub.id) && (
-                                <div className="bg-white/5 border-l-2 border-blue-500/30 ml-4 py-1">
-                                  {sub.children.map((child) => (
-                                    <Link
-                                      key={child.href}
-                                      href={child.href}
-                                      className="block px-6 py-2 text-[12.5px] text-white/60 hover:text-white transition-colors"
-                                    >
-                                      <span className="flex items-center">
-                                        {child.label}
-                                      </span>
-                                    </Link>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          ))
+                            ))}
+                          </div>
                         )}
                       </div>
                     </div>

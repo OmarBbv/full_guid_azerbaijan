@@ -216,7 +216,7 @@ export default function Hero() {
         }}
       />
 
-      <div className="absolute left-5 top-1/2 -translate-y-1/2 z-20 flex flex-col gap-3">
+      <div className="absolute left-5 top-1/2 -translate-y-1/2 z-20 hidden md:flex flex-col gap-3">
         {slides.map((_, i) => (
           <button
             key={i}
@@ -232,11 +232,11 @@ export default function Hero() {
         ))}
       </div>
 
-      <div className="relative z-10 h-full flex items-center px-16 gap-8">
-        <div className="flex-1 flex flex-col justify-center max-w-[520px] space-y-6">
+      <div className="relative z-10 h-full flex items-center px-6 md:px-16 gap-8 text-left">
+        <div className="flex-1 flex flex-col justify-center items-start max-w-[520px] md:mx-0 space-y-6">
           <div
             key={`tag-${leftContentKey}`}
-            className="hero-fadein inline-flex items-center gap-2 self-start"
+            className="hero-fadein inline-flex items-center gap-2"
           >
             <span
               className="block w-6 h-[2px] rounded-full"
