@@ -14,7 +14,9 @@ export default function AdBannerComponent({ position, className = '' }: AdBanner
 
   if (!ad) return null;
 
-  const aspectRatio = position === 'mekan_sidebar' ? '10/3' : '35/6';
+  const aspectClass = position === 'mekan_sidebar' 
+    ? 'aspect-square md:aspect-[10/3]' 
+    : 'aspect-square md:aspect-[35/6]';
 
   const content = (
     <div
@@ -24,7 +26,7 @@ export default function AdBannerComponent({ position, className = '' }: AdBanner
         Reklam
       </span>
 
-      <div className="relative w-full" style={{ aspectRatio }}>
+      <div className={`relative w-full ${aspectClass}`}>
         <Image
           src={ad.image_url}
           alt={ad.title || 'Reklam'}
