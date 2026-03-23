@@ -866,7 +866,6 @@ export default function Navbar() {
               </button>
             </div>
 
-            {/* Language selector */}
             <div className="mt-6 flex flex-col border border-white/10 rounded-xl overflow-hidden">
               {LANGUAGES.map((lang) => (
                 <button

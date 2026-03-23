@@ -54,7 +54,6 @@ export default function PlaceDetailPage() {
         setLocalLiked(!localLiked);
       },
       onError: () => {
-        // Fallback or guest logic
         const saved = localStorage.getItem("favorites");
         let favorites = saved ? (JSON.parse(saved) as (number | string)[]) : [];
 

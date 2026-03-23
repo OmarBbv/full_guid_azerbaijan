@@ -3,7 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AdminSeedService } from './admin-seed.service';
+import { DataSeedService } from './data-seed.service';
 import { UsersModule } from '../users/users.module';
+import { Category } from '../category/entities/category.entity';
+import { Venue } from '../venue/entities/venue.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -18,7 +21,7 @@ import { User } from '../users/entities/user.entity';
     UsersModule,
     PassportModule,
     MailModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Category, Venue]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -29,7 +32,7 @@ import { User } from '../users/entities/user.entity';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, AdminSeedService],
+  providers: [AuthService, LocalStrategy, JwtStrategy, GoogleStrategy, AdminSeedService, DataSeedService],
   exports: [AuthService],
 })
 export class AuthModule {}

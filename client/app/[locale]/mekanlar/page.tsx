@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Search, Star, Map, SlidersHorizontal, Loader2, ChevronDown, MapPin } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { PlaceCard } from "@/components/home/PlaceCard";
@@ -34,6 +34,13 @@ export default function PlacesPage() {
   const [activeCity, setActiveCity] = useState(cityParam || "ALL");
   const [cityDropdownOpen, setCityDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(queryParam || "");
+
+  // URL dəyişəndə state-i yenilə
+  useEffect(() => {
+    if (categoryParam) setActiveCategory(categoryParam);
+    if (cityParam) setActiveCity(cityParam);
+    if (queryParam) setSearchQuery(queryParam);
+  }, [categoryParam, cityParam, queryParam]);
 
   const { data: dynamicCategories = [] } = useCategories(locale);
   const { data: cities = [] } = useCities({ language: locale, active: true });
@@ -83,7 +90,9 @@ export default function PlacesPage() {
     } else if (isStaticCategory) {
       matchesCategory = item.type?.toLowerCase() === activeCategory.toLowerCase();
     } else {
-      matchesCategory = (item as any).category?.slug === activeCategory;
+      matchesCategory =
+        (item as any).category?.slug === activeCategory ||
+        (item as any).subCategory?.slug === activeCategory;
     }
 
     const matchesSearch =
@@ -130,17 +139,40 @@ export default function PlacesPage() {
           </div>
         </section>
 
-        {/* Content Section */}
         <section className="py-12 md:py-20 px-6 max-w-7xl mx-auto">
-
           <div className="flex flex-col lg:flex-row gap-6 lg:items-center justify-between mb-10">
             {/* Categories (Scrollable) */}
-            <div className="flex gap-3 overflow-x-auto pb-4 pt-2 -mx-6 px-6 lg:mx-0 lg:px-0 scrollbar-hide w-full lg:w-auto">
+            <div
+              onMouseDown={(e) => {
+                const el = e.currentTarget;
+                let isDown = true;
+                let startX = e.pageX - el.offsetLeft;
+                let scrollLeft = el.scrollLeft;
+
+                const onMouseMove = (e: MouseEvent) => {
+                  if (!isDown) return;
+                  e.preventDefault();
+                  const x = e.pageX - el.offsetLeft;
+                  const walk = (x - startX) * 2;
+                  el.scrollLeft = scrollLeft - walk;
+                };
+
+                const onMouseUp = () => {
+                  isDown = false;
+                  window.removeEventListener('mousemove', onMouseMove);
+                  window.removeEventListener('mouseup', onMouseUp);
+                };
+
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('mouseup', onMouseUp);
+              }}
+              className="flex gap-3 overflow-x-auto pb-4 pt-2 -mx-6 px-6 lg:mx-0 lg:px-0 scrollbar-hide w-full cursor-grab active:cursor-grabbing select-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            >
               {categories.map((cat) => (
                 <button
                   key={cat.id}
                   onClick={() => setActiveCategory(cat.id)}
-                  className="flex items-center gap-2.5 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 whitespace-nowrap active:scale-95"
+                  className="flex items-center gap-2.5 px-5 py-3 rounded-2xl text-sm font-semibold transition-all duration-300 whitespace-nowrap shrink-0 active:scale-95"
                   style={{
                     background: activeCategory === cat.id ? "var(--primary)" : "var(--card)",
                     color: activeCategory === cat.id ? "var(--primary-foreground)" : "var(--muted-foreground)",
@@ -250,7 +282,6 @@ export default function PlacesPage() {
             </div>
           )}
 
-          {/* Load More Button */}
           {!isLoading && filteredItems.length > 10 && (
             <div className="mt-16 flex justify-center">
               <button className="px-8 py-3.5 bg-card border border-border rounded-xl text-foreground font-bold hover:bg-muted transition-colors shadow-sm flex items-center gap-2">
