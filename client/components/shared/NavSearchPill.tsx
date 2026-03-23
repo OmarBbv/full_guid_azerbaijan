@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { Search, MapPin, ChevronDown, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/routing";
 import { useCities } from "@/hooks/use-cities";
 import { useCategories } from "@/hooks/use-categories";
 import { ChevronRight } from "lucide-react";
@@ -20,6 +21,7 @@ interface Props {
 
 export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, locale }: Props) {
   const t = useTranslations("HeroSearch");
+  const router = useRouter();
 
   const { data: apiCities = [] } = useCities({ language: locale, active: true });
   const { data: categories = [] } = useCategories(locale);
@@ -27,14 +29,20 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
   const CITIES = [
     { value: "", label: t("all_cities") },
     ...apiCities.map((c: any) => ({
-      value: c.id,
+      value: c.name, // Use name instead of id to match backend search expectations
       label: c.name,
     })),
   ];
 
   // Organize categories into hierarchy
   const buildCategoryHierarchy = () => {
-    const root: any[] = [{ value: "", label: t("type_all"), icon: "✨", id: -1, children: [] }];
+    const root: any[] = [
+      { value: "", label: t("type_all"), icon: "✨", id: -1, children: [] },
+      { value: "landmark", label: t("type_landmark"), icon: "🏛️", id: -101, children: [] },
+      { value: "restaurant", label: t("type_restaurant"), icon: "🍴", id: -102, children: [] },
+      { value: "hotel", label: t("type_hotel"), icon: "🏨", id: -103, children: [] },
+      { value: "hostel", label: t("type_hostel"), icon: "🛌", id: -104, children: [] },
+    ];
     
     // Add default types first if they should be there
     const categoryMap = new Map<number, any>();
@@ -81,9 +89,14 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
     if (query.trim()) params.set("q", query.trim());
     if (type) params.set("type", type);
     if (city) params.set("city", city);
+    
+    // Call props callback if available
+    if (onSubmit) onSubmit(query);
+    
     onClose();
-    // navigate to /search
-    window.location.href = `/${locale}/search?${params.toString()}`;
+    
+    // navigate using router instead of hard reload
+    router.push(`/search?${params.toString()}` as any);
   };
 
   return (
@@ -159,40 +172,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
                   >
                     <span className="truncate">{tItem.label}</span>
                   </button>
-                  {tItem.children && tItem.children.length > 0 && (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setExpandedCats(prev => 
-                          prev.includes(tItem.id) ? prev.filter(id => id !== tItem.id) : [...prev, tItem.id]
-                        );
-                      }}
-                      className="p-2 mr-1 text-white/30 hover:text-white/60 transition-colors"
-                    >
-                      <ChevronRight 
-                        size={14} 
-                        className={`transition-transform duration-200 ${expandedCats.includes(tItem.id) ? "rotate-90" : ""}`}
-                      />
-                    </button>
-                  )}
                 </div>
-                
-                {tItem.children && tItem.children.length > 0 && expandedCats.includes(tItem.id) && (
-                  <div className="bg-white/5 border-l border-white/10 ml-4">
-                    {tItem.children.map((child: any) => (
-                      <button
-                        key={child.value}
-                        type="button"
-                        onClick={() => { setType(child.value); setTypeOpen(false); }}
-                        className="w-full text-left px-4 py-2 text-[12px] flex items-center transition-colors hover:bg-white/8"
-                        style={{ color: type === child.value ? "#3b9cf5" : "rgba(255,255,255,0.6)" }}
-                      >
-                        <span className="truncate">{child.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
               </div>
             ))}
           </div>

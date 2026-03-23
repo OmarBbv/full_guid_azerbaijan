@@ -135,7 +135,7 @@ export default function SearchResultsContent() {
             >
               <option value="" className="text-black">{th("all_cities")}</option>
               {apiCities.map((c: any) => (
-                <option key={c.id} value={c.id} className="text-black">
+                <option key={c.id} value={c.name} className="text-black">
                   {c.name}
                 </option>
               ))}
@@ -270,6 +270,6 @@ export default function SearchResultsContent() {
           </div>
         )}
       </div>
-    </div>
+    </div >
   );
 }
