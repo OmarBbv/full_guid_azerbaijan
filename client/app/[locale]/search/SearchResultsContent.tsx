@@ -9,6 +9,7 @@ import { useRouter } from "@/i18n/routing";
 import { useSearch } from "@/hooks/use-search";
 import { useDebounce } from "@/hooks/use-debounce";
 import { useCities } from "@/hooks/use-cities";
+import { useCategoryOptions } from "@/hooks/use-category-options";
 
 export default function SearchResultsContent() {
   const searchParams = useSearchParams();
@@ -19,15 +20,7 @@ export default function SearchResultsContent() {
 
   const { data: apiCities = [] } = useCities({ language: locale, active: true });
 
-  const TYPE_OPTIONS = [
-    { value: "", label: th("type_all"), icon: "✨" },
-    { value: "restaurant", label: th("type_restaurant"), icon: "🍴" },
-    { value: "hotel", label: th("type_hotel"), icon: "🏨" },
-    { value: "hostel", label: th("type_hostel"), icon: "🛌" },
-    { value: "venue", label: th("type_venue"), icon: "📍" },
-    { value: "landmark", label: th("type_landmark"), icon: "🏛️" },
-    { value: "nature", label: th("type_nature"), icon: "🌿" },
-  ];
+  const TYPE_OPTIONS = useCategoryOptions(locale);
 
   const initialQ = searchParams.get("q") ?? "";
   const initialCity = searchParams.get("city") ?? "";

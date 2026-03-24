@@ -39,8 +39,11 @@ export class SearchService {
     const results: SearchResultItem[] = [];
 
     const isVenueOnly = type?.toLowerCase() === 'venue';
+    const isPlaceOnly = type?.toLowerCase() === 'place';
+    
+    // Always search both unless specifically restricted
     const searchPlaces = !isVenueOnly;
-    const searchVenues = !type || isVenueOnly;
+    const searchVenues = !isPlaceOnly;
 
     if (searchPlaces) {
       const qb = this.placeRepo
@@ -62,9 +65,9 @@ export class SearchService {
         qb.andWhere('place.language = :language', { language });
       }
 
-      if (type && !isVenueOnly) {
-        // Cast enum to TEXT before LOWER() — PostgreSQL can't call LOWER on enum directly
-        qb.andWhere('LOWER(place.type::TEXT) = :type', { type: type.toLowerCase() });
+      if (type && !isVenueOnly && !isPlaceOnly) {
+        const typesList = type.toLowerCase().split(',').map(t => t.trim());
+        qb.andWhere('LOWER(place.type::TEXT) IN (:...typesList)', { typesList });
       }
 
       qb.orderBy('place.average_rating', 'DESC').take(limit);
@@ -108,6 +111,12 @@ export class SearchService {
 
       if (language) {
         qb.andWhere('venue.language = :language', { language });
+      }
+
+      if (type && !isVenueOnly && !isPlaceOnly) {
+        // Filter venues by category slug
+        const typesList = type.split(',').map(t => t.trim());
+        qb.andWhere('category.slug IN (:...typesList)', { typesList });
       }
 
       qb.orderBy('venue.rating', 'DESC').take(limit);

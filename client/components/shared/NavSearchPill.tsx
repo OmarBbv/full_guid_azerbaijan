@@ -5,7 +5,7 @@ import { Search, MapPin, ChevronDown, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useCities } from "@/hooks/use-cities";
-import { useCategories } from "@/hooks/use-categories";
+import { useCategoryOptions } from "@/hooks/use-category-options";
 import { ChevronRight } from "lucide-react";
 
 // Removed hardcoded localized functions as they are replaced by API hooks and dynamic builders
@@ -24,7 +24,7 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
   const router = useRouter();
 
   const { data: apiCities = [] } = useCities({ language: locale, active: true });
-  const { data: categories = [] } = useCategories(locale);
+  const TYPES = useCategoryOptions(locale);
 
   const CITIES = [
     { value: "", label: t("all_cities") },
@@ -33,44 +33,6 @@ export function NavSearchPill({ inputRef, query, setQuery, onSubmit, onClose, lo
       label: c.name,
     })),
   ];
-
-  // Organize categories into hierarchy
-  const buildCategoryHierarchy = () => {
-    const root: any[] = [
-      { value: "", label: t("type_all"), icon: "✨", id: -1, children: [] },
-      { value: "landmark", label: t("type_landmark"), icon: "🏛️", id: -101, children: [] },
-      { value: "restaurant", label: t("type_restaurant"), icon: "🍴", id: -102, children: [] },
-      { value: "hotel", label: t("type_hotel"), icon: "🏨", id: -103, children: [] },
-      { value: "hostel", label: t("type_hostel"), icon: "🛌", id: -104, children: [] },
-    ];
-    
-    // Add default types first if they should be there
-    const categoryMap = new Map<number, any>();
-    
-    categories.forEach((cat: any) => {
-      categoryMap.set(cat.id, { 
-        value: cat.slug, 
-        label: cat.name, 
-        icon: cat.icon || "📍", 
-        id: cat.id, 
-        children: [] 
-      });
-    });
-
-    const hierarchy: any[] = [];
-    categories.forEach((cat: any) => {
-      const item = categoryMap.get(cat.id);
-      if (cat.parentId && categoryMap.has(cat.parentId)) {
-        categoryMap.get(cat.parentId).children.push(item);
-      } else {
-        hierarchy.push(item);
-      }
-    });
-
-    return [...root, ...hierarchy];
-  };
-
-  const TYPES = buildCategoryHierarchy();
 
   const [type, setType] = useState("");
   const [expandedCats, setExpandedCats] = useState<number[]>([]);

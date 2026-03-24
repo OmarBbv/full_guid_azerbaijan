@@ -5,16 +5,7 @@ import { Search, MapPin, ChevronDown, Tag } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/routing";
 import { useCities } from "@/hooks/use-cities";
-
-const getLocalizedTypes = (t: any) => [
-  { value: "", label: t("type_all"), icon: "✨" },
-  { value: "restaurant", label: t("type_restaurant"), icon: "🍴" },
-  { value: "hotel", label: t("type_hotel"), icon: "🏨" },
-  { value: "hostel", label: t("type_hostel"), icon: "🛌" },
-  { value: "venue", label: t("type_venue"), icon: "📍" },
-  { value: "landmark", label: t("type_landmark"), icon: "🏛️" },
-  { value: "nature", label: t("type_nature"), icon: "🌿" },
-];
+import { useCategoryOptions } from "@/hooks/use-category-options";
 
 export default function HeroSearchBar() {
   const locale = useLocale();
@@ -31,7 +22,7 @@ export default function HeroSearchBar() {
     })),
   ];
 
-  const TYPES = getLocalizedTypes(t);
+  const TYPES = useCategoryOptions(locale);
 
   const [query, setQuery] = useState("");
   const [city, setCity] = useState("");
